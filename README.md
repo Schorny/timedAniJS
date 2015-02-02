@@ -75,7 +75,7 @@ tl.add([
 ```
 And now the magic begins. We created a *TATimeline* object and used a *TATimelineDescriber* to set the actions. Now the names we set in the code above come into play. Each object and each composition has a name. This name is used to trigger and listen for certain events. With *startAndWaitFor* we can start an event and wait for it to finish. Our animation loops now endlessly.
 
-We could get the same result using *TAApp* and it's event handling directly:
+We could get the same result using *TAApp* and its event handling directly:
 ```Javascript
 var app = TAApp.TAApp; //for ease of use
 app.on("composition:in", function() {
