@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>Synopsis</h1><p>timedAni.js (or TA) is a library to make it easier to run predefined or non-interactive animations on a site.</p>
+<h1>Explanation</h1><p>A <em>TA</em> application consists of the following layers:</p>
+<h3>Animations</h3><p>The basic unit in <em>TA</em> is a <em>TAAnimation</em> Object. This be implemented using different libararies like <em>velocity.js</em> or <em>jQuery.animate</em>. A <em>TAAnimation</em> Object knows nothing about the <em>TA</em> structure, it just knows how to animate an object.</p>
+<h3>Objects</h3><p>Objects are of the Type <em>TAObject</em>. They own up to 2 <em>TAAnimation</em> Objects, one for the &quot;in&quot; animation and one for the &quot;out&quot; animation. They also know which DOM Element they represent.</p>
+<h3>Compositions</h3><p>A <em>TAComposition</em> is a collection of <em>TAObject</em>s. They get registered into the Composition and once a Composition starts an Animation, all <em>TAObject</em>s get animated.</p>
+<h3>Events</h3><p>Each <em>TAObject</em> and <em>TAComposition</em> has a unique name. Based on these names, events get triggered and listened for. This allows a simple work flow when executing different animations.</p>
+<p>When an object or composition finished it's animation, it triggers the &quot;name:in&quot; or &quot;name:out&quot; event. You can listen to those or even start one on your own </p>
+<pre class="prettyprint source lang-Javascript"><code>TAApp.start(&quot;name:in&quot;);</code></pre><h3>Timeline</h3><p>The <em>TATimeline</em> Object clues all compositions and objects together</p>
+<h1>Example</h1><p>First we create 2 Animation objects, one to fade in and one to fade out.</p>
+<pre class="prettyprint source lang-Javascript"><code>var appear = new TAApp.TAVelocityAnimation(
+    {opacity: 1},{duration: 1000}
+);
+var disappear = new TAApp.TAVelocityAnimation(
+    {opacity: 0},{duration: 1000}
+);</code></pre><p>This is a simple <em>TAVelocityAnimation</em> that uses <em>velocity.js</em> to do the actual work.</p>
+<p>Now we need an Object</p>
+<pre class="prettyprint source lang-Javascript"><code>var obj = new TAApp.TAObject(
+    &quot;object&quot;,
+    $(&quot;#id&quot;),
+    { inAni: appear, outAni: disappear }
+);</code></pre><p>We can now make our object appear and disappear:</p>
+<pre class="prettyprint source lang-Javascript"><code>obj.startInAni(function() {
+    obj.startOutAni();
+});</code></pre><p>This is not really fun though. So we create a Composition. Normally a composition contains multiple objects with multiple animations.</p>
+<pre class="prettyprint source lang-Javascript"><code>var comp = new TAApp.TAComposition(&quot;composition&quot;);
+comp.register(obj);</code></pre><p>We have create a composition object and registered one object into it. We can now do the same animation from above:</p>
+<pre class="prettyprint source lang-Javascript"><code>comp.startInAni(function() {
+    comp.startOutAni();
+});</code></pre><p>Now it is time to glue this together with a <em>TATimeline</em> object.</p>
+<pre class="prettyprint source lang-Javascript"><code>var tl = new TAApp.TATimeline(&quot;timeline&quot;);
+var desc = tl.getDescriber();
+tl.add([
+  desc.startAndWaitFor(&quot;composition:in&quot;),
+  desc.startAndWaitFor(&quot;composition:out&quot;),
+  desc.loop(),
+]);</code></pre><p>And now the magic begins. We created a <em>TATimeline</em> object and used a <em>TATimelineDescriber</em> to set the actions. Now the names we set in the code above come into play. Each object and each composition has a name. This name is used to trigger and listen for certain events. With <em>startAndWaitFor</em> we can start an event and wait for it to finish. Our animation loops now endlessly.</p>
+<p>We could get the same result using <em>TAApp</em> and it's event handling directly:</p>
+<pre class="prettyprint source lang-Javascript"><code>var app = TAApp.TAApp; //for ease of use
+app.on(&quot;composition:in&quot;, function() {
+    app.start(&quot;composition:out&quot;);
+});
+app.on(&quot;composition:out&quot;, function() {
+    app.start(&quot;composition:in&quot;);
+});
+app.start(&quot;composition:in&quot;);</code></pre><p>We can see how <em>TATimeline</em> works internally. It listens for events and starts events at certain times.</p>
+<p>See <em>test.html</em> for a complex example.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TAApp.html">TAApp</a></li><li><a href="TAChainedAnimation.html">TAChainedAnimation</a></li><li><a href="TAComposition.html">TAComposition</a></li><li><a href="TACssSettings.html">TACssSettings</a></li><li><a href="TADelayedAnimation.html">TADelayedAnimation</a></li><li><a href="TADelayedObject.html">TADelayedObject</a></li><li><a href="TADummyAnimation.html">TADummyAnimation</a></li><li><a href="TADummySettings.html">TADummySettings</a></li><li><a href="TAEventConverter.html">TAEventConverter</a></li><li><a href="TAObject.html">TAObject</a></li><li><a href="TAParallelAnimation.html">TAParallelAnimation</a></li><li><a href="TATimeline.html">TATimeline</a></li><li><a href="TATimelineDescriber.html">TATimelineDescriber</a></li><li><a href="TAVelocityAnimation.html">TAVelocityAnimation</a></li></ul><h3>Interfaces</h3><ul><li><a href="TAAnimation.html">TAAnimation</a></li><li><a href="TABaseComposition.html">TABaseComposition</a></li><li><a href="TABaseObject.html">TABaseObject</a></li><li><a href="TAObjectSettings.html">TAObjectSettings</a></li><li><a href="TATimelineAction.html">TATimelineAction</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Mon Feb 02 2015 23:46:50 GMT+0100 (MEZ)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

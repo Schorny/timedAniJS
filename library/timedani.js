@@ -1,0 +1,1060 @@
+(function(root, taapp) {
+
+    /**
+     * The central TAApp object
+     *
+     * This object cannot be instantiated, it is just a global object
+     * @constructor TAApp
+     */
+
+    /**
+     * Registers an event handler
+     *
+     * @method TAApp.on
+     * @param {String} event
+     * @param {Function} callback
+     */
+    /**
+     * Unregisters an event handler
+     *
+     * @method TAApp.off
+     * @param {String} event
+     * @param {Function} callback
+     */
+    /**
+     * Triggers an event
+     *
+     * @method TAApp.trigger
+     * @param {String} event
+     */
+    /**
+     * Triggers a start event
+     *
+     * @method TAApp.start
+     * @param {String} event
+     */
+    var TAApp = function() {
+
+        var $taapp = $('#taapp');
+        $(function() {
+            //this might be broken!
+            //look at facebook how they inject fb-root
+            if(!$('#taapp')) {
+                $('<div id="taapp"></div>').appendTo($('body'));
+            }
+            $taapp=$('#taapp');
+        });
+
+        //TODO: check if own event bus might be better
+        var eventHistory = [];
+
+        function hasFired(evt) {
+            return eventHistory.indexOf(evt) !== -1;
+        }
+
+        function clearEventHistory() {
+            eventHistory = [];
+        }
+
+        function trigger(evt) {
+            eventHistory.push(evt);
+            $taapp.triggerHandler(evt);
+        }
+
+        function start(evt) {
+            trigger(evt+":start");
+        }
+
+        function on(evt, func) {
+            $taapp.on(evt, func);
+        }
+
+        function off(evt, func) {
+            $taapp.off(evt, func);
+        }
+
+        return {
+            on: on,
+            off: off,
+            trigger: trigger,
+            start: start,
+        };
+    }();
+    /**
+     * Interface for Animation objects
+     *
+     * @interface TAAnimation
+     */
+
+    /**
+     * Starts the animation
+     *
+     * @function
+     * @name TAAnimation#start
+     * @param {TAObject} obj - the TAObject to apply the Animation to
+     * @param {Function} [complete] - function to be called when the animation is finished
+     */
+
+
+
+    /**
+     * Interface for general TAObjects
+     *
+     * @interface TABaseObject
+     */
+    /**
+     * Returns the name of the object
+     *
+     * @function
+     * @name TABaseObject#getName
+     * @return {String}
+     */
+    /**
+     * Returns the DOM object
+     *
+     * @function
+     * @name TABaseObject#getElement
+     * @return {Object}
+     */
+    /**
+     * Starts the "in" Animation
+     *
+     * @function
+     * @name TABaseObject#startInAni
+     * @param {Function} [complete] - function to be called once all animations are finished
+     */
+    /**
+     * Starts the "out" Animation
+     *
+     * @function
+     * @name TABaseObject#startOutAni
+     * @param {Function} [complete] - function to be called once all animations are finished
+     */
+
+
+    /**
+     * Interface for general TACompositions
+     *
+     * @interface TABaseComposition
+     */
+    /**
+     * Returns the name of the object
+     *
+     * @function
+     * @name TABaseComposition#getName
+     * @return {String}
+     */
+    /**
+     * Register a TABaseObject in this composition
+     *
+     * @function
+     * @name TABaseComposition#register
+     * @param {TABaseObject} obj
+     */
+    /**
+     * Starts the "in" Animation
+     *
+     * @function
+     * @name TABaseComposition#startInAni
+     * @param {Function} [complete] - function to be called once all animations are finished
+     */
+    /**
+     * Starts the "out" Animation
+     *
+     * @function
+     * @name TABaseComposition#startOutAni
+     * @param {Function} [complete] - function to be called once all animations are finished
+     */
+
+
+
+    /**
+     * Interface for TAObjectSettings
+     *
+     * @interface TAObjectSettings
+     */
+    /**
+     * Applys the initializing Setting to an object
+     *
+     * @function
+     * @name TAObjectSettings#applyInit
+     * @param {Object} e - DOM Element to apply Settings to
+     */
+    /**
+     * Applys the deinitializing Setting to an object
+     *
+     * @function
+     * @name TAObjectSettings#applyDeinit
+     * @param {Object} e - DOM Element to apply Settings to
+     */
+
+
+    /**
+     * Interface for TATimelineActions
+     *
+     * @interface TATimelineAction
+     */
+    /**
+     * Runs the action
+     *
+     * @function
+     * @name TATimelineAction#run
+     * @param {TATimeline} tl - the current timeline object
+     */
+    /**
+     * Gets the description
+     *
+     * @function
+     * @name TATimelineAction#getDescription
+     * @returns {String}
+     */
+
+
+
+    /**
+     * TAEventConverter listens for multiple events and once all where triggered triggers a new one
+     *
+     * @constructor TAEventConverter
+     * @param {String[]} sources - Array of events to listen for
+     * @param {String} target - event to trigger
+     */
+    function TAEventConverter(sources, target) {
+
+        this.events = [];
+
+        function listen(evt) {
+            if(this.events.indexOf(evt) != -1) {
+                return;
+            }
+
+            this.events.push(evt);
+            if(this.events.length == sources.length) {
+                this.events = [];
+                TCApp.trigger(target);
+            }
+        }
+
+        /**
+         * activates the converter (done implicitly by the constructor)
+         *
+         * @method TAEventConverter#activate
+         */
+        this.activate = function() {
+            sources.forEach(function(s) {
+                TAApp.on(s,listen);
+            });
+        };
+
+        /**
+         * deactivates the converter
+         *
+         * @method TAEventConverter#deactivate
+         */
+        this.deactivate = function() {
+            sources.forEach(function(s) {
+                TAApp.off(s,listen);
+            });
+        };
+
+        this.activate();
+    }
+
+
+    /**
+     * Settings class to apply CSS Settings to an object
+     *
+     * @implements TAObjectSettings
+     * @param {Object} [init] - CSS settings
+     * @param {Object} [deinit] - CSS settings
+     * @constructor TACssSettings
+     */
+    function TACssSettings(init, deinit) {
+
+        this.init = init || {};
+        this.deinit = deinit || {};
+
+        /**
+         * @method TACssSettings#applyInit
+         * @inheritdoc
+         */
+        this.applyInit = function($e) {
+            if(this.init) $e.css(this.init);
+        }
+
+        /**
+         * @method TACssSettings#applyDeinit
+         * @inheritdoc
+         */
+        this.applyDeinit = function($e) {
+            if(this.deinit) $e.css(this.deinit);
+        }
+    }
+
+    /**
+     * A TAObjectSettings object that does nothing
+     *
+     * @implements TAObjectSettings
+     * @constructor TADummySettings
+     */
+    function TADummySettings() {
+
+        this.init = this.deinit = function(e) {}
+    }
+
+
+    /**
+     * A TAAnimation object that does nothing
+     *
+     * @implements TAAnimation
+     * @constructor TADummyAnimation
+     */
+    function TADummyAnimation() {
+        this.start = function(obj, complete) { if(complete)complete(); };
+    }
+
+    /**
+     * A TAAnimation object that chains multiple animations sequentially
+     *
+     * @implements TAAnimation
+     * @param {TAAnimation[]} animations - array of TAAnimation objects
+     * @constructor TAChainedAnimation
+     */
+    function TAChainedAnimation(animations) {
+
+        this.animations = animations || [];
+
+        /**
+         * adds another animation to the queue
+         *
+         * @method TAChainedAnimation#addAnimation
+         * @param {TAAnimation} animation - the animation to add
+         */
+        this.addAnimation = function(animation) {
+            this.animations.push(animation);
+        }
+
+        /**
+         * @method TAChainedAnimation#start
+         * @inheritdoc
+         */
+        this.start = function(obj, complete) {
+            var idx = -1;
+            var count = this.animations.length;
+            var that = this;
+
+            var func = function() {
+                ++idx;
+                if(idx >= count) {
+                    if(complete) complete(that);
+                    return;
+                }
+
+                that.animations[idx].start(obj, func);
+            }
+            func();
+        }
+    }
+
+    /**
+     * A TAAnimation object that executes multiple animations in parallel
+     *
+     * Keep in mind that some animation libraries need extra parameter to allow parallel animation execution
+     *
+     * @param {TAAnimation[]} animations - array of TAAnimation objects
+     * @constructor TAParallelAnimation
+     */
+    function TAParallelAnimation(animations) {
+
+        this.animations = animations || [];
+
+        /**
+         * adds another animation to the queue
+         *
+         * @method TAParallelAnimation#addAnimation
+         * @param {TAAnimation} animation - the animation to add
+         */
+        this.addAnimation = function(animation) {
+            this.animations.push(animation);
+        }
+
+        /**
+         * @method TAParallelAnimation#start
+         * @inheritdoc
+         */
+        this.start = function(obj, complete) {
+            var animCount = this.animations.length;
+            var that = this;
+            var subComplete = function() {
+                ++subComplete.count;
+                if(subComplete.count == animCount) {
+                    if(complete) complete(that);
+                }
+            };
+            subComplete.count = 0;
+            this.animations.forEach(function(o) {
+                o.start(obj, subComplete);
+            });
+        }
+    }
+
+    /**
+     * TAAnimation object that delays the animation
+     *
+     * @implements TAAnimation
+     * @param {TAAnimation} animation - animation to execute
+     * @param {Integer} delay - delay in milliseconds
+     * @constructor TADelayedAnimation
+     */
+    function TADelayedAnimation(animation, delay) {
+
+        /**
+         * @method TADelayedAnimation#start
+         * @inheritdoc
+         */
+        this.start = function(obj, complete) {
+            setTimeout(
+                function() {
+                    animation.start(obj, complete);
+                }, delay
+            );
+        }
+    }
+
+    /**
+     * TAAnimation object that uses velocity.js to do the animation
+     *
+     * @param {Object} properties - velocity.js animation properties
+     * @param [Object} [options] - velocity.js animation options
+     * @constructor TAVelocityAnimation
+     */
+    function TAVelocityAnimation(properties, options) {
+        this.properties = properties || {};
+        this.options = options || {};
+
+        /**
+         * @method TAVelocityAnimation#start
+         * @inheritdoc
+         */
+        this.start = function(obj, complete) {
+            var tempOptions = this.options;
+            var that = this;
+
+            //TODO: chaining with current complete, dont overwrite user data
+
+            tempOptions.complete = function() {
+                if(complete) complete(that);
+
+            };
+            obj.getElement().velocity(this.properties, tempOptions);
+        };
+    }
+
+    /**
+     * TABaseObject that represents a real object
+     *
+     * @implements TABaseObject
+     * @param {String} name - name of the object
+     * @param {Object} $e - DOM element of the object
+     * @param {Object} anis - object that contains TAAnimation (anis.inAni and anis.outAni - both are options)
+     * @param {TAObjectSettings} settings - object settings
+     * @constructor TAObject
+     */
+    function TAObject(name, $e, anis, settings) {
+        this.name = name;
+        this.anis = anis || {};
+        this.$e = $e;
+        this.settings = settings || new TADummySettings();
+
+        if(!this.anis.inAni) {
+            this.anis.inAni = new TADummyAnimation();
+        }
+        if(!this.anis.outAni) {
+            this.anis.outAni = new TADummyAnimation();
+        }
+
+        /**
+         * @method TAObject#getName
+         * @inheritdoc
+         */
+        this.getName = function() {
+            return this.name;
+        };
+
+        /**
+         * @method TAObject#getElement
+         * @inheritdoc
+         */
+        this.getElement = function() {
+            return this.$e;
+        }
+
+        function startAni(obj, ani, name) {
+            return function(complete) {
+                ani.start(obj, function () {
+                    TAApp.trigger(obj.getName() + ":" + name);
+                    if(complete) complete(obj);
+                });
+            }
+        }
+
+        var that = this;
+
+        /**
+         * @method TAObject#startInAni
+         * @inheritdoc
+         */
+        this.startInAni = function(complete) {
+            this.settings.applyInit(this.getElement());
+            startAni(this, this.anis.inAni, "in")(complete);
+        }
+
+        /**
+         * @method TAObject#startOutAni
+         * @inheritdoc
+         */
+        this.startOutAni = function(complete) {
+
+            startAni(this, this.anis.outAni, "out")(function(obj) {
+                that.settings.applyDeinit(that.getElement());
+                if(complete)complete(obj);
+            });
+        }
+
+        TAApp.on(this.name+":in:start", function() { that.startInAni(); });
+        TAApp.on(this.name+":out:start", function() { that.startOutAni(); });
+    }
+
+
+    /**
+     * TABaseObject that delayes animation execution
+     *
+     * @implements TABaseObject
+     * @param {TABaseObject} obj - the object to delay
+     * @param {Object} delays - object with delays in milliseconds (delays.inAni and delays.outAni)
+     * @constructor TADelayedObject
+     */
+    function TADelayedObject(obj, delays) {
+        this.obj = obj;
+        this.delays = delays || {};
+
+        /**
+         * @method TADelayedObject#startInAni
+         * @inheritdoc
+         */
+        this.startInAni = function(complete) {
+            var delay = this.delays.inAni || 0;
+            var that = this;
+            setTimeout(function() {
+                that.obj.startInAni(complete);
+            }, delay);
+        };
+
+        /**
+         * @method TADelayedObject#startOutAni
+         * @inheritdoc
+         */
+        this.startOutAni = function(complete) {
+            var delay = this.delays.outAni || 0;
+            var that = this;
+            setTimeout(function() {
+                that.obj.startOutAni(complete);
+            }, delay);
+        };
+
+        /**
+         * @method TADelayedObject#getName
+         * @inheritdoc
+         */
+        this.getName = function() {
+            return this.obj.getName();
+        };
+
+        /**
+         * @method TADelayedObject#getElement
+         * @inheritdoc
+         */
+        this.getElement = function() {
+            return this.obj.getElement();
+        }
+    }
+
+    /**
+     * TABaseComposition object that handles basic composition
+     *
+     * @implements TABaseComposition
+     * @param {String} name - name of this composition
+     * @constructor TAComposition
+     */
+    function TAComposition(name) {
+        this.name = name;
+        this.objects = [];
+
+        /**
+         * @method TAComposition#register
+         * @inheritdoc
+         */
+        this.register = function(obj) {
+            this.objects.push(obj);
+        };
+
+        /**
+         * @method TAComposition#getName
+         * @inheritdoc
+         */
+        this.getName = function() {
+            return this.name;
+        };
+
+        function startAni(obj, ani, name) {
+            return function(complete) {
+                var objCount = obj.objects.length;
+                var subComplete = function() {
+                    ++subComplete.count;
+                    if(subComplete.count == objCount) {
+                        TAApp.trigger(obj.getName()+":"+name);
+                        if(complete) complete(obj);
+                    }
+                };
+                subComplete.count=0;
+                obj.objects.forEach(function(o) {
+                    o[ani](subComplete);
+                });
+            }
+        }
+
+        /**
+         * @method TAComposition#startInAni
+         * @inheritdoc
+         */
+        this.startInAni = startAni(this, "startInAni", "in");
+
+        /**
+         * @method TAComposition#startOutAni
+         * @inheritdoc
+         */
+        this.startOutAni = startAni(this, "startOutAni", "out");
+
+        var that = this;
+        TAApp.on(this.name+":in:start", function() { that.startInAni(); });
+        TAApp.on(this.name+":out:start", function() { that.startOutAni(); });
+    }
+
+    function TATimelineAction_start(action) {
+
+        this.getDescription = function() {
+            return "start("+action+")";
+        }
+
+        this.run = function(tl) {
+            TAApp.start(action);
+            tl.next();
+        }
+    }
+
+    function TATimelineAction_trigger(action) {
+
+        this.getDescription = function() {
+            return "start("+action+")";
+        }
+
+        this.run = function(tl) {
+            TAApp.trigger(action);
+            tl.next();
+        }
+    }
+
+    function TATimelineAction_waitFor(action) {
+
+        this.getDescription = function() {
+            return "waitFor("+action+")";
+        }
+
+        this.run = function(tl) {
+            var func = function() {
+                TAApp.off(action, func);
+                tl.next();
+            }
+            TAApp.on(action, func);
+        }
+    }
+
+    function TATimelineAction_delay(msecs) {
+
+        this.getDescription = function() {
+            return "delay("+msecs+")";
+        }
+
+        this.run = function(tl) {
+            setTimeout(function() {
+                tl.next();
+            }, msecs);
+        }
+    }
+
+    function TATimelineAction_loop() {
+
+        this.getDescription = function() {
+            return "loop()";
+        }
+
+        this.run = function(tl) {
+            tl.rewind();
+            tl.execute();
+        }
+    }
+
+    function TATimelineAction_step(steps) {
+
+        this.getDescription = function() {
+            return "step("+steps+")";
+        }
+
+        this.run = function(tl) {
+            tl.step(steps);
+            tl.execute();
+        }
+    }
+
+    function TATimelineAction_label(name) {
+
+        this.getDescription = function() {
+            return "label("+name+")";
+        }
+
+        this.getLabel = function() {
+            return name;
+        }
+
+        this.run = function(tl) {
+            tl.next();
+        }
+    }
+
+    function TATimelineAction_jumpTo(label) {
+
+        this.getDescription = function() {
+            return "jumpTo("+label+")";
+        }
+
+        this.run = function(tl) {
+            tl.jumpTo(label);
+        }
+    }
+
+    function TATimelineAction_startAndWaitFor(action) {
+
+        this.getDescription = function() {
+            return "startAndWaitFor("+action+")";
+        }
+
+        this.run = function(tl) {
+            var func = function() {
+                TAApp.off(action, func);
+                tl.next();
+            }
+            TAApp.on(action, func);
+            TAApp.start(action);
+        }
+    }
+
+    function TATimelineAction_execute(func) {
+
+        this.getDescription = function() {
+            return "execute(userFunc)";
+        }
+
+        this.run = function(tl) {
+            func(tl);
+        }
+    }
+
+    function TATimelineAction_if(func, action) {
+
+        this.getDescription = function() {
+            return "if("+action.getDescription()+")";
+        }
+
+        this.run = function(tl) {
+            if(func()) {
+                action.run(tl);
+            } else {
+                tl.next();
+            }
+        }
+    }
+
+    /**
+     * Describer for a TATimeline actions
+     *
+     * This is for convenience. It create TATimelineAction objects for ease of use
+     *
+     * @constructor TATimelineDescriber
+     */
+    function TATimelineDescriber() {
+
+        /**
+         * Triggers a start event
+         *
+         * @method TATimelineDescriber#start
+         * @param {String} action - event name
+         * @returns {TATimelineAction}
+         */
+        this.start = function(action) {
+            return new TATimelineAction_start(action);
+        }
+
+        /**
+         * Triggers an event
+         *
+         * @method TATimelineDescriber#trigger
+         * @param {String} action - event name
+         * @returns {TATimelineAction}
+         */
+        this.trigger = function(action) {
+            return new TATimelineAction_trigger(action);
+        }
+
+        /**
+         * Waits for an event to be triggered
+         *
+         * @method TATimelineDescriber#waitFor
+         * @param {String} action - event name
+         * @returns {TATimelineAction}
+         */
+        this.waitFor = function(action) {
+            return new TATimelineAction_waitFor(action);
+        }
+
+        /**
+         * Triggers a start event and waits for it to complete
+         *
+         * @method TATimelineDescriber#startAndWaitFor
+         * @param {String} action - event name
+         * @returns {TATimelineAction}
+         */
+        this.startAndWaitFor = function(action) {
+            return new TATimelineAction_startAndWaitFor(action);
+        }
+
+        /**
+         * Delays the next action
+         *
+         * @method TATimelineDescriber#delay
+         * @param {Integer} msecs - time in milliseconds
+         * @returns {TATimelineAction}
+         */
+        this.delay = function(msecs) {
+            return new TATimelineAction_delay(msecs);
+        }
+
+        /**
+         * Steps to another event in the timeline
+         *
+         * @method TATimelineDescriber#step
+         * @param {Integer} steps - positive or negative amount of steps to take
+         * @returns {TATimelineAction}
+         */
+        this.step = function(steps) {
+            return new TATimelineAction_step(steps);
+        }
+
+        /**
+         * Defines a label
+         *
+         * @method TATimelineDescriber#label
+         * @param {String} name - label name
+         * @returns {TATimelineAction}
+         */
+        this.label = function(name) {
+            return new TATimelineAction_label(name);
+        }
+
+        /**
+         * Jumps to a label (skipping all other steps)
+         *
+         * @method TATimelineDescriber#jumpTo
+         * @param {String} label - label name
+         * @returns {TATimelineAction}
+         */
+        this.jumpTo = function(label) {
+            return new TATimelineAction_jumpTo(label);
+        }
+
+        /**
+         * Executes a user defined function
+         *
+         * this function gets the current TATimeline object as only parameter and needs to call tl.next() on it (otherwise the execution will halt)
+         * @method TATimelineDescriber#execute
+         * @param {Function} func - a user defined function
+         * @returns {TATimelineAction}
+         */
+        this.execute = function(func) {
+            return new TATimelineAction_execute(func);
+        }
+
+        /**
+         * Rewinds the timeline to the start and continues from there
+         *
+         * @method TATimelineDescriber#loop
+         * @returns {TATimelineAction}
+         */
+        this.loop = function() {
+            return new TATimelineAction_loop();
+        }
+
+        /**
+         * Executes an event if a user defined function returns true
+         *
+         * @method TATimelineDescriber#executeIf
+         * @param {Function} func - a user defined predicate
+         * @param {TATimelineAction} action - a TATimelineAction to execute of the predicate returns true
+         * @returns {TATimelineAction}
+         */
+        this.executeIf = function(func, action) {
+            return new TATimelineAction_if(func, action);
+        }
+    }
+
+    /**
+     * A basic Timeline object
+     *
+     * @param {String} name - name of the timeline
+     * @constructor TATimeline
+     */
+    function TATimeline(name) {
+        //TODO: refactor so we dont expose everything to the user
+
+        this.name = name;
+        this.steps = [];
+        this.curPos = 0;
+
+        this.debug = false;
+
+        /**
+         * Sets the debug value
+         *
+         * @method TATimeline#setDebug
+         * @param {Boolean} dbg
+         */
+        this.setDebug = function(dbg) {
+            this.debug = dbg;
+        }
+
+        /**
+         * Returns a TATimelineDescriber object for convenience
+         *
+         * @method TATimeline#getDescriber
+         * @returns {TATimelineDescriber}
+         */
+        this.getDescriber = function() {
+            return new TATimelineDescriber();
+        }
+
+        /**
+         * Returns the timeline name
+         *
+         * @method TATimeline#getName
+         * @returns {String}
+         */
+        this.getName = function() {
+            return this.name;
+        }
+
+        /**
+         * Starts the execution
+         *
+         * @method TATimeline#go
+         */
+        this.go = function() {
+            var that = this;
+            setTimeout(function() {
+                that.execute();
+            }, 0);
+        }
+
+        /**
+         * Jumps to a label and starts the execution from there
+         *
+         * @method TATimeline#jumpToLabel
+         * @param {String} label
+         */
+        this.jumpToLabel = function(label) {
+            var that = this;
+            setTimeout(function() {
+                for (var i = 0, c = that.steps.length; i < c; ++i) {
+                    var action = that.steps[i];
+                    if (action.getLabel && action.getLabel() == label) {
+                        that.curPos = i;
+                        that.execute();
+                        return;
+                    }
+                }
+                throw "Unknown Label '" + label + "'";
+            },0);
+        }
+
+        this.step = function(offset) {
+            this.curPos += offset;
+        }
+
+        this.getCurPos = function() {
+            return this.curPos;
+        }
+
+        this.getLength = function() {
+            return this.steps.length;
+        }
+
+        this.rewind = function() {
+            this.curPos = 0;
+        }
+
+        this.next = function() {
+            this.step(1);
+            this.execute();
+        }
+
+        this.execute = function() {
+            if(this.curPos >= this.steps.length) {
+                return;
+            }
+
+            var action = this.steps[this.curPos];
+            if(this.debug) console.log(this.name+": "+action.getDescription());
+            action.run(this);
+        }
+
+        /**
+         * Adds Actions to the Timeline
+         *
+         * @method TATimeline#add
+         * @param {TATimelineAction[]|TATimelineAction} action - either a TATimelineAction or an array of TATimelineActions
+         */
+        this.add = function(action) {
+            if($.isArray(action)) {
+                var that = this;
+                action.forEach(function(e) {
+                    that.add(e);
+                })
+            } else {
+                this.steps.push(action);
+            }
+        }
+    }
+
+
+    //expose
+    root[taapp] = {};
+    root[taapp].TAApp = TAApp;
+    root[taapp].TAObject = TAObject;
+    root[taapp].TADelayedObject = TADelayedObject;
+    root[taapp].TAVelocityAnimation = TAVelocityAnimation;
+    root[taapp].TAParallelAnimation = TAParallelAnimation;
+    root[taapp].TADelayedAnimation = TADelayedAnimation;
+    root[taapp].TATimeline = TATimeline;
+    root[taapp].TAComposition = TAComposition;
+    root[taapp].TAEventConverter = TAEventConverter;
+    root[taapp].TACssSettings = TACssSettings;
+})(window, 'TAApp');
+
+

@@ -1,0 +1,46 @@
+Random Ideas, Todos and Remarks
+
+suppressTriggers() on TAObject and TAComposition
+
+better event bus system?
+
+wait for more than 1 event? like app.on(["state1:in", "state2:in"], func) so when BOTH are triggered...
+sucks because we need stateful handling, currently done by event converter
+
+we have states, an array with names. you can move a composition to another state if it is in.
+the composition knows all states but its members dont have to have all states (no animation is done then)
+do we want steps instead? named steps maybe?
+maybe keep in and out and make while a multistep system with something like a cycleAnimation object?
+maybe a complex system with named steps. maybe something like curPos independent animations? but how to do that?
+maybe just a normal step system where each object may or may not animate a certain step - these could be named
+instead of just numbered. a gotoStep(3) would animate 1,2,3 in order.
+a step skipping would be cool
+
+we need a stop() function for animations
+
+what about endless loop animations? they have no complete. how to handle that?
+maybe change while for endless animations? but how to stop them? how does velocity handles that?
+
+add TAJQueryAnimation and GSOCKS tween animation
+
+redesign code!
+class names SUCK!!!
+allow method chaining (return this all the time)
+
+composition and object should have onIn and onOut callbacks
+
+desc.start, desc.trigger, desc.waitFor, desc.startAndWaitFor need to take arrays as param as well
+
+desc.waitForMulti() takes array of desc and waits until all are finished executing before advancing
+
+timeline needs a stop() and triggerAndStop() and startAndStop
+stop stops execution until someone manually calls next()
+this might be set as single step mode in the tl object, so we can advance manually while debugging
+
+split code up in modules
+
+check if we really need jquery and drop dependency if possible
+
+implement a pause/play mechanic for timeline
+
+isnt TAComposition basically a TAParallelAnimation ?

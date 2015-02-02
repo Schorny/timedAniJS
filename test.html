@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.js" type="text/javascript"></script>
+    <script src="library/timedani.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function() {
+
+            /*
+            define some init settings
+            this is useful so we don't need to adjust the CSS too much for an anymation.
+            an element might be display:none but we want to animate opacity.
+            so we set 'display:inline' in the TACssSettings object and can be sure that
+            display:inline will be set when the animation starts. this keeps animation code
+            css independent!
+             */
+
+            var headlineSettings = new TAApp.TACssSettings({
+                opacity: 0, display: 'inline', position: 'absolute', top: '600px', left: '0px'
+            });
+
+            var boxSettings = new TAApp.TACssSettings({
+                opacity: 0, display: 'block'
+            });
+
+            var allBoxesSettings = new TAApp.TACssSettings({
+                position:"absolute", left:"220px", top:"30px"
+            });
+
+            /*
+            now we define a few animations to use later on
+            */
+
+            var fadeInFromBottomAnimation = new TAApp.TAVelocityAnimation(
+                    {top: '80px', opacity: 1},
+                    {duration: 5000}
+            );
+
+            var fadeOutToTopAnimation = new TAApp.TAVelocityAnimation(
+                    {top: 0, opacity: 0},
+                    {duration: 3000}
+            );
+
+            var appearAnimation = new TAApp.TAVelocityAnimation(
+                    {opacity: 1},
+                    {duration: 2000}
+            );
+
+            var disappearAnimation = new TAApp.TAVelocityAnimation(
+                    {opacity: 0},
+                    {duration: 700, queue:false}
+            );
+
+            var moveOutToRightAnimation = new TAApp.TAVelocityAnimation(
+                    {left: '300px'},
+                    {duration: 2000, queue:false}
+            );
+
+            /*
+            this is pointless, but it helps to demonstrate how to chain animations
+            TAParallelAnimation executes all animations in parallel. so we define one move and one fade out
+            animation and chain them.
+            velocity.js needs queue:false in the options to bypass sequential execution
+            just for lolz we add a TADelayedAnimation to the mix. The disappearAnimation gets startet
+            700msecs after the moveOutToRightAnimation
+            */
+            var fadeOutToRightAnimation = new TAApp.TAParallelAnimation(
+                    [moveOutToRightAnimation, new TAApp.TADelayedAnimation(disappearAnimation, 700)]
+            );
+
+            /*
+            now we create the actual objects we want to animate
+            names need to be unique!!!
+            */
+
+            var h1 = new TAApp.TAObject(
+                    "headline1",
+                    $("#text1"),
+                    {
+                        inAni: fadeInFromBottomAnimation,
+                        outAni: fadeOutToTopAnimation
+                    },
+                    headlineSettings
+            );
+
+            var h2 = new TAApp.TAObject(
+                    "headline2",
+                    $("#text2"),
+                    {
+                        inAni: fadeInFromBottomAnimation,
+                        outAni: fadeOutToTopAnimation
+                    },
+                    headlineSettings
+            );
+
+            /*
+            we have some fun with boxes.
+            we want them to appear individually but disappear as a group
+            so we create each box as an own object and a wrapper object for all boxes
+            we could have used a composition for this, but this here is much easier and cleaner
+
+            notice how each box only has an inAni and boxes only has an outAni.
+            */
+            var box1 = new TAApp.TAObject(
+                    "box1",
+                    $("#box1"),
+                    {
+                        inAni: appearAnimation
+                    },
+                    boxSettings
+            );
+            var box2 = new TAApp.TAObject(
+                    "box2",
+                    $("#box2"),
+                    {
+                        inAni: appearAnimation
+                    },
+                    boxSettings
+            );
+            var box3 = new TAApp.TAObject(
+                    "box3",
+                    $("#box3"),
+                    {
+                        inAni: appearAnimation
+                    },
+                    boxSettings
+            );
+
+            var boxes = new TAApp.TAObject(
+                    "boxes",
+                    $("#boxes"),
+                    {
+                        outAni: fadeOutToRightAnimation
+                    },
+                    allBoxesSettings
+            );
+
+
+            /*
+            we actually don't need this states array, it just helps when debugging
+            */
+            var states = [];
+
+            /*
+            we have 3 screens or "composition" as TA calls it
+            the first headline that appears
+            the second headline that appears
+            the 3 boxes
+
+            so we create 3 compositions and name them accordingly
+            */
+            var comp = new TAApp.TAComposition("firstHeadline");
+            comp.register(h1);
+            states.push(comp);
+
+            comp=new TAApp.TAComposition("secondHeadline");
+            comp.register(h2);
+            states.push(comp);
+
+            /*
+            notice how each box got the same inAni animation object?
+            here we use TADelayedObject to delay the execution of each box individually.
+            this allows us to set common animation times but delay certain animations for a
+            more beautiful effect.
+            */
+            comp=new TAApp.TAComposition("allBoxes");
+            comp.register(box1);
+            comp.register(new TAApp.TADelayedObject(box2, {inAni:500}));
+            comp.register(new TAApp.TADelayedObject(box3, {inAni:1000}));
+            comp.register(boxes);
+            states.push(comp);
+
+
+            /*
+            now the magic happens
+            we create a TATimeline object
+            and get the describer for it
+            */
+            var tl = new TAApp.TATimeline("timeline");
+
+            var desc = tl.getDescriber();
+            /*
+            and this is why TA is a cool library.
+            we describe what we want. look at the documentation of TATimelineDescriber for neat feature.
+
+            notice how we use start() for firstHeadline:out? this allows us to have a parallel animation with
+            secondHeadline:in. We use delay for the secondHeadline to come in, but both animations run in parallel.
+
+            loop() allows us to loop the whole animation. without loop() it would stop after the first run.
+            */
+            tl.add([
+                    desc.startAndWaitFor("firstHeadline:in"),
+                    desc.delay(500),
+                    desc.start("firstHeadline:out"),
+                    desc.delay(100),
+                    desc.startAndWaitFor("secondHeadline:in"),
+                    desc.delay(5000),
+                    desc.startAndWaitFor("secondHeadline:out"),
+                    desc.label("boxes"),
+                    desc.startAndWaitFor("allBoxes:in"),
+                    desc.delay(1000),
+                    desc.startAndWaitFor("allBoxes:out"),
+                    desc.loop(),
+            ]);
+
+            /*
+            look at your console
+            */
+            tl.setDebug(true);
+
+            /*
+            do we want to start with the first headline?
+            maybe we need to debug the boxes. just create a label and jumpTo it :)
+            */
+            //tl.jumpToLabel("boxes");
+
+            /*
+            go() starts the queue.
+            but don't call jumpToLabel and go at the same time. the Timeline can only be run once :)
+             */
+            tl.go();
+
+
+            /*
+            now we need some cool stuff
+            we write whats happening in a status field
+            */
+            var app = TAApp.TAApp;
+
+            var $status = $("#status");
+            app.on("firstHeadline:in", function() {
+                $status.text("headline1 appeared");
+            });
+            app.on("secondHeadline:in", function() {
+                $status.text("headline2 appeared");
+            });
+            app.on("allBoxes:in", function() {
+                $status.text("boxes are in");
+            });
+            app.on("allBoxes:out", function() {
+                $status.text("boxes are out");
+            });
+
+        });
+
+    </script>
+
+    <style type="text/css">
+        #content {
+            overflow:hidden;
+            position: absolute;
+            left: 80px;
+            top: 40px;
+            border-color: red;
+            border-style: solid;
+            border-width: 2px;
+            background-color: lightgoldenrodyellow;
+            width: 300px;
+            height: 500px;
+        }
+
+        .fullwidth {
+            width: 300px;
+        }
+
+        .box {
+            display: inline;
+            width: 75px;
+            height: 75px;
+
+        }
+
+        .headline {
+            font-size: 2em;
+            text-align:center;
+            font-style: italic;
+            display: inline;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .blue {
+            background-color: blue;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        #text1, #text2, #box1, #box2, #box3 {
+            display: none;
+        }
+
+        #status {
+            position:absolute;
+            top: 40px;
+            left: 400px;
+            display:block;
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+<div id="content">
+
+    <span id="text1" class="headline fullwidth">First Headline</span>
+    <span id="text2" class="headline fullwidth">Second Headline</span>
+
+    <span id="boxes">
+        <span id="box1" class="box red"></span>
+        <span id="box2" class="box blue"></span>
+        <span id="box3" class="box green"></span>
+    </span>
+</div>
+
+<div id="status"></div>
+
+<!-- we need a taapp element! -->
+<div id="taapp"></div>
+</body>
+</html>
