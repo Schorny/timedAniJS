@@ -279,7 +279,7 @@
          */
         this.applyInit = function($e) {
             if(this.init) $e.css(this.init);
-        }
+        };
 
         /**
          * @method TACssSettings#applyDeinit
@@ -331,7 +331,7 @@
          */
         this.addAnimation = function(animation) {
             this.animations.push(animation);
-        }
+        };
 
         /**
          * @method TAChainedAnimation#start
@@ -350,7 +350,7 @@
                 }
 
                 that.animations[idx].start(obj, func);
-            }
+            };
             func();
         }
     }
@@ -375,7 +375,7 @@
          */
         this.addAnimation = function(animation) {
             this.animations.push(animation);
-        }
+        };
 
         /**
          * @method TAParallelAnimation#start
@@ -486,7 +486,7 @@
          */
         this.getElement = function() {
             return this.$e;
-        }
+        };
 
         function startAni(obj, ani, name) {
             return function(complete) {
@@ -506,7 +506,7 @@
         this.startInAni = function(complete) {
             this.settings.applyInit(this.getElement());
             startAni(this, this.anis.inAni, "in")(complete);
-        }
+        };
 
         /**
          * @method TAObject#startOutAni
@@ -518,7 +518,7 @@
                 that.settings.applyDeinit(that.getElement());
                 if(complete)complete(obj);
             });
-        }
+        };
 
         TAApp.on(this.name+":in:start", function() { that.startInAni(); });
         TAApp.on(this.name+":out:start", function() { that.startOutAni(); });
@@ -643,7 +643,7 @@
 
         this.getDescription = function() {
             return "start("+action+")";
-        }
+        };
 
         this.run = function(tl) {
             TAApp.start(action);
@@ -655,7 +655,7 @@
 
         this.getDescription = function() {
             return "start("+action+")";
-        }
+        };
 
         this.run = function(tl) {
             TAApp.trigger(action);
@@ -667,13 +667,13 @@
 
         this.getDescription = function() {
             return "waitFor("+action+")";
-        }
+        };
 
         this.run = function(tl) {
             var func = function() {
                 TAApp.off(action, func);
                 tl.next();
-            }
+            };
             TAApp.on(action, func);
         }
     }
@@ -682,7 +682,7 @@
 
         this.getDescription = function() {
             return "delay("+msecs+")";
-        }
+        };
 
         this.run = function(tl) {
             setTimeout(function() {
@@ -695,7 +695,7 @@
 
         this.getDescription = function() {
             return "loop()";
-        }
+        };
 
         this.run = function(tl) {
             tl.rewind();
@@ -707,7 +707,7 @@
 
         this.getDescription = function() {
             return "step("+steps+")";
-        }
+        };
 
         this.run = function(tl) {
             tl.step(steps);
@@ -719,22 +719,22 @@
 
         this.getDescription = function() {
             return "label("+name+")";
-        }
+        };
 
         this.getLabel = function() {
             return name;
-        }
+        };
 
         this.run = function(tl) {
             tl.next();
-        }
+        };
     }
 
     function TATimelineAction_jumpTo(label) {
 
         this.getDescription = function() {
             return "jumpTo("+label+")";
-        }
+        };
 
         this.run = function(tl) {
             tl.jumpTo(label);
@@ -745,13 +745,13 @@
 
         this.getDescription = function() {
             return "startAndWaitFor("+action+")";
-        }
+        };
 
         this.run = function(tl) {
             var func = function() {
                 TAApp.off(action, func);
                 tl.next();
-            }
+            };
             TAApp.on(action, func);
             TAApp.start(action);
         }
@@ -761,7 +761,7 @@
 
         this.getDescription = function() {
             return "execute(userFunc)";
-        }
+        };
 
         this.run = function(tl) {
             func(tl);
@@ -772,7 +772,7 @@
 
         this.getDescription = function() {
             return "if("+action.getDescription()+")";
-        }
+        };
 
         this.run = function(tl) {
             if(func()) {
@@ -801,7 +801,7 @@
          */
         this.start = function(action) {
             return new TATimelineAction_start(action);
-        }
+        };
 
         /**
          * Triggers an event
@@ -812,7 +812,7 @@
          */
         this.trigger = function(action) {
             return new TATimelineAction_trigger(action);
-        }
+        };
 
         /**
          * Waits for an event to be triggered
@@ -823,7 +823,7 @@
          */
         this.waitFor = function(action) {
             return new TATimelineAction_waitFor(action);
-        }
+        };
 
         /**
          * Triggers a start event and waits for it to complete
@@ -834,7 +834,7 @@
          */
         this.startAndWaitFor = function(action) {
             return new TATimelineAction_startAndWaitFor(action);
-        }
+        };
 
         /**
          * Delays the next action
@@ -845,7 +845,7 @@
          */
         this.delay = function(msecs) {
             return new TATimelineAction_delay(msecs);
-        }
+        };
 
         /**
          * Steps to another event in the timeline
@@ -856,7 +856,7 @@
          */
         this.step = function(steps) {
             return new TATimelineAction_step(steps);
-        }
+        };
 
         /**
          * Defines a label
@@ -867,7 +867,7 @@
          */
         this.label = function(name) {
             return new TATimelineAction_label(name);
-        }
+        };
 
         /**
          * Jumps to a label (skipping all other steps)
@@ -878,7 +878,7 @@
          */
         this.jumpTo = function(label) {
             return new TATimelineAction_jumpTo(label);
-        }
+        };
 
         /**
          * Executes a user defined function
@@ -890,7 +890,7 @@
          */
         this.execute = function(func) {
             return new TATimelineAction_execute(func);
-        }
+        };
 
         /**
          * Rewinds the timeline to the start and continues from there
@@ -900,7 +900,7 @@
          */
         this.loop = function() {
             return new TATimelineAction_loop();
-        }
+        };
 
         /**
          * Executes an event if a user defined function returns true
@@ -938,7 +938,7 @@
          */
         this.setDebug = function(dbg) {
             this.debug = dbg;
-        }
+        };
 
         /**
          * Returns a TATimelineDescriber object for convenience
@@ -948,7 +948,7 @@
          */
         this.getDescriber = function() {
             return new TATimelineDescriber();
-        }
+        };
 
         /**
          * Returns the timeline name
@@ -958,7 +958,7 @@
          */
         this.getName = function() {
             return this.name;
-        }
+        };
 
         /**
          * Starts the execution
@@ -970,7 +970,7 @@
             setTimeout(function() {
                 that.execute();
             }, 0);
-        }
+        };
 
         /**
          * Jumps to a label and starts the execution from there
@@ -991,28 +991,28 @@
                 }
                 throw "Unknown Label '" + label + "'";
             },0);
-        }
+        };
 
         this.step = function(offset) {
             this.curPos += offset;
-        }
+        };
 
         this.getCurPos = function() {
             return this.curPos;
-        }
+        };
 
         this.getLength = function() {
             return this.steps.length;
-        }
+        };
 
         this.rewind = function() {
             this.curPos = 0;
-        }
+        };
 
         this.next = function() {
             this.step(1);
             this.execute();
-        }
+        };
 
         this.execute = function() {
             if(this.curPos >= this.steps.length) {
@@ -1022,7 +1022,7 @@
             var action = this.steps[this.curPos];
             if(this.debug) console.log(this.name+": "+action.getDescription());
             action.run(this);
-        }
+        };
 
         /**
          * Adds Actions to the Timeline
