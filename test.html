@@ -10,7 +10,7 @@
 
             /*
             define some init settings
-            this is useful so we don't need to adjust the CSS too much for an anymation.
+            this is useful so we don't need to adjust the CSS too much for an animation.
             an element might be display:none but we want to animate opacity.
             so we set 'display:inline' in the TACssSettings object and can be sure that
             display:inline will be set when the animation starts. this keeps animation code
@@ -63,7 +63,7 @@
             TAParallelAnimation executes all animations in parallel. so we define one move and one fade out
             animation and chain them.
             velocity.js needs queue:false in the options to bypass sequential execution
-            just for lolz we add a TADelayedAnimation to the mix. The disappearAnimation gets startet
+            just for lolz we add a TADelayedAnimation to the mix. The disappearAnimation gets started
             700msecs after the moveOutToRightAnimation
             */
             var fadeOutToRightAnimation = new TAApp.TAParallelAnimation(
