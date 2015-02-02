@@ -57,7 +57,7 @@ This is not really fun though. So we create a Composition. Normally a compositio
 var comp = new TAApp.TAComposition("composition");
 comp.register(obj);
 ```
-We have create a composition object and registered one object into it. We can now do the same animation from above:
+We have created a composition object and registered one object into it. We can now do the same animation from above:
 ```Javascript
 comp.startInAni(function() {
     comp.startOutAni();
