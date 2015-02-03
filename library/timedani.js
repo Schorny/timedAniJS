@@ -785,7 +785,7 @@
         };
 
         this.run = function(tl) {
-            tl.jumpTo(label);
+            tl.jumpToLabel(label);
         };
     }
 
