@@ -57,14 +57,48 @@
             //and our MyRepeatAnimation repeats this chain now
             //switch TAChainedAnimation with TAParallelAnimation to see a diagonal move instead of a steps-like move
             //don't forget to add queue:false to the animation options if you switch to TAParallelAnimation
+
+            var fancyAnimation = new MyRepeatAnimation(5, new TAApp.TAChainedAnimation([stepRightAnimation, stepUpAnimation]));
+
+            //we use display:inline and a top/left position in our init settings
+            //this allows us to just set display:none for #box in CSS
+            //so we don't have to care about animation starting positions in css
+            //keep in mind that with display:inline the box now just appears right before the
+            //animation gets started. we position the box far enough down so it looks fine
+            //but one more fancy way would be to write a fadeIn and fadeOut animation and chain them
+            //like so:
+
+            var fadeInAnimation = new TAApp.TAVelocityAnimation(
+                    {opacity:1},{duration:1000}
+            );
+            var fadeOutAnimation = new TAApp.TAVelocityAnimation(
+                    {opacity:0},{duration:1000}
+            );
+
+            var realFancyAnimation = new TAApp.TAChainedAnimation([fadeInAnimation,fancyAnimation, fadeOutAnimation]);
+
             var box = new TAApp.TAObject(
                     "box",
                     $("#box"),
                     {
-                        inAni: new MyRepeatAnimation(6, new TAApp.TAChainedAnimation([stepRightAnimation, stepUpAnimation]))
+                        inAni: realFancyAnimation
                     },
-                    new TAApp.TACssSettings({top:"250px", left:"0px", display:"inline"})
+                    new TAApp.TACssSettings({top:"250px", left:"0px", display:"inline", opacity:0})
             );
+
+            //inAni is now a
+            // TAChainedAnimation([
+            //      TAVelocityAnimation(),
+            //      MyRepeatAnimation(
+            //          TAChainedAnimation([
+            //              TAVelocityAnimation(),
+            //              TAVelocityAnimation()
+            //          ])
+            //      ),
+            //      TAVelocityAnimation
+            // ])
+
+            //cool, right?
 
 
             //we don't loop this animation, we just start it on button press
