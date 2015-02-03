@@ -326,7 +326,7 @@
      */
     function TADummySettings() {
 
-        this.init = this.deinit = function(e) {};
+        this.applyInit = this.applyDeinit = function(e) {};
     }
 
 
