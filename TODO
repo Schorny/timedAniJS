@@ -1,6 +1,7 @@
 Random Ideas, Todos and Remarks
 
 suppressTriggers() on TAObject and TAComposition
+(and a reenable function of course)
 
 better event bus system?
 
@@ -15,6 +16,8 @@ maybe a complex system with named steps. maybe something like curPos independent
 maybe just a normal step system where each object may or may not animate a certain step - these could be named
 instead of just numbered. a gotoStep(3) would animate 1,2,3 in order.
 a step skipping would be cool
+figure out how this would work with an object that is registred in multiple composition.
+maybe prevent that??
 
 we need a stop() function for animations
 
@@ -26,6 +29,9 @@ add TAJQueryAnimation and GSOCKS tween animation
 redesign code!
 class names SUCK!!!
 allow method chaining (return this all the time)
+find out how to properly expose constructors
+make it AMD compatible
+find out what CommonJS has to say about JS lib design
 
 composition and object should have onIn and onOut callbacks
 
@@ -44,3 +50,28 @@ check if we really need jquery and drop dependency if possible
 implement a pause/play mechanic for timeline
 
 isnt TAComposition basically a TAParallelAnimation ?
+
+TABackgroundAnimation - an animation object that completes instantly while the animation runs in the background
+TAFunctionAnimation - an animation object that calls a function
+TARepeatAnimation - like MyRepeatAnimation but done right
+TARepeatWhileAnimation - repeat animations until the predicate returns false
+
+maybe TABackgroundAnimation with TARepeatWhileAnimation can be our endless looping animations?
+
+figure out whats the deal about complete() param. is it the object, is it the animation, what the hell?
+do we even need it???
+
+objects registered to a composition should be targetable by composition/object:in
+keep in mind this means they need to trigger the right stuff too once complete
+
+TAComposition.unregister()
+TAObject.destroy()
+general cleanup stuff
+
+make a baseOnTAObject function, which clones a TAObject but replaces $e and name (to allow easy cloning)
+
+ease of use: make animation skeletons like createFadeInAnimation(msecs) which returns a TAVelocityAnimation that
+fades in using opacity in msecs millisecs
+this means we need to be able to add TAObjectSettings to TAObjects.
+
+add onNext() callback to TATimeline that gets called everytime the timeline advances.
