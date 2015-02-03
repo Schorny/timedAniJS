@@ -211,7 +211,6 @@
                     desc.startAndWaitFor("allBoxes:in"),
                     desc.delay(1000),
                     desc.startAndWaitFor("allBoxes:out"),
-                    desc.jumpTo("boxes"),
                     //set first to false, don't forget to call tl.next()
                     desc.execute(function(tl) { first=false; console.log("now we loop"); tl.next(); }),
                     //just a custom trigger
