@@ -337,7 +337,7 @@
      * @constructor TADummyAnimation
      */
     function TADummyAnimation() {
-        this.start = function(obj, complete) { if(complete)complete(); };
+        this.start = function(obj, complete) { if(complete)complete(this); };
     }
 
     /**
