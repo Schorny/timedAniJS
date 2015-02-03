@@ -133,6 +133,18 @@
      * @return {Object}
      */
     /**
+     * Applys the Init Settings
+     *
+     * @function
+     * @name TABaseObject#applyInitSettings
+     */
+    /**
+     * Applys the Deinit Settings
+     *
+     * @function
+     * @name TABaseObject#applyDeinitSettings
+     */
+    /**
      * Starts the "in" Animation
      *
      * @function
@@ -504,6 +516,22 @@
             return this.$e;
         };
 
+        /**
+         * @method TAObject#applyInitSettings
+         * @inheritdoc
+         */
+        this.applyInitSettings = function() {
+            this.settings.applyInit(this.getElement());
+        };
+
+        /**
+         * @method TAObject#applyDeinitSettings
+         * @inheritdoc
+         */
+        this.applyDeinitSettings = function() {
+            this.settings.applyDeinit(that.getElement());
+        };
+
         function startAni(obj, ani, name) {
             return function(complete) {
                 ani.start(obj, function () {
@@ -520,7 +548,7 @@
          * @inheritdoc
          */
         this.startInAni = function(complete) {
-            this.settings.applyInit(this.getElement());
+            this.applyInitSettings();
             startAni(this, this.anis.inAni, "in")(complete);
         };
 
@@ -531,7 +559,7 @@
         this.startOutAni = function(complete) {
 
             startAni(this, this.anis.outAni, "out")(function(obj) {
-                that.settings.applyDeinit(that.getElement());
+                that.applyDeinitSettings();
                 if(complete)complete(obj);
             });
         };
@@ -560,6 +588,7 @@
         this.startInAni = function(complete) {
             var delay = this.delays.inAni || 0;
             var that = this;
+            this.obj.applyInitSettings();
             setTimeout(function() {
                 that.obj.startInAni(complete);
             }, delay);
@@ -575,6 +604,22 @@
             setTimeout(function() {
                 that.obj.startOutAni(complete);
             }, delay);
+        };
+
+        /**
+         * @method TADelayedObject#applyInitSettings
+         * @inheritdoc
+         */
+        this.applyInitSettings = function() {
+            this.obj.applyInitSettings();
+        };
+
+        /**
+         * @method TADelayedObject#applyDeinitSettings
+         * @inheritdoc
+         */
+        this.applyDeinitSettings = function() {
+            this.obj.applyDeinitSettings();
         };
 
         /**
