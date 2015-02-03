@@ -1155,6 +1155,7 @@
     root[taapp].TADelayedObject = TADelayedObject;
     root[taapp].TAVelocityAnimation = TAVelocityAnimation;
     root[taapp].TAParallelAnimation = TAParallelAnimation;
+    root[taapp].TAChainedAnimation = TAChainedAnimation;
     root[taapp].TADelayedAnimation = TADelayedAnimation;
     root[taapp].TATimeline = TATimeline;
     root[taapp].TAComposition = TAComposition;
