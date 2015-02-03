@@ -60,7 +60,56 @@
                     defaultSettings
             );
 
+
+            //we display a dialog
+            //which is a fancy way of saying: a div with buttons
+            var fadeIn = new TAApp.TAVelocityAnimation(
+                    {opacity:1},{duration:1000}
+            );
+            var fadeOut = new TAApp.TAVelocityAnimation(
+                    {opacity:0},{duration:1000}
+            );
+            var dialogSettings = new TAApp.TACssSettings(
+                    {display:"block",opacity:0},{display:"none"}
+            );
+
+            //we need to disable buttons when we fadeout
+            //and enable them when we fade in
+            //to prevent multiple clicks on a button
+            //we can use a simple TAFunctionAnimation to "animate"
+            //the disabling and enabling of buttons
+            //animations don't necessarily have to be real animations
+            //sometimes they can just add logic to our code
+            //remember: this is an animation library, not a GUI library
+            //so while we CAN do this, we probably SHOULDN'T do it.
+            var dialogInAnimation = new TAApp.TAChainedAnimation([
+                fadeIn,
+                new TAApp.TAFunctionAnimation(function(obj, complete) {
+                    obj.getElement().find("input").prop("disabled", false);
+                    if(complete)complete(this);
+                })
+            ]);
+            var dialogOutAnimation = new TAApp.TAChainedAnimation([
+                new TAApp.TAFunctionAnimation(function(obj, complete) {
+                    obj.getElement().find("input").prop("disabled", true);
+                    if(complete)complete(this);
+                }),
+                fadeOut
+            ]);
+
+            var dialog = new TAApp.TAObject(
+                "dialog",
+                $("#dialog"),
+                {
+                    inAni: dialogInAnimation,
+                    outAni: dialogOutAnimation
+                },
+                dialogSettings
+            );
+
             //register all 3 boxes into this composition
+            //dialog is NOT in the composition, it exists outside of it
+            //we use this composition to reset all boxes, we don't want to touch the dialog
             var comp = new TAApp.TAComposition("all");
 
             comp.register(box1);
@@ -72,60 +121,57 @@
             var tl = new TAApp.TATimeline("timeline");
             var d = tl.getDescriber();
 
-            //things get weird here
-            //we create a dialog with 4 buttons: move one box or reset everything
-            //just normal jquery stuff
-            var $dialog = $("#dialog");
-
-            //we don't call tl.next()
-            //so animation execution stops
-            var question = function(tl) {
-                $dialog.find("input").prop("disabled", false);
-                $dialog.fadeIn();
-            };
-
             //click handler for all 4 buttons
-            $dialog.find("input").on("click", function() {
+            $("input").on("click", function() {
                 var $this = $(this);
-                //disable buttons to prevent multiple click events
-                $dialog.find("input").prop("disabled", true);
-                $dialog.fadeOut();
-
                 //magic!
                 //we use simple goto magic like in Basic
-                //jumpToLabel starts animation execution until we
-                //run into another d.execute(question);
-                //which stops the animation and shows this dialog
                 tl.jumpToLabel($this.data("label"));
             });
 
-            //execute() stops the animation because we don't call
-            //tl.next() in question
+            //the dialog label just displays the dialog
+            //notice how every other label starts with startAndWaitFor("dialog:out")?
+            //this is because we show the dialog in label("dialog") but we can't hide it there
+            //because we need to wait for user feedback
+            //so the first thing a label has to do, is hide the dialog before continuing
+
             //we reset everything by triggering an all:out
             //we have set the default values for our boxes in their deinit Settings
             //so they get applied after their outAni
             //because they have no outAni, settings get applied instantly
             //we might animate a reset by setting a pretty outAni - but who cares, right?
             tl.add([
+                d.label("dialog"),
+                d.start("dialog:in"),
+                d.stop(), //we stop as soon as the dialog is displayed
+
                 d.label("box1"),
+                d.startAndWaitFor("dialog:out"),
                 d.startAndWaitFor("box1:in"),
-                d.execute(question),
+                d.jumpTo("dialog"),
 
                 d.label("box2"),
+                d.startAndWaitFor("dialog:out"),
                 d.startAndWaitFor("box2:in"),
-                d.execute(question),
+                d.jumpTo("dialog"),
 
                 d.label("box3"),
+                d.startAndWaitFor("dialog:out"),
                 d.startAndWaitFor("box3:in"),
-                d.execute(question),
+                d.jumpTo("dialog"),
 
                 d.label("reset"),
+                d.startAndWaitFor("dialog:out"),
                 d.startAndWaitFor("all:out"),
-                d.execute(question),
+                d.jumpTo("dialog"),
+
             ]);
 
-            //don't call tl.go()
-            //we don't want to auto start the animations
+            //watch the magic in your console
+            tl.setDebug(true);
+
+            //just show the dialog
+            tl.go();
 
         });
     </script>
@@ -177,7 +223,7 @@
             position: absolute;
             left: 70px;
             top: 100px;
-            display:inline;
+            display:none;
             width: 300px;
             height: 120px;
             text-align:center;
