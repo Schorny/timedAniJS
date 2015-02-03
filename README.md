@@ -88,4 +88,4 @@ app.start("composition:in");
 ```
 We can see how *TATimeline* works internally. It listens for events and starts events at certain times.
 
-See *test.html* for a complex example.
+See *test.html* or *test2.html* for more complex examples.
