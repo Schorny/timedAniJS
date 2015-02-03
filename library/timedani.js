@@ -907,6 +907,20 @@
     }
 
     /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_stop
+     */
+    function TATimelineAction_stop() {
+
+        this.getDescription = function() {
+            return "stop()";
+        };
+
+        this.run = function(tl) {
+        };
+    }
+
+    /**
      * Describer for a TATimeline actions
      *
      * This is for convenience. It create TATimelineAction objects for ease of use
@@ -1023,6 +1037,16 @@
          */
         this.loop = function() {
             return new TATimelineAction_loop();
+        };
+
+        /**
+         * Stops the timeline
+         *
+         * @method TATimelineDescriber#stop
+         * @returns {TATimelineAction}
+         */
+        this.stop = function() {
+            return new TATimelineAction_stop();
         };
 
         /**
