@@ -1,4 +1,5 @@
 (function(root, taapp) {
+    "use strict";
 
     /**
      * The central TAApp object
@@ -33,6 +34,21 @@
      * @method TAApp.start
      * @param {String} event
      */
+    /**
+     * Returns whether an event has been fired in the past
+     *
+     * @method TAApp.hasFired
+     * @param {String} event
+     * @returns {Boolean}
+     */
+    /**
+     * Clears the whole event history
+     *
+     * use this to clear events you already checked using hasFired
+     *
+     * @method TAApp.clearEventHistory
+     */
+
     var TAApp = function() {
 
         var $taapp = $('#taapp');
@@ -77,7 +93,7 @@
             on: on,
             off: off,
             trigger: trigger,
-            start: start,
+            start: start
         };
     }();
     /**
@@ -221,16 +237,16 @@
     function TAEventConverter(sources, target) {
 
         this.events = [];
-
+        var that = this;
         function listen(evt) {
-            if(this.events.indexOf(evt) != -1) {
+            if(that.events.indexOf(evt) !== -1) {
                 return;
             }
 
-            this.events.push(evt);
-            if(this.events.length == sources.length) {
-                this.events = [];
-                TCApp.trigger(target);
+            that.events.push(evt);
+            if(that.events.length === sources.length) {
+                that.events = [];
+                TAApp.trigger(target);
             }
         }
 
@@ -287,7 +303,7 @@
          */
         this.applyDeinit = function($e) {
             if(this.deinit) $e.css(this.deinit);
-        }
+        };
     }
 
     /**
@@ -298,7 +314,7 @@
      */
     function TADummySettings() {
 
-        this.init = this.deinit = function(e) {}
+        this.init = this.deinit = function(e) {};
     }
 
 
@@ -352,7 +368,7 @@
                 that.animations[idx].start(obj, func);
             };
             func();
-        }
+        };
     }
 
     /**
@@ -394,7 +410,7 @@
             this.animations.forEach(function(o) {
                 o.start(obj, subComplete);
             });
-        }
+        };
     }
 
     /**
@@ -417,14 +433,14 @@
                     animation.start(obj, complete);
                 }, delay
             );
-        }
+        };
     }
 
     /**
      * TAAnimation object that uses velocity.js to do the animation
      *
      * @param {Object} properties - velocity.js animation properties
-     * @param [Object} [options] - velocity.js animation options
+     * @param {Object} [options] - velocity.js animation options
      * @constructor TAVelocityAnimation
      */
     function TAVelocityAnimation(properties, options) {
@@ -494,7 +510,7 @@
                     TAApp.trigger(obj.getName() + ":" + name);
                     if(complete) complete(obj);
                 });
-            }
+            };
         }
 
         var that = this;
@@ -526,7 +542,7 @@
 
 
     /**
-     * TABaseObject that delayes animation execution
+     * TABaseObject that delays animation execution
      *
      * @implements TABaseObject
      * @param {TABaseObject} obj - the object to delay
@@ -575,7 +591,7 @@
          */
         this.getElement = function() {
             return this.obj.getElement();
-        }
+        };
     }
 
     /**
@@ -619,7 +635,7 @@
                 obj.objects.forEach(function(o) {
                     o[ani](subComplete);
                 });
-            }
+            };
         }
 
         /**
@@ -639,6 +655,10 @@
         TAApp.on(this.name+":out:start", function() { that.startOutAni(); });
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_start
+     */
     function TATimelineAction_start(action) {
 
         this.getDescription = function() {
@@ -648,9 +668,13 @@
         this.run = function(tl) {
             TAApp.start(action);
             tl.next();
-        }
+        };
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_trigger
+     */
     function TATimelineAction_trigger(action) {
 
         this.getDescription = function() {
@@ -660,9 +684,13 @@
         this.run = function(tl) {
             TAApp.trigger(action);
             tl.next();
-        }
+        };
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_waitFor
+     */
     function TATimelineAction_waitFor(action) {
 
         this.getDescription = function() {
@@ -675,9 +703,13 @@
                 tl.next();
             };
             TAApp.on(action, func);
-        }
+        };
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_delay
+     */
     function TATimelineAction_delay(msecs) {
 
         this.getDescription = function() {
@@ -688,9 +720,13 @@
             setTimeout(function() {
                 tl.next();
             }, msecs);
-        }
+        };
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_loop
+     */
     function TATimelineAction_loop() {
 
         this.getDescription = function() {
@@ -700,9 +736,13 @@
         this.run = function(tl) {
             tl.rewind();
             tl.execute();
-        }
+        };
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_step
+     */
     function TATimelineAction_step(steps) {
 
         this.getDescription = function() {
@@ -712,9 +752,13 @@
         this.run = function(tl) {
             tl.step(steps);
             tl.execute();
-        }
+        };
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_label
+     */
     function TATimelineAction_label(name) {
 
         this.getDescription = function() {
@@ -730,6 +774,10 @@
         };
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_jumpTo
+     */
     function TATimelineAction_jumpTo(label) {
 
         this.getDescription = function() {
@@ -738,9 +786,13 @@
 
         this.run = function(tl) {
             tl.jumpTo(label);
-        }
+        };
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_startAndWaitFor
+     */
     function TATimelineAction_startAndWaitFor(action) {
 
         this.getDescription = function() {
@@ -754,9 +806,13 @@
             };
             TAApp.on(action, func);
             TAApp.start(action);
-        }
+        };
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_execute
+     */
     function TATimelineAction_execute(func) {
 
         this.getDescription = function() {
@@ -765,9 +821,13 @@
 
         this.run = function(tl) {
             func(tl);
-        }
+        };
     }
 
+    /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_if
+     */
     function TATimelineAction_if(func, action) {
 
         this.getDescription = function() {
@@ -780,7 +840,7 @@
             } else {
                 tl.next();
             }
-        }
+        };
     }
 
     /**
@@ -912,7 +972,7 @@
          */
         this.executeIf = function(func, action) {
             return new TATimelineAction_if(func, action);
-        }
+        };
     }
 
     /**
@@ -922,7 +982,7 @@
      * @constructor TATimeline
      */
     function TATimeline(name) {
-        //TODO: refactor so we dont expose everything to the user
+        //TODO: refactor so we don't expose everything to the user
 
         this.name = name;
         this.steps = [];
@@ -1035,11 +1095,11 @@
                 var that = this;
                 action.forEach(function(e) {
                     that.add(e);
-                })
+                });
             } else {
                 this.steps.push(action);
             }
-        }
+        };
     }
 
 
