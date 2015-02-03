@@ -341,6 +341,24 @@
     }
 
     /**
+     * A TAAnimation object that just defers the start call to the supplied user defined function
+     *
+     * @implements TAAnimation
+     * @param {Function} func - user defined function that gets the start() call forwarded (it needs to call complete after it's finished)
+     * @constructor TAFunctionAnimation
+     */
+    function TAFunctionAnimation(func) {
+
+        /**
+         * @method TAFunctionAnimation#start
+         * @inheritdoc
+         */
+        this.start = function(obj, complete) {
+            func(obj, complete);
+        }
+    }
+
+    /**
      * A TAAnimation object that chains multiple animations sequentially
      *
      * @implements TAAnimation
@@ -1153,6 +1171,7 @@
     root[taapp].TAApp = TAApp;
     root[taapp].TAObject = TAObject;
     root[taapp].TADelayedObject = TADelayedObject;
+    root[taapp].TAFunctionAnimation = TAFunctionAnimation;
     root[taapp].TAVelocityAnimation = TAVelocityAnimation;
     root[taapp].TAParallelAnimation = TAParallelAnimation;
     root[taapp].TAChainedAnimation = TAChainedAnimation;
