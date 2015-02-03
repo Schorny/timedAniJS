@@ -11,7 +11,7 @@
 
             //we define a new TAAnimation class for repeated animations
             //TAAnimation Interface requires only a start() method that takes
-            //an TAObject and a callback as parameter
+            //a TAObject and a callback as parameter
 
             //every object that has a start() method with this signature is an Animation object
             //this allows for pretty easy animations
@@ -43,7 +43,7 @@
             }
 
 
-            //we animated relative to current position
+            //we animate relative to current position
             var stepRightAnimation = new TAApp.TAVelocityAnimation(
                     {left:"+=50px"},{duration:500}
             );
@@ -56,7 +56,7 @@
             //TAChainedAnimation just executes animations after each other
             //and our MyRepeatAnimation repeats this chain now
             //switch TAChainedAnimation with TAParallelAnimation to see a diagonal move instead of a steps-like move
-            //don't forget to add queue:false to the animation options
+            //don't forget to add queue:false to the animation options if you switch to TAParallelAnimation
             var box = new TAApp.TAObject(
                     "box",
                     $("#box"),
