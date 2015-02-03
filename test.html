@@ -26,7 +26,7 @@
             });
 
             var allBoxesSettings = new TAApp.TACssSettings({
-                position:"absolute", left:"220px", top:"30px"
+                position:"absolute", left:"220px", top:"30px", opacity: 1
             });
 
             /*
@@ -183,26 +183,41 @@
             var desc = tl.getDescriber();
             /*
             and this is why TA is a cool library.
-            we describe what we want. look at the documentation of TATimelineDescriber for neat feature.
+            we describe what we want. look at the documentation of TATimelineDescriber for neat features.
 
             notice how we use start() for firstHeadline:out? this allows us to have a parallel animation with
             secondHeadline:in. We use delay for the secondHeadline to come in, but both animations run in parallel.
 
             loop() allows us to loop the whole animation. without loop() it would stop after the first run.
             */
+            var first = true;
             tl.add([
+                    //we start with boxes as first animation
+                    //this is unnecessary complicated, it just demonstrates the capabilities of TATimeline
+                    desc.executeIf(function() { return first;}, desc.jumpTo("boxes")),
+                    //start animating firstHeadline and wait for it to finish
                     desc.startAndWaitFor("firstHeadline:in"),
                     desc.delay(500),
                     desc.start("firstHeadline:out"),
                     desc.delay(100),
-                    desc.startAndWaitFor("secondHeadline:in"),
-                    desc.delay(5000),
+                    //we can do start and waitFor in single steps too
+                    desc.start("secondHeadline:in"),
+                    desc.waitFor("secondHeadline:in"),
+                    desc.delay(2000),
                     desc.startAndWaitFor("secondHeadline:out"),
+                    //we can define labels and jump to them
+                    //beware of endless loops like desc.label("endless"), desc.jumpTo("endless")
                     desc.label("boxes"),
                     desc.startAndWaitFor("allBoxes:in"),
                     desc.delay(1000),
                     desc.startAndWaitFor("allBoxes:out"),
+                    desc.jumpTo("boxes"),
+                    //set first to false, don't forget to call tl.next()
+                    desc.execute(function(tl) { first=false; console.log("now we loop"); tl.next(); }),
+                    //just a custom trigger
+                    desc.trigger("loop"),
                     desc.loop(),
+                    desc.execute(function(tl) { console.log("i never get called :("); tl.next(); }),
             ]);
 
             /*
@@ -242,6 +257,9 @@
             app.on("allBoxes:out", function() {
                 $status.text("boxes are out");
             });
+            app.on("loop", function() {
+                $status.text("custom trigger triggered");
+            })
 
         });
 
