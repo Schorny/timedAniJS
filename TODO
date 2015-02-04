@@ -33,7 +33,10 @@ find out how to properly expose constructors
 make it AMD compatible
 find out what CommonJS has to say about JS lib design
 
-composition and object should have onIn and onOut callbacks
+composition and object should have onIn and onOut callback
+this means callbacks that get called once onIn STARTS
+or should we just use events? app.on("foo:in:start") works. but should we expose that "start"?
+we maybe need another event name - always : is bad. maybe comp/obj:in#start ?
 
 desc.start, desc.trigger, desc.waitFor, desc.startAndWaitFor need to take arrays as param as well
 
@@ -51,12 +54,9 @@ implement a pause/play mechanic for timeline
 
 isnt TAComposition basically a TAParallelAnimation ?
 
-TABackgroundAnimation - an animation object that completes instantly while the animation runs in the background
-TAFunctionAnimation - an animation object that calls a function
-TARepeatAnimation - like MyRepeatAnimation but done right
-TARepeatWhileAnimation - repeat animations until the predicate returns false
-
 maybe TABackgroundAnimation with TARepeatWhileAnimation can be our endless looping animations?
+but we need to be able to cancel an animation.
+maybe requestCancel(complete) ?
 
 figure out whats the deal about complete() param. is it the object, is it the animation, what the hell?
 do we even need it???
