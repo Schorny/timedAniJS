@@ -354,7 +354,7 @@
      */
     function TADummySettings() {
 
-        this.init = this.deinit = function(e) {};
+        this.applyInit = this.applyDeinit = function(e) {};
     }
 
 
@@ -365,7 +365,25 @@
      * @constructor TADummyAnimation
      */
     function TADummyAnimation() {
-        this.start = function(obj, complete) { if(complete)complete(); };
+        this.start = function(obj, complete) { if(complete)complete(this); };
+    }
+
+    /**
+     * A TAAnimation object that just defers the start call to the supplied user defined function
+     *
+     * @implements TAAnimation
+     * @param {Function} func - user defined function that gets the start() call forwarded (it needs to call complete after it's finished)
+     * @constructor TAFunctionAnimation
+     */
+    function TAFunctionAnimation(func) {
+
+        /**
+         * @method TAFunctionAnimation#start
+         * @inheritdoc
+         */
+        this.start = function(obj, complete) {
+            func(obj, complete);
+        }
     }
 
     /**
@@ -917,6 +935,20 @@
     }
 
     /**
+     * @implements TATimelineAction
+     * @constructor TATimelineAction_stop
+     */
+    function TATimelineAction_stop() {
+
+        this.getDescription = function() {
+            return "stop()";
+        };
+
+        this.run = function(tl) {
+        };
+    }
+
+    /**
      * Describer for a TATimeline actions
      *
      * This is for convenience. It create TATimelineAction objects for ease of use
@@ -1033,6 +1065,16 @@
          */
         this.loop = function() {
             return new TATimelineAction_loop();
+        };
+
+        /**
+         * Stops the timeline
+         *
+         * @method TATimelineDescriber#stop
+         * @returns {TATimelineAction}
+         */
+        this.stop = function() {
+            return new TATimelineAction_stop();
         };
 
         /**
@@ -1181,8 +1223,10 @@
     root[taapp].TAApp = TAApp;
     root[taapp].TAObject = TAObject;
     root[taapp].TADelayedObject = TADelayedObject;
+    root[taapp].TAFunctionAnimation = TAFunctionAnimation;
     root[taapp].TAVelocityAnimation = TAVelocityAnimation;
     root[taapp].TAParallelAnimation = TAParallelAnimation;
+    root[taapp].TAChainedAnimation = TAChainedAnimation;
     root[taapp].TADelayedAnimation = TADelayedAnimation;
     root[taapp].TATimeline = TATimeline;
     root[taapp].TAComposition = TAComposition;
@@ -1201,13 +1245,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TAApp.html">TAApp</a></li><li><a href="TAChainedAnimation.html">TAChainedAnimation</a></li><li><a href="TAComposition.html">TAComposition</a></li><li><a href="TACssSettings.html">TACssSettings</a></li><li><a href="TADelayedAnimation.html">TADelayedAnimation</a></li><li><a href="TADelayedObject.html">TADelayedObject</a></li><li><a href="TADummyAnimation.html">TADummyAnimation</a></li><li><a href="TADummySettings.html">TADummySettings</a></li><li><a href="TAEventConverter.html">TAEventConverter</a></li><li><a href="TAObject.html">TAObject</a></li><li><a href="TAParallelAnimation.html">TAParallelAnimation</a></li><li><a href="TATimeline.html">TATimeline</a></li><li><a href="TATimelineAction_delay.html">TATimelineAction_delay</a></li><li><a href="TATimelineAction_execute.html">TATimelineAction_execute</a></li><li><a href="TATimelineAction_if.html">TATimelineAction_if</a></li><li><a href="TATimelineAction_jumpTo.html">TATimelineAction_jumpTo</a></li><li><a href="TATimelineAction_label.html">TATimelineAction_label</a></li><li><a href="TATimelineAction_loop.html">TATimelineAction_loop</a></li><li><a href="TATimelineAction_start.html">TATimelineAction_start</a></li><li><a href="TATimelineAction_startAndWaitFor.html">TATimelineAction_startAndWaitFor</a></li><li><a href="TATimelineAction_step.html">TATimelineAction_step</a></li><li><a href="TATimelineAction_trigger.html">TATimelineAction_trigger</a></li><li><a href="TATimelineAction_waitFor.html">TATimelineAction_waitFor</a></li><li><a href="TATimelineDescriber.html">TATimelineDescriber</a></li><li><a href="TAVelocityAnimation.html">TAVelocityAnimation</a></li></ul><h3>Interfaces</h3><ul><li><a href="TAAnimation.html">TAAnimation</a></li><li><a href="TABaseComposition.html">TABaseComposition</a></li><li><a href="TABaseObject.html">TABaseObject</a></li><li><a href="TAObjectSettings.html">TAObjectSettings</a></li><li><a href="TATimelineAction.html">TATimelineAction</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TAApp.html">TAApp</a></li><li><a href="TAChainedAnimation.html">TAChainedAnimation</a></li><li><a href="TAComposition.html">TAComposition</a></li><li><a href="TACssSettings.html">TACssSettings</a></li><li><a href="TADelayedAnimation.html">TADelayedAnimation</a></li><li><a href="TADelayedObject.html">TADelayedObject</a></li><li><a href="TADummyAnimation.html">TADummyAnimation</a></li><li><a href="TADummySettings.html">TADummySettings</a></li><li><a href="TAEventConverter.html">TAEventConverter</a></li><li><a href="TAFunctionAnimation.html">TAFunctionAnimation</a></li><li><a href="TAObject.html">TAObject</a></li><li><a href="TAParallelAnimation.html">TAParallelAnimation</a></li><li><a href="TATimeline.html">TATimeline</a></li><li><a href="TATimelineAction_delay.html">TATimelineAction_delay</a></li><li><a href="TATimelineAction_execute.html">TATimelineAction_execute</a></li><li><a href="TATimelineAction_if.html">TATimelineAction_if</a></li><li><a href="TATimelineAction_jumpTo.html">TATimelineAction_jumpTo</a></li><li><a href="TATimelineAction_label.html">TATimelineAction_label</a></li><li><a href="TATimelineAction_loop.html">TATimelineAction_loop</a></li><li><a href="TATimelineAction_start.html">TATimelineAction_start</a></li><li><a href="TATimelineAction_startAndWaitFor.html">TATimelineAction_startAndWaitFor</a></li><li><a href="TATimelineAction_step.html">TATimelineAction_step</a></li><li><a href="TATimelineAction_stop.html">TATimelineAction_stop</a></li><li><a href="TATimelineAction_trigger.html">TATimelineAction_trigger</a></li><li><a href="TATimelineAction_waitFor.html">TATimelineAction_waitFor</a></li><li><a href="TATimelineDescriber.html">TATimelineDescriber</a></li><li><a href="TAVelocityAnimation.html">TAVelocityAnimation</a></li></ul><h3>Interfaces</h3><ul><li><a href="TAAnimation.html">TAAnimation</a></li><li><a href="TABaseComposition.html">TABaseComposition</a></li><li><a href="TABaseObject.html">TABaseObject</a></li><li><a href="TAObjectSettings.html">TAObjectSettings</a></li><li><a href="TATimelineAction.html">TATimelineAction</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Tue Feb 03 2015 01:49:36 GMT+0100 (MEZ)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Wed Feb 04 2015 01:04:22 GMT+0100 (MEZ)
 </footer>
 
 <script> prettyPrint(); </script>
