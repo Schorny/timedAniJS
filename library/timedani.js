@@ -467,6 +467,84 @@
     }
 
     /**
+     * TAAnimation object that starts the animation in the background and completes instantly
+     *
+     * @implements TAAnimation
+     * @param {TAAnimation} animation - the animation to start in the background
+     * @constructor TABackgroundAnimation
+     */
+    function TABackgroundAnimation(animation) {
+
+        /**
+         * @method TABackgroundAnimation#start
+         * @inheritdoc
+         */
+        this.start = function(obj, complete) {
+            complete(this);
+            animation.start(obj, function(){});
+        }
+    }
+
+    /**
+     * TAAnimation object that repeats the animation count number times
+     *
+     * @implements TAAnimation
+     * @param {Integer} count - number of times to repeat the animation
+     * @param {TAAnimation} animation - the animation to repeat
+     * @constructor TARepeatAnimation
+     */
+    function TARepeatAnimation(count, animation) {
+
+        /**
+         * @method TARepeatAnimation#start
+         * @inheritdoc
+         */
+        this.start = function(obj, complete) {
+            var idx = 0;
+            var that = this;
+            var subComplete = function() {
+                if(idx >= count) {
+                    complete(that);
+                    return;
+                }
+                ++idx;
+                animation.start(obj, subComplete);
+            };
+            subComplete();
+        }
+    }
+
+    /**
+     * TAAnimation object that repeats the animation while the predicate returns true
+     *
+     * @implements TAAnimation
+     * @param {Function} predicate - function that returns true to repeat the animation or false to complete it
+     * @param {TAAnimation} animation - the animation to repeat
+     * @constructor TARepeatAnimation
+     */
+    function TARepeatWhileAnimation(predicate, animation) {
+
+        /**
+         * @method TARepeatAnimation#start
+         * @inheritdoc
+         */
+        this.start = function(obj, complete) {
+            var that = this;
+            var subComplete = function() {
+                if(!predicate()) {
+                    complete(that);
+                    return;
+                }
+                animation.start(obj, subComplete);
+            };
+            subComplete();
+        }
+    }
+
+
+
+
+    /**
      * TAAnimation object that uses velocity.js to do the animation
      *
      * @param {Object} properties - velocity.js animation properties
@@ -1196,6 +1274,9 @@
     root[taapp].TAObject = TAObject;
     root[taapp].TADelayedObject = TADelayedObject;
     root[taapp].TAFunctionAnimation = TAFunctionAnimation;
+    root[taapp].TABackgroundAnimation = TABackgroundAnimation;
+    root[taapp].TARepeatAnimation = TARepeatAnimation;
+    root[taapp].TARepeatWhileAnimation = TARepeatWhileAnimation;
     root[taapp].TAVelocityAnimation = TAVelocityAnimation;
     root[taapp].TAParallelAnimation = TAParallelAnimation;
     root[taapp].TAChainedAnimation = TAChainedAnimation;
