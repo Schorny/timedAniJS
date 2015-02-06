@@ -1154,6 +1154,8 @@
         this.curPos = 0;
 
         this.debug = false;
+        this.breakOnExecute = false;
+        this.singleStepMode = false;
 
         /**
          * Sets the debug value
@@ -1163,6 +1165,16 @@
          */
         this.setDebug = function(dbg) {
             this.debug = dbg;
+        };
+
+        /**
+         * Sets the single step value
+         *
+         * @method TATimeline#setSingleStep
+         * @param {Boolean} singleStepValue
+         */
+        this.setSingleStep = function(singleStepValue) {
+            this.singleStepMode = singleStepValue;
         };
 
         /**
@@ -1190,11 +1202,26 @@
          *
          * @method TATimeline#go
          */
-        this.go = function() {
+        /**
+         * Starts the execution
+         *
+         * @method TATimeline#play
+         */
+
+        this.go = this.play = function() {
             var that = this;
             setTimeout(function() {
                 that.execute();
             }, 0);
+        };
+
+        /**
+         * Halts the execution
+         *
+         * @method TATimeline#pause
+         */
+        this.pause = function() {
+            this.breakOnExecute = true;
         };
 
         /**
@@ -1230,6 +1257,11 @@
             return this.steps.length;
         };
 
+        /**
+         * Rewindes the timeline
+         *
+         * @method TATimeline#rewind
+         */
         this.rewind = function() {
             this.curPos = 0;
         };
@@ -1242,6 +1274,15 @@
         this.execute = function() {
             if(this.curPos >= this.steps.length) {
                 return;
+            }
+
+            if(this.breakOnExecute) {
+                this.breakOnExecute = false;
+                return;
+            }
+
+            if(this.singleStepMode) {
+                this.breakOnExecute = true;
             }
 
             var action = this.steps[this.curPos];
