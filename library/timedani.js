@@ -629,7 +629,7 @@
         this.name = name;
         this.anis = anis || {};
         this.$e = $e;
-        this.settings = new TACombinedSettings(settings);
+        this.settings = new TACombinedSettings([settings]);
 
         if(!this.anis.inAni) {
             this.anis.inAni = new TADummyAnimation();
