@@ -287,6 +287,48 @@
         this.activate();
     }
 
+    /**
+     * Settings class to apply multiple Settings to an object
+     *
+     * @implements TASettings
+     * @param {TASettings[]} [settings] - Array of settings objects
+     * @constructor TACombinedSettings
+     */
+    function TACombinedSettings(settings) {
+
+        this.list = settings || [];
+
+        /**
+         * add a settings object
+         *
+         * @method TACombinedSettings#addSettings
+         * @param {TASettings} [settings]
+         */
+        this.addSettings = function(settings) {
+            if(settings)
+                this.list.push(settings);
+        };
+
+        /**
+         * @method TACombinedSettings#applyInit
+         * @inheritdoc
+         */
+        this.applyInit = function($e) {
+            this.list.forEach(function(o) {
+                o.applyInit($e);
+            });
+        };
+
+        /**
+         * @method TACombinedSettings#applyDeinit
+         * @inheritdoc
+         */
+        this.applyDeinit = function($e) {
+            this.list.forEach(function(o) {
+                o.applyDeinit($e);
+            });
+        }
+    }
 
     /**
      * Settings class to apply CSS Settings to an object
@@ -587,7 +629,7 @@
         this.name = name;
         this.anis = anis || {};
         this.$e = $e;
-        this.settings = settings || new TADummySettings();
+        this.settings = new TACombinedSettings(settings);
 
         if(!this.anis.inAni) {
             this.anis.inAni = new TADummyAnimation();
@@ -610,6 +652,14 @@
          */
         this.getElement = function() {
             return this.$e;
+        };
+
+        /**
+         * @method TAObject#addSettings
+         * @param {TASettings} [settings] - settings object to add
+         */
+        this.addSettings = function(settings) {
+            this.settings.addSettings(settings);
         };
 
         /**
@@ -1326,6 +1376,7 @@
     root[taapp].TAComposition = TAComposition;
     root[taapp].TAEventConverter = TAEventConverter;
     root[taapp].TACssSettings = TACssSettings;
+    root[taapp].TACombinedSettings = TACombinedSettings;
 })(window, 'TAApp');
 
 
