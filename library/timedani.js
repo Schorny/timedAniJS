@@ -1258,7 +1258,7 @@
         };
 
         /**
-         * Rewindes the timeline
+         * Rewinds the timeline
          *
          * @method TATimeline#rewind
          */
