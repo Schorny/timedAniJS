@@ -1,0 +1,27 @@
+{
+  "name": "timedAniJS",
+  "version": "1.0.0",
+  "homepage": "https://github.com/Schorny/timedAniJS",
+  "authors": [
+    "Schorny"
+  ],
+  "description": "timedAni.js (or TA) is a library to make it easier to run predefined or non-interactive animations on a site.",
+  "main": "library/timedani.js",
+  "keywords": [
+    "animation",
+    "timeline"
+  ],
+  "license": "-",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "timedAniJS": "*",
+    "jquery": "~1.11.1",
+    "velocity": "~1.2.2"
+  }
+}
