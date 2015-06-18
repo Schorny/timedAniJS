@@ -27,6 +27,11 @@ The *TATimeline* Object clues all compositions and objects together
 
 # Example
 
+Don't forget to add the #taapp element to the DOM.
+```Javascript
+    <div id="taapp"></div>
+```
+
 First we create 2 Animation objects, one to fade in and one to fade out.
 ```Javascript
 var appear = new TAApp.TAVelocityAnimation(
