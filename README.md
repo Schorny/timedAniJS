@@ -18,7 +18,7 @@ A *TAComposition* is a collection of *TAObject*s. They get registered into the C
 ### Events
 Each *TAObject* and *TAComposition* has a unique name. Based on these names, events get triggered and listened for. This allows a simple work flow when executing different animations.
 
-When an object or composition finished it's animation, it triggers the "name:in" or "name:out" event. You can listen to those or even start one on your own 
+When an object or composition finished it's animation, it triggers the "name:in" or "name:out" event. You can listen to those or even start one on your own
 ```Javascript
 TAApp.start("name:in");
 ```
@@ -26,6 +26,11 @@ TAApp.start("name:in");
 The *TATimeline* Object clues all compositions and objects together
 
 # Example
+
+Don't forget to add the #taapp element to the DOM.
+```Javascript
+    <div id="taapp"></div>
+```
 
 First we create 2 Animation objects, one to fade in and one to fade out.
 ```Javascript
