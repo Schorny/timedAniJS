@@ -319,6 +319,58 @@
     }
 
     /**
+     * Settings class to apply Velocity Settings to an object
+     *
+     * @implements TAObjectSettings
+     * @param {Object} [init] - Velocity settings
+     * @param {Object} [deinit] - Velocity settings
+     * @constructor TAVelocitySettings
+     */
+    function TAVelocitySettings(init, deinit) {
+
+        this.init = init || {};
+        this.deinit = deinit || {};
+
+        this.applyInit = function($e) {
+            if(this.init) {
+                $e.velocity(this.init);
+            }
+        };
+
+        this.applyDeinit = function($e) {
+            if(this.deinit) {
+                $e.velocity(this.deinit);
+            }
+        };
+
+        return this;
+    }
+
+    /**
+     * Settings class to chain Settings
+     *
+     * @implements TAObjectSettings
+     * @param {TAObjectSettings[]} [settings] - array of settings
+     * @constructor TAChainedSettings
+     */
+    function TAChainedSettings(settings) {
+
+        this.applyInit = function($e) {
+            settings.forEach(function(s) {
+                s.applyInit($e);
+            });
+        };
+
+        this.applyDeinit = function($e) {
+            settings.forEach(function(s) {
+                s.applyDeinit($e);
+            });
+        };
+
+        return this;
+    }
+
+    /**
      * A TAObjectSettings object that does nothing
      *
      * @implements TAObjectSettings
@@ -1285,6 +1337,7 @@
     root[taapp].TAComposition = TAComposition;
     root[taapp].TAEventConverter = TAEventConverter;
     root[taapp].TACssSettings = TACssSettings;
+    root[taapp].TAVelocitySettings = TAVelocitySettings;
+    root[taapp].TAChainedSettings = TAChainedSettings;
 })(window, 'TAApp');
-
 
