@@ -298,7 +298,7 @@
      */
     function TACombinedSettings(settings) {
 
-        this.list = settings || [];
+        this.list = [];
 
         /**
          * add a settings object
@@ -307,8 +307,16 @@
          * @param {TASettings} [settings]
          */
         this.addSettings = function(settings) {
-            if(settings)
-                this.list.push(settings);
+            if(settings) {
+                if($.isArray(settings)) {
+                    var that = this;
+                    $.each(settings, function(o) {
+                        that.addSettings(o);
+                    });
+                } else {
+                    this.list.push(settings);
+                }
+            }
         };
 
         /**
@@ -330,6 +338,8 @@
                 o.applyDeinit($e);
             });
         }
+
+        this.addSettings(settings);
     }
 
     /**
@@ -359,6 +369,36 @@
          */
         this.applyDeinit = function($e) {
             if(this.deinit) $e.css(this.deinit);
+        };
+    }
+
+    /**
+     * Settings class to apply velocity Settings to an object
+     *
+     * @implements TAObjectSettings
+     * @param {Object} [init] - CSS settings
+     * @param {Object} [deinit] - CSS settings
+     * @constructor TAVelocitySettings
+     */
+    function TAVelocitySettings(init, deinit) {
+
+        this.init = init || {};
+        this.deinit = deinit || {};
+
+        /**
+         * @method TAVelocitySettings#applyInit
+         * @inheritdoc
+         */
+        this.applyInit = function($e) {
+            if(this.init) $e.velocity(this.init);
+        };
+
+        /**
+         * @method TAVelocitySettings#applyDeinit
+         * @inheritdoc
+         */
+        this.applyDeinit = function($e) {
+            if(this.deinit) $e.velocity(this.deinit);
         };
     }
 
@@ -1378,6 +1418,7 @@
     root[taapp].TAComposition = TAComposition;
     root[taapp].TAEventConverter = TAEventConverter;
     root[taapp].TACssSettings = TACssSettings;
+    root[taapp].TAVelocitySettings = TAVelocitySettings;
     root[taapp].TACombinedSettings = TACombinedSettings;
 })(window, 'TAApp');
 
