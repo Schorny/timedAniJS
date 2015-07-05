@@ -334,7 +334,7 @@
          * @inheritdoc
          */
         this.applyInit = function($e) {
-            $.each(this.list, function(o) {
+            $.each(this.list, function(idx, o) {
                 o.applyInit($e);
             });
         };
@@ -344,7 +344,7 @@
          * @inheritdoc
          */
         this.applyDeinit = function($e) {
-            $.each(this.list, function(o) {
+            $.each(this.list, function(idx, o) {
                 o.applyDeinit($e);
             });
         }
@@ -531,7 +531,7 @@
                 }
             };
             subComplete.count = 0;
-            $.each(this.animations, function(o) {
+            $.each(this.animations, function(idx, o) {
                 o.start(obj, subComplete);
             });
         };
@@ -875,7 +875,7 @@
                     }
                 };
                 subComplete.count=0;
-                $.each(obj.objects, function(o) {
+                $.each(obj.objects, function(idx, o) {
                     o[ani](subComplete);
                 });
             };
