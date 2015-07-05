@@ -1,11 +1,11 @@
 //noinspection ThisExpressionReferencesGlobalObjectJS
 (function(root, factory) {
     if(typeof define === 'function' && define.amd) {
-        define([], factory);
+        define(['jquery'], factory);
     } else {
-        root.TA = factory();
+        root.TA = factory(window.jQuery);
     }
-}(this, function() {
+}(this, function($) {
     "use strict";
 
     var TA = {};
@@ -365,7 +365,7 @@
                     });
                 } else {
                     if(!settings.applyInit || !settings.applyDeinit) {
-                        throw TA.Error.ArgumentException('settings', 'TA.Settings[]|TA.Settings', 'missing settings.applyInit and/or settings.applyDeinit');
+                        throw TA.Error.ArgumentException('settings', 'TA.Settings[]|TA.Settings', 'settings.applyInit and/or settings.applyDeinit not callable');
                     }
                     this.list.push(settings);
                 }
