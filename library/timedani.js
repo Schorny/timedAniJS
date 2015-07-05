@@ -1,3 +1,4 @@
+//noinspection ThisExpressionReferencesGlobalObjectJS
 (function(root, factory) {
     if(typeof define === 'function' && define.amd) {
         define([], factory);
@@ -297,7 +298,7 @@
         };
 
         this.activate();
-    }
+    };
 
     /**
      * Settings class to apply multiple Settings to an object
@@ -314,7 +315,7 @@
          * add a settings object
          *
          * @method TA.CombinedSettings#addSettings
-         * @param {TA.Settings} [settings]
+         * @param {TA.Settings|TA.Settings[]} [settings]
          */
         this.addSettings = function(settings) {
             if(settings) {
@@ -347,10 +348,10 @@
             $.each(this.list, function(idx, o) {
                 o.applyDeinit($e);
             });
-        }
+        };
 
         this.addSettings(settings);
-    }
+    };
 
     /**
      * Settings class to apply CSS Settings to an object
@@ -380,7 +381,7 @@
         this.applyDeinit = function($e) {
             if(this.deinit) $e.css(this.deinit);
         };
-    }
+    };
 
     /**
      * Settings class to apply velocity Settings to an object
@@ -410,7 +411,7 @@
         this.applyDeinit = function($e) {
             if(this.deinit) $e.velocity(this.deinit);
         };
-    }
+    };
 
     /**
      * A TA.ObjectSettings object that does nothing
@@ -421,7 +422,7 @@
     TA.DummySettings = function() {
 
         this.applyInit = this.applyDeinit = function(e) {};
-    }
+    };
 
 
     /**
@@ -432,7 +433,7 @@
      */
     TA.DummyAnimation = function() {
         this.start = function(obj, complete) { if(complete)complete(this); };
-    }
+    };
 
     /**
      * A TA.Animation object that just defers the start call to the supplied user defined function
@@ -450,7 +451,7 @@
         this.start = function(obj, complete) {
             func(obj, complete);
         }
-    }
+    };
 
     /**
      * A TA.Animation object that chains multiple animations sequentially
@@ -493,7 +494,7 @@
             };
             func();
         };
-    }
+    };
 
     /**
      * A TA.Animation object that executes multiple animations in parallel
@@ -535,7 +536,7 @@
                 o.start(obj, subComplete);
             });
         };
-    }
+    };
 
     /**
      * TA.Animation object that delays the animation
@@ -558,7 +559,7 @@
                 }, delay
             );
         };
-    }
+    };
 
     /**
      * TA.Animation object that starts the animation in the background and completes instantly
@@ -577,7 +578,7 @@
             complete(this);
             animation.start(obj, function(){});
         }
-    }
+    };
 
     /**
      * TA.Animation object that repeats the animation count number times
@@ -606,7 +607,7 @@
             };
             subComplete();
         }
-    }
+    };
 
     /**
      * TA.Animation object that repeats the animation while the predicate returns true
@@ -633,7 +634,7 @@
             };
             subComplete();
         }
-    }
+    };
 
 
 
@@ -665,7 +666,7 @@
             };
             obj.getElement().velocity(this.properties, tempOptions);
         };
-    }
+    };
 
     /**
      * TA.BaseObject that represents a real object
@@ -764,7 +765,7 @@
 
         TA.App.on(this.name+":in:start", function() { that.startInAni(); });
         TA.App.on(this.name+":out:start", function() { that.startOutAni(); });
-    }
+    };
 
 
     /**
@@ -835,7 +836,7 @@
         this.getElement = function() {
             return this.obj.getElement();
         };
-    }
+    };
 
     /**
      * TA.BaseComposition object that handles basic composition
@@ -896,7 +897,7 @@
         var that = this;
         TA.App.on(this.name+":in:start", function() { that.startInAni(); });
         TA.App.on(this.name+":out:start", function() { that.startOutAni(); });
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -912,7 +913,7 @@
             TA.App.start(action);
             tl.next();
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -928,7 +929,7 @@
             TA.App.trigger(action);
             tl.next();
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -947,7 +948,7 @@
             };
             TA.App.on(action, func);
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -964,7 +965,7 @@
                 tl.next();
             }, msecs);
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -980,7 +981,7 @@
             tl.rewind();
             tl.execute();
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -996,7 +997,7 @@
             tl.step(steps);
             tl.execute();
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -1015,7 +1016,7 @@
         this.run = function(tl) {
             tl.next();
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -1030,7 +1031,7 @@
         this.run = function(tl) {
             tl.jumpToLabel(label);
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -1050,7 +1051,7 @@
             TA.App.on(action, func);
             TA.App.start(action);
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -1065,7 +1066,7 @@
         this.run = function(tl) {
             func(tl);
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -1084,7 +1085,7 @@
                 tl.next();
             }
         };
-    }
+    };
 
     /**
      * @implements TA.TimelineAction
@@ -1098,7 +1099,7 @@
 
         this.run = function(tl) {
         };
-    }
+    };
 
     /**
      * Describer for a TA.Timeline actions
@@ -1240,7 +1241,7 @@
         this.executeIf = function(func, action) {
             return new TA.TimelineAction_if(func, action);
         };
-    }
+    };
 
     /**
      * A basic Timeline object
@@ -1409,7 +1410,7 @@
                 this.steps.push(action);
             }
         };
-    }
+    };
 
 
     //expose
