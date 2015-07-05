@@ -132,6 +132,14 @@
      * @interface TA.BaseObject
      */
     /**
+     * Clones this TA.Object and overrides some settings
+     *
+     * @function
+     * @name TA.Object#clone
+     * @param {Object} [overrideSettings] - settings object containing name and optionally $e, anis and settings
+     * @return {TAObject}
+     */
+    /**
      * Returns the name of the object
      *
      * @function
@@ -675,7 +683,7 @@
      * @param {String} name - name of the object
      * @param {Object} $e - DOM element of the object
      * @param {Object} anis - object that contains TA.Animation (anis.inAni and anis.outAni - both are options)
-     * @param {TA.ObjectSettings} settings - object settings
+     * @param {TA.ObjectSettings|TA.ObjectSettings[]} settings - object settings
      * @constructor TA.Object
      */
     TA.Object = function(name, $e, anis, settings) {
@@ -690,6 +698,20 @@
         if(!this.anis.outAni) {
             this.anis.outAni = new TA.DummyAnimation();
         }
+
+        /**
+         * @method TA.Object#clone
+         * @inheritdoc
+         */
+        this.clone = function(overrideSettings) {
+            var s = {
+                name: overrideSettings.name,
+                anis: $.extend({}, this,anis, overrideSettings.anis),
+                $e: overrideSettings.$e || $('#'+overrideSettings.name),
+                settings: overrideSettings.settings || settings
+            };
+            return new TA.Object(s.name, s.$e, s.anis, s.settings);
+        };
 
         /**
          * @method TA.Object#getName
@@ -767,6 +789,20 @@
         TA.App.on(this.name+":out:start", function() { that.startOutAni(); });
     };
 
+    /**
+     * Creates a TA.Object and uses its name as ID selector
+     *
+     * @method TA.createObjectFromId
+     * @param {String} name - name of the object (also used as ID selector for the DOM element of the object)
+     * @param {Object} anis - object that contains TA.Animation (anis.inAni and anis.outAni - both are options)
+     * @param {TA.ObjectSettings|TA.ObjectSettings[]} settings - object settings
+     * @return TA.Object
+     */
+
+    TA.createObjectFromId = function(id, anis, settings) {
+        var $e = $('#'+id);
+        return new TA.Object(id, $e, anis, settings);
+    };
 
     /**
      * TA.BaseObject that delays animation execution
