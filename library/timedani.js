@@ -268,7 +268,7 @@
          * @method TAEventConverter#activate
          */
         this.activate = function() {
-            sources.forEach(function(s) {
+            $.each(sources, function(s) {
                 TAApp.on(s,listen);
             });
         };
@@ -279,7 +279,7 @@
          * @method TAEventConverter#deactivate
          */
         this.deactivate = function() {
-            sources.forEach(function(s) {
+            $.each(sources, function(s) {
                 TAApp.off(s,listen);
             });
         };
@@ -314,7 +314,7 @@
          * @inheritdoc
          */
         this.applyInit = function($e) {
-            this.list.forEach(function(o) {
+            $.each(this.list, function(o) {
                 o.applyInit($e);
             });
         };
@@ -324,7 +324,7 @@
          * @inheritdoc
          */
         this.applyDeinit = function($e) {
-            this.list.forEach(function(o) {
+            $.each(this.list, function(o) {
                 o.applyDeinit($e);
             });
         }
@@ -479,7 +479,7 @@
                 }
             };
             subComplete.count = 0;
-            this.animations.forEach(function(o) {
+            $.each(this.animations, function(o) {
                 o.start(obj, subComplete);
             });
         };
@@ -823,7 +823,7 @@
                     }
                 };
                 subComplete.count=0;
-                obj.objects.forEach(function(o) {
+                $.each(obj.objects, function(o) {
                     o[ani](subComplete);
                 });
             };
@@ -1349,7 +1349,7 @@
         this.add = function(action) {
             if($.isArray(action)) {
                 var that = this;
-                action.forEach(function(e) {
+                $.each(action, function(e) {
                     that.add(e);
                 });
             } else {
