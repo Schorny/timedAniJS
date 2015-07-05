@@ -280,7 +280,7 @@
          * @method TA.EventConverter#activate
          */
         this.activate = function() {
-            $.each(sources, function(s) {
+            $.each(sources, function(idx, s) {
                 TA.App.on(s,listen);
             });
         };
@@ -291,7 +291,7 @@
          * @method TA.EventConverter#deactivate
          */
         this.deactivate = function() {
-            $.each(sources, function(s) {
+            $.each(sources, function(idx, s) {
                 TA.App.off(s,listen);
             });
         };
@@ -320,7 +320,7 @@
             if(settings) {
                 if($.isArray(settings)) {
                     var that = this;
-                    $.each(settings, function(o) {
+                    $.each(settings, function(idx, o) {
                         that.addSettings(o);
                     });
                 } else {
@@ -1401,7 +1401,7 @@
         this.add = function(action) {
             if($.isArray(action)) {
                 var that = this;
-                $.each(action, function(e) {
+                $.each(action, function(idx, e) {
                     console.log(e);
                     that.add(e);
                 });
