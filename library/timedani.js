@@ -52,14 +52,13 @@
     var TAApp = function() {
 
         var $taapp = $('#taapp');
-        $(function() {
-            //this might be broken!
-            //look at facebook how they inject fb-root
-            if(!$('#taapp')) {
+
+        function ensureNodeExists() {
+            if(!$taapp.length) {
                 $('<div id="taapp"></div>').appendTo($('body'));
+                $taapp = $('#taapp');
             }
-            $taapp=$('#taapp');
-        });
+        }
 
         //TODO: check if own event bus might be better
         var eventHistory = [];
@@ -74,6 +73,7 @@
 
         function trigger(evt) {
             eventHistory.push(evt);
+            ensureNodeExists();
             $taapp.triggerHandler(evt);
         }
 
@@ -82,10 +82,12 @@
         }
 
         function on(evt, func) {
+            ensureNodeExists();
             $taapp.on(evt, func);
         }
 
         function off(evt, func) {
+            ensureNodeExists();
             $taapp.off(evt, func);
         }
 
