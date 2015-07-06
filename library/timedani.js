@@ -164,7 +164,7 @@
     };
 
     var forbiddenAnimNames = [
-        "in", "out", "start", "stop", "finish", "pause", "break"
+        "in", "out", "start", "stop", "finish", "pause", "break", "unknown"
     ];
     TA.checkAnimName = function(name) {
         $.each(forbiddenAnimNames, function(idx, o) {
