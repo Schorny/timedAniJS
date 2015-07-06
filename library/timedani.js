@@ -157,7 +157,7 @@
 	
 	TA.StatusHandler = (function() {
 		var statuses = {};
-		var defaultStatus = 'out';
+		var defaultStatus = 'unknown';
 		
 		function splitEvent(evt) {
 			//split text:in
