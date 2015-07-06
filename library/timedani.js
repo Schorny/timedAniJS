@@ -1057,31 +1057,33 @@
      * TA.BaseObject that delays animation execution
      *
      * @implements TA.BaseObject
+     * @param {String} name - the object name
      * @param {TA.BaseObject} obj - the object to delay
      * @param {Object} delays - object with delays in milliseconds (delays.in and delays.out)
      * @constructor TA.DelayedObject
      */
-    TA.DelayedObject = function(obj, delays) {
+    TA.DelayedObject = function(name, obj, delays) {
         this.obj = obj;
+        this.name = name;
         this.delays = delays || {};
 
+        if(name == "") {
+            throw new TA.Error.ArgumentException('name', 'String', 'empty value');
+        }
         if(!$.isFunction(this.obj.applyInitSettings) || !$.isFunction(this.obj.applyDeinitSettings)) {
             throw new TA.Error.ArgumentException('obj', 'TA.Object', 'obj.applyInitSettings and/or obj.applyDeinitSettings not callable');
         }
         if($.type(this.delays) !== 'object') {
             throw new TA.Error.ArgumentException('delays', 'Object', typeof this.delays);
         }
+        
 
         /**
          * @method TA.DelayedObject#startIn
          * @inheritdoc
          */
         this.startIn = function(complete) {
-            var delay = this.delays.in || 0;
-            var that = this;
-            setTimeout(function() {
-                that.obj.startIn(complete);
-            }, delay);
+            this.start("in", complete);
         };
 
         /**
@@ -1089,11 +1091,7 @@
          * @inheritdoc
          */
         this.startOut = function(complete) {
-            var delay = this.delays.out || 0;
-            var that = this;
-            setTimeout(function() {
-                that.obj.startOut(complete);
-            }, delay);
+            this.start("out", complete);
         };
         
         /**
@@ -1108,6 +1106,11 @@
             }, delay);
             
         };
+        
+        var that = this;
+        TA.App.onRegex(new RegExp('^'+this.name+':(.*?):start$'), function(evt, matches) {
+            that.start(matches[1]);
+        });
 
         /**
          * @method TA.DelayedObject#applyInitSettings
@@ -1174,34 +1177,21 @@
             return this.name;
         };
 
-        function startAni(obj, ani, name) {
-            return function(complete) {
-                var objCount = obj.objects.length;
-                var subComplete = function() {
-                    ++subComplete.count;
-                    if(subComplete.count == objCount) {
-                        TA.App.trigger(obj.getName()+":"+name);
-                        if(complete) complete(obj);
-                    }
-                };
-                subComplete.count=0;
-                $.each(obj.objects, function(idx, o) {
-                    o[ani](subComplete);
-                });
-            };
-        }
-
         /**
          * @method TA.Composition#startIn
          * @inheritdoc
          */
-        this.startIn = startAni(this, "startIn", "in");
-
+        this.startIn = function(complete) {
+            this.start("in", complete);
+        };
+        
         /**
          * @method TA.Composition#startOut
          * @inheritdoc
          */
-        this.startOut = startAni(this, "startOut", "out");
+        this.startOut = function(complete) {
+            this.start("out", complete);
+        };
         
         this.start = function(name, complete) {
             var objCount = this.objects.length;
@@ -1221,10 +1211,8 @@
         };
 
         var that = this;
-        //TA.App.on(this.name+":in:start", function() { that.startIn(); });
-        //TA.App.on(this.name+":out:start", function() { that.startOut(); });
         
-        TA.App.onRegex(new RegExp('^'+this.name+':(.*?):start'), function(evt, matches) {
+        TA.App.onRegex(new RegExp('^'+this.name+':(.*?):start$'), function(evt, matches) {
             that.start(matches[1]);
         });
     };
