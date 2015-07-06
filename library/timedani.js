@@ -782,6 +782,45 @@
     };
 
     /**
+     * TA.Animation object that uses jQuery.animate to do the animation
+     *
+     * @param {Object} properties - jQuery.animate animation properties
+     * @param {Object} [options] - jQuery.animate animation options
+     * @param {TA.Settings|TA.Settings[]} [settings] - TA.Settings to apply before and/or after the animation
+     * @constructor TA.JQueryAnimation
+     */
+    TA.JQueryAnimation = function(properties, options, settings) {
+        this.properties = properties || {};
+        this.options = options || {};
+        this.settings = settings ? new TA.CombinedSettings([settings]) : new TA.DummySettings();
+
+        if($.type(this.properties) !== 'object') {
+            throw new TA.Error.ArgumentException('properties', 'Object', typeof this.properties);
+        }
+        if($.type(this.options) !== 'object') {
+            throw new TA.Error.ArgumentException('options', 'Object', typeof this.options);
+        }
+
+        /**
+         * @method TA.JQueryAnimation#start
+         * @inheritdoc
+         */
+        this.start = function(obj, complete) {
+            var tempOptions = this.options;
+            var that = this;
+            
+            this.settings.applyInit(obj);
+            //TODO: chaining with current complete, dont overwrite user data
+            tempOptions.complete = function() {
+                that.settings.applyDeinit(obj);
+                if(complete) complete(that);
+
+            };
+            obj.getElement().animate(this.properties, tempOptions);
+        };
+    };
+    
+    /**
      * TA.Animation object that uses velocity.js to do the animation
      *
      * @param {Object} properties - velocity.js animation properties
