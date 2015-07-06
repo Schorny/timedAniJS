@@ -1191,6 +1191,29 @@
 
     /**
      * @implements TA.TimelineAction
+     * @constructor TA.TimelineAction_loopN
+     */
+    TA.TimelineAction_loopN = function(times) {
+
+        this.count = 0;
+
+        this.getDescription = function() {
+            return "loopN("+times+")";
+        };
+
+        this.run = function(tl) {
+            ++this.count;
+            if(this.count < times) {
+                tl.rewind();
+                tl.execute();
+            } else {
+                tl.next();
+            }
+        };
+    };
+    
+    /**
+     * @implements TA.TimelineAction
      * @constructor TA.TimelineAction_step
      */
     TA.TimelineAction_step = function(steps) {
@@ -1424,6 +1447,16 @@
          */
         this.loop = function() {
             return new TA.TimelineAction_loop();
+        };
+        
+        /**
+         * Rewinds the timeline to the start and continues from there, but only times times
+         *
+         * @method TA.TimelineDescriber#loopN
+         * @returns {TA.TimelineAction}
+         */
+        this.loopN = function(times) {
+            return new TA.TimelineAction_loopN(times);
         };
 
         /**
