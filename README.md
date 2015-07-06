@@ -15,6 +15,9 @@ Objects are of the Type *TA.Object*. They own multiple *TA.Animation* Objects. T
 ### Compositions
 A *TA.Composition* is a collection of *TA.Object*s. *TA.Objects* get registered into the Composition and once a Composition starts an Animation, all *TAObject*s get animated. A Composition is kind of like a fancy array of *TA.Objects*s.
 
+### Settings
+A *TA.Settings* Object is useful to keep your DOM or CSS-Files clean. It allows to set properties on DOM Elements right before or after an animation starts/finishes.
+
 ### Timeline
 The *TA.Timeline* Object clues all compositions and objects together by providing a simple Timeline in which you can define your desired actions and events.
 
