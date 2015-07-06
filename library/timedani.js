@@ -1057,7 +1057,6 @@
             throw new TA.Error.ArgumentException('delays', 'Object', typeof this.delays);
         }
         
-
         /**
          * @method TA.DelayedObject#startIn
          * @inheritdoc
@@ -1081,6 +1080,9 @@
         this.start = function(name, complete) {
             var delay = this.delays[name] || 0;
             var that = this;
+            if(name=='in') {
+                this.obj.settings.applyInit(this.obj.getElement());
+            }
             setTimeout(function() {
                 that.obj.start(name, complete);
             }, delay);
