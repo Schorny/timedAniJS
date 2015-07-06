@@ -1419,6 +1419,42 @@
         this.run = function(tl) {
         };
     };
+    
+    /**
+     * @implements TA.TimelineAction
+     * @constructor TA.TimelineAction_finish
+     */
+    TA.TimelineAction_finish = function() {
+
+        this.getDescription = function() {
+            return "finish()";
+        };
+
+        this.run = function(tl) {
+            TA.App.trigger(tl.getName()+":finish");
+        };
+    };
+    
+    /**
+     * @implements TA.TimelineAction
+     * @constructor TA.TimelineAction_playTimeline
+     */
+    TA.TimelineAction_playTimeline = function(name) {
+
+        this.getDescription = function() {
+            return "playTimeline("+name+")";
+        };
+
+        this.run = function(tl) {
+            var f = function() {
+                TA.App.off(name+":finish", f);
+                tl.next();
+            };
+            
+            TA.App.on(name+":finish", f);
+            TA.App.start(name);
+        };
+    };
 
     /**
      * Describer for a TA.Timeline actions
@@ -1557,6 +1593,27 @@
          */
         this.stop = function() {
             return new TA.TimelineAction_stop();
+        };
+
+        /**
+         * Stops the timeline and triggers the finish event
+         *
+         * @method TA.TimelineDescriber#finish
+         * @returns {TA.TimelineAction}
+         */
+        this.finish = function() {
+            return new TA.TimelineAction_finish();
+        };
+        
+       /**
+         * Plays a timeline
+         *
+         * @method TA.TimelineDescriber#playTimeline
+         * @param {String} name - name of timeline
+         * @returns {TA.TimelineAction}
+         */
+        this.playTimeline = function(name) {
+            return new TA.TimelineAction_playTimeline();
         };
 
         /**
