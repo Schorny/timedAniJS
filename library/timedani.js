@@ -31,6 +31,21 @@
      * @param {Function} callback
      */
     /**
+     * Registers a regex event handler
+     *
+     * @method TA.App.onRegex
+     * @param {String} regex
+     * @param {Function} callback
+     */
+    /**
+     * Unregisters a regex event handler
+     *
+     * @method TA.App.offRegex
+     * @param {String} regex
+     * @param {Function} callback
+     */
+
+    /**
      * Triggers an event
      *
      * @method TA.App.trigger
@@ -42,21 +57,6 @@
      * @method TA.App.start
      * @param {String} event
      */
-    /**
-     * Returns whether an event has been fired in the past
-     *
-     * @method TA.App.hasFired
-     * @param {String} event
-     * @returns {Boolean}
-     */
-    /**
-     * Clears the whole event history
-     *
-     * use this to clear events you already checked using hasFired
-     *
-     * @method TA.App.clearEventHistory
-     */
-
     TA.App = (function() {
 
         var $app = $('#taapp');
@@ -245,18 +245,6 @@
      * @return {Object}
      */
     /**
-     * Applys the Init Settings
-     *
-     * @function
-     * @name TA.BaseObject#applyInitSettings
-     */
-    /**
-     * Applys the Deinit Settings
-     *
-     * @function
-     * @name TA.BaseObject#applyDeinitSettings
-     */
-    /**
      * Starts the "in" Animation
      *
      * @function
@@ -268,6 +256,14 @@
      *
      * @function
      * @name TA.BaseObject#startOut
+     * @param {Function} [complete] - function to be called once all animations are finished
+     */
+    /**
+     * Starts the name Animation
+     *
+     * @function
+     * @name TA.BaseObject#start
+     * @param {String} name - name of animation to start
      * @param {Function} [complete] - function to be called once all animations are finished
      */
 
@@ -425,7 +421,7 @@
                     });
                 } else {
                     if(!settings.applyInit || !settings.applyDeinit) {
-                        throw TA.Error.ArgumentException('settings', 'TA.Settings[]|TA.Settings', 'settings.applyInit and/or settings.applyDeinit not callable');
+                        throw TA.Error.ArgumentException('settings', 'TA.Settings[]|TA.Settings', 'settings.applyInit and/or settings.applyDeinit not callable in ' + typeof settings);
                     }
                     this.list.push(settings);
                 }
@@ -481,7 +477,7 @@
          */
         this.applyInit = function($e) {
             if(!$.isFunction($e.css)) {
-                throw new TA.Error.ArgumentException('$e', 'jQuery object', '$e.css not callable');
+                throw new TA.Error.ArgumentException('$e', 'jQuery object', '$e.css not callable in  in ' + typeof $e);
             }
             $e.css(this.init);
         };
@@ -492,7 +488,7 @@
          */
         this.applyDeinit = function($e) {
             if(!$.isFunction($e.css)) {
-                throw new TA.Error.ArgumentException('$e', 'jQuery object', '$e.css not callable');
+                throw new TA.Error.ArgumentException('$e', 'jQuery object', '$e.css not callable in ' + typeof $e);
             }
             $e.css(this.deinit);
         };
@@ -524,7 +520,7 @@
          */
         this.applyInit = function($e) {
             if(!$.isFunction($e.velocity)) {
-                throw new TA.Error.ArgumentException('$e', 'jQuery Object', '$e.velocity not callable');
+                throw new TA.Error.ArgumentException('$e', 'jQuery Object', '$e.velocity not callable in ' + typeof $e);
             }
             $e.velocity(this.init);
         };
@@ -535,7 +531,7 @@
          */
         this.applyDeinit = function($e) {
             if(!$.isFunction($e.velocity)) {
-                throw new TA.Error.ArgumentException('$e', 'jQuery Object', '$e.velocity not callable');
+                throw new TA.Error.ArgumentException('$e', 'jQuery Object', '$e.velocity not callable in ' + typeof $e);
             }
             $e.velocity(this.deinit);
         };
@@ -602,7 +598,7 @@
 
         $.each(this.animations, function(idx, e) {
             if(!$.isFunction(e.start)) {
-                throw new TA.Error.ArgumentException('animations[i]', 'TA.Animation', 'animations[i].start not callable');
+                throw new TA.Error.ArgumentException('animations[i]', 'TA.Animation', 'animations[i].start not callable in ' + typeof e);
             }
         });
 
@@ -614,7 +610,7 @@
          */
         this.addAnimation = function(animation) {
             if(!$.isFunction(animation.start)) {
-                throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable');
+                throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
             }
             this.animations.push(animation);
         };
@@ -658,7 +654,7 @@
 
         $.each(this.animations, function(idx, e) {
             if(!$.isFunction(e.start)) {
-                throw new TA.Error.ArgumentException('animations[i]', 'TA.Animation', 'animations[i].start not callable');
+                throw new TA.Error.ArgumentException('animations[i]', 'TA.Animation', 'animations[i].start not callable in ' + typeof e);
             }
         });
 
@@ -670,7 +666,7 @@
          */
         this.addAnimation = function(animation) {
             if(!$.isFunction(animation.start)) {
-                throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable');
+                throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
             }
             this.animations.push(animation);
         };
@@ -706,7 +702,7 @@
     TA.DelayedAnimation = function(animation, delay) {
 
         if(!$.isFunction(animation.start)) {
-            throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable');
+            throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
         }
 
         /**
@@ -752,7 +748,7 @@
     TA.RepeatAnimation = function(count, animation) {
 
         if(!$.isFunction(animation.start)) {
-            throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable');
+            throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
         }
 
         /**
@@ -788,7 +784,7 @@
             throw new TA.Error.ArgumentException('predicate', 'Function', typeof predicate);
         }
         if(!$.isFunction(animation.start)) {
-            throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable');
+            throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
         }
 
         /**
@@ -914,10 +910,10 @@
         }
         //TODO: check if $e is jQuery Object
         if(!$.isFunction(this.anis.in.start)) {
-            throw new TA.Error.ArgumentException('anis.in', 'TA.Animation', 'anis.in.start not callable');
+            throw new TA.Error.ArgumentException('anis.in', 'TA.Animation', 'anis.in.start not callable in ' + typeof this.anis.in);
         }
         if(!$.isFunction(this.anis.out.start)) {
-            throw new TA.Error.ArgumentException('anis.out', 'TA.Animation', 'anis.out.start not callable');
+            throw new TA.Error.ArgumentException('anis.out', 'TA.Animation', 'anis.out.start not callable in ' + typeof this.anis.out);
         }
 
         /**
@@ -958,22 +954,6 @@
             this.settings.addSettings(settings);
         };
 
-        /**
-         * @method TA.Object#applyInitSettings
-         * @inheritdoc
-         */
-        this.applyInitSettings = function() {
-            this.settings.applyInit(this.getElement());
-        };
-
-        /**
-         * @method TA.Object#applyDeinitSettings
-         * @inheritdoc
-         */
-        this.applyDeinitSettings = function() {
-            this.settings.applyDeinit(that.getElement());
-        };
-
         function startAni(obj, ani, name) {
             return function(complete) {
                 ani.start(obj, function () {
@@ -990,7 +970,7 @@
          * @inheritdoc
          */
         this.startIn = function(complete) {
-            this.applyInitSettings();
+            this.settings.applyInit(this.getElement());
             startAni(this, this.anis.in, "in")(complete);
         };
 
@@ -1001,7 +981,7 @@
         this.startOut = function(complete) {
 
             startAni(this, this.anis.out, "out")(function(obj) {
-                that.applyDeinitSettings();
+                that.settings.applyDeinit(that.getElement());
                 if(complete)complete(obj);
             });
         };
@@ -1070,8 +1050,8 @@
         if(name == "") {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
-        if(!$.isFunction(this.obj.applyInitSettings) || !$.isFunction(this.obj.applyDeinitSettings)) {
-            throw new TA.Error.ArgumentException('obj', 'TA.Object', 'obj.applyInitSettings and/or obj.applyDeinitSettings not callable');
+        if(!$.isFunction(this.obj.getName)) {
+            throw new TA.Error.ArgumentException('obj', 'TA.Object', 'obj.getName not callable in ' + typeof this.obj);
         }
         if($.type(this.delays) !== 'object') {
             throw new TA.Error.ArgumentException('delays', 'Object', typeof this.delays);
@@ -1111,22 +1091,6 @@
         TA.App.onRegex(new RegExp('^'+this.name+':(.*?):start$'), function(evt, matches) {
             that.start(matches[1]);
         });
-
-        /**
-         * @method TA.DelayedObject#applyInitSettings
-         * @inheritdoc
-         */
-        this.applyInitSettings = function() {
-            this.obj.applyInitSettings();
-        };
-
-        /**
-         * @method TA.DelayedObject#applyDeinitSettings
-         * @inheritdoc
-         */
-        this.applyDeinitSettings = function() {
-            this.obj.applyDeinitSettings();
-        };
 
         /**
          * @method TA.DelayedObject#getName
@@ -1758,7 +1722,7 @@
                 });
             } else {
                 if(!$.isFunction(action.run)) {
-                    throw new TA.Error.ArgumentException('action', 'TA.TimelineAction', 'action.run not callable');
+                    throw new TA.Error.ArgumentException('action', 'TA.TimelineAction', 'action.run not callable in ' + typeof action);
                 }
                 this.steps.push(action);
             }
