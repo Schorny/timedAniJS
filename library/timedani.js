@@ -187,6 +187,12 @@
 			if(!state) return;
 			statuses[state.name]=state.state;
 		}
+        
+        function check(name) {
+            var evt = splitEvent(name);
+            
+            return getStatus(evt.name) === evt.state;
+        }
 		
 		function getStatus(name) {
 			name = trimObjectName(name);
@@ -198,7 +204,8 @@
 		
 		return {
 			getStatus: getStatus,
-			notify: notify
+			notify: notify,
+            check: check
 		};
 	})();
 
