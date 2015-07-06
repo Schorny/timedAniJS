@@ -190,8 +190,6 @@
      * @param {Function} [complete] - function to be called when the animation is finished
      */
 
-
-
     /**
      * Interface for general TA.Objects
      *
@@ -550,13 +548,15 @@
         if(!$.isFunction(func)) {
             throw new TA.Error.ArgumentException('func', 'function', typeof func);
         }
+        
         /**
          * @method TA.FunctionAnimation#start
          * @inheritdoc
          */
         this.start = function(obj, complete) {
             func(obj, complete);
-        }
+        };
+        
     };
 
     /**
@@ -781,19 +781,18 @@
         }
     };
 
-
-
-
     /**
      * TA.Animation object that uses velocity.js to do the animation
      *
      * @param {Object} properties - velocity.js animation properties
      * @param {Object} [options] - velocity.js animation options
+     * @param {TA.Settings|TA.Settings[]} [settings] - TA.Settings to apply before and/or after the animation
      * @constructor TA.VelocityAnimation
      */
-    TA.VelocityAnimation = function(properties, options) {
+    TA.VelocityAnimation = function(properties, options, settings) {
         this.properties = properties || {};
         this.options = options || {};
+        this.settings = settings ? new TA.CombinedSettings([settings]) : new TA.DummySettings();
 
         if($.type(this.properties) !== 'object') {
             throw new TA.Error.ArgumentException('properties', 'Object', typeof this.properties);
@@ -809,10 +808,11 @@
         this.start = function(obj, complete) {
             var tempOptions = this.options;
             var that = this;
-
+            
+            this.settings.applyInit(obj);
             //TODO: chaining with current complete, dont overwrite user data
-
             tempOptions.complete = function() {
+                that.settings.applyDeinit(obj);
                 if(complete) complete(that);
 
             };
