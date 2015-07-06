@@ -159,6 +159,21 @@
         return new TA.Error.Exception('TA.Error.StateException', 'Unexpected State in "'+unit+'": '+msg);
     };
     
+    TA.Error.InvalidNameException = function(unit, val) {
+        return new TA.Error.Exception('TA.Error.InvalidNameException', 'Invalid Name: '+unit+': "'+val+'"');
+    };
+
+    var forbiddenAnimNames = [
+        "in", "out", "start", "stop", "finish", "pause", "break"
+    ];
+    TA.checkAnimName = function(name) {
+        $.each(forbiddenAnimNames, function(idx, o) {
+            if(o===name) {
+                throw new TA.Error.InvalidNameException("Animation Name", name);
+            }
+        });
+    };
+    
 	TA.StatusHandler = (function() {
 		var statuses = {};
 		var defaultStatus = 'unknown';
@@ -1020,7 +1035,7 @@
         
         for(var key in this.anis) {
             if(key === 'in' || key === 'out') continue;
-            
+            TA.checkAnimName(key);
             TA.App.on(this.name+":"+key+":start", function() {
                 that.start(key);
             });
