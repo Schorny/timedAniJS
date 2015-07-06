@@ -60,6 +60,8 @@
     TA.App = (function() {
 
         var $app = $('#taapp');
+        
+        var regex = [];
 
         function ensureNodeExists() {
             if(!$app.length) {
@@ -67,11 +69,21 @@
                 $app = $('#taapp');
             }
         }
+        
+        function matchRegex(evt) {
+            $.each(regex, function(idx, e) {
+                var matches= evt.match(e.regex);
+                if(matches) {
+                    e.handler(evt, matches);
+                }
+            });
+        }
 
         //TODO: check if own event bus might be better
         function trigger(evt) {
             ensureNodeExists();
 			TA.StatusHandler.notify(evt);
+            matchRegex(evt);
             $app.triggerHandler(evt);
         }
 
@@ -88,10 +100,25 @@
             ensureNodeExists();
             $app.off(evt, func);
         }
+        
+        function onRegex(evt, func) {
+            ensureNodeExists();
+            regex.push({regex: evt, handler: func});
+        }
+        
+        function offRegex(evt, func) {
+            for(var i=0, c=regex.length; i<c; ++i) {
+                if(regex[i].regex==evt && regex[i].handler==func) {
+                    regex.splice(i, 1);
+                }
+            }
+        }
 
         return {
             on: on,
             off: off,
+            onRegex: onRegex,
+            offRegex: offRegex,
             trigger: trigger,
             start: start,
         };
@@ -233,14 +260,14 @@
      * Starts the "in" Animation
      *
      * @function
-     * @name TA.BaseObject#startInAni
+     * @name TA.BaseObject#startIn
      * @param {Function} [complete] - function to be called once all animations are finished
      */
     /**
      * Starts the "out" Animation
      *
      * @function
-     * @name TA.BaseObject#startOutAni
+     * @name TA.BaseObject#startOut
      * @param {Function} [complete] - function to be called once all animations are finished
      */
 
@@ -268,14 +295,14 @@
      * Starts the "in" Animation
      *
      * @function
-     * @name TA.BaseComposition#startInAni
+     * @name TA.BaseComposition#startIn
      * @param {Function} [complete] - function to be called once all animations are finished
      */
     /**
      * Starts the "out" Animation
      *
      * @function
-     * @name TA.BaseComposition#startOutAni
+     * @name TA.BaseComposition#startOut
      * @param {Function} [complete] - function to be called once all animations are finished
      */
 
@@ -865,7 +892,7 @@
      * @implements TA.BaseObject
      * @param {String} name - name of the object
      * @param {Object} $e - DOM element of the object
-     * @param {Object} anis - object that contains TA.Animation (anis.inAni and anis.outAni - both are options)
+     * @param {Object} anis - object that contains TA.Animation (anis.in and anis.out - both are options)
      * @param {TA.ObjectSettings|TA.ObjectSettings[]} settings - object settings
      * @constructor TA.Object
      */
@@ -875,22 +902,22 @@
         this.$e = $e;
         this.settings = new TA.CombinedSettings([settings]);
 
-        if(!this.anis.inAni) {
-            this.anis.inAni = new TA.DummyAnimation();
+        if(!this.anis.in) {
+            this.anis.in = new TA.DummyAnimation();
         }
-        if(!this.anis.outAni) {
-            this.anis.outAni = new TA.DummyAnimation();
+        if(!this.anis.out) {
+            this.anis.out = new TA.DummyAnimation();
         }
 
         if(name == "") {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
         //TODO: check if $e is jQuery Object
-        if(!$.isFunction(this.anis.inAni.start)) {
-            throw new TA.Error.ArgumentException('anis.inAni', 'TA.Animation', 'anis.inAni.start not callable');
+        if(!$.isFunction(this.anis.in.start)) {
+            throw new TA.Error.ArgumentException('anis.in', 'TA.Animation', 'anis.in.start not callable');
         }
-        if(!$.isFunction(this.anis.outAni.start)) {
-            throw new TA.Error.ArgumentException('anis.outAni', 'TA.Animation', 'anis.outAni.start not callable');
+        if(!$.isFunction(this.anis.out.start)) {
+            throw new TA.Error.ArgumentException('anis.out', 'TA.Animation', 'anis.out.start not callable');
         }
 
         /**
@@ -959,28 +986,53 @@
         var that = this;
 
         /**
-         * @method TA.Object#startInAni
+         * @method TA.Object#startIn
          * @inheritdoc
          */
-        this.startInAni = function(complete) {
+        this.startIn = function(complete) {
             this.applyInitSettings();
-            startAni(this, this.anis.inAni, "in")(complete);
+            startAni(this, this.anis.in, "in")(complete);
         };
 
         /**
-         * @method TA.Object#startOutAni
+         * @method TA.Object#startOut
          * @inheritdoc
          */
-        this.startOutAni = function(complete) {
+        this.startOut = function(complete) {
 
-            startAni(this, this.anis.outAni, "out")(function(obj) {
+            startAni(this, this.anis.out, "out")(function(obj) {
                 that.applyDeinitSettings();
                 if(complete)complete(obj);
             });
         };
 
-        TA.App.on(this.name+":in:start", function() { that.startInAni(); });
-        TA.App.on(this.name+":out:start", function() { that.startOutAni(); });
+        /**
+         * @method TA.Object#start
+         * @inheritdoc
+         */
+        this.start = function(name, complete) {
+            if(!this.anis[name]) return;
+            if(name === 'in') {
+                this.startIn(complete);
+                return;
+            } else if (name === 'out') {
+                this.startOut(complete);
+                return;
+            }
+            
+            this.startAni(this, this.anis[name], name)(complete);
+        };
+
+        TA.App.on(this.name+":in:start", function() { that.startIn(); });
+        TA.App.on(this.name+":out:start", function() { that.startOut(); });
+        
+        for(var key in this.anis) {
+            if(key === 'in' || key === 'out') continue;
+            
+            TA.App.on(this.name+":"+key+":start", function() {
+                that.start(key);
+            });
+        }
     };
 
     /**
@@ -988,7 +1040,7 @@
      *
      * @method TA.createObjectFromId
      * @param {String} id - name of the object (also used as ID selector for the DOM element of the object)
-     * @param {Object} anis - object that contains TA.Animation (anis.inAni and anis.outAni - both are options)
+     * @param {Object} anis - object that contains TA.Animation (anis.in and anis.out - both are options)
      * @param {TA.ObjectSettings|TA.ObjectSettings[]} settings - object settings
      * @return TA.Object
      */
@@ -1006,7 +1058,7 @@
      *
      * @implements TA.BaseObject
      * @param {TA.BaseObject} obj - the object to delay
-     * @param {Object} delays - object with delays in milliseconds (delays.inAni and delays.outAni)
+     * @param {Object} delays - object with delays in milliseconds (delays.in and delays.out)
      * @constructor TA.DelayedObject
      */
     TA.DelayedObject = function(obj, delays) {
@@ -1021,28 +1073,40 @@
         }
 
         /**
-         * @method TA.DelayedObject#startInAni
+         * @method TA.DelayedObject#startIn
          * @inheritdoc
          */
-        this.startInAni = function(complete) {
-            var delay = this.delays.inAni || 0;
+        this.startIn = function(complete) {
+            var delay = this.delays.in || 0;
             var that = this;
-            this.obj.applyInitSettings();
             setTimeout(function() {
-                that.obj.startInAni(complete);
+                that.obj.startIn(complete);
             }, delay);
         };
 
         /**
-         * @method TA.DelayedObject#startOutAni
+         * @method TA.DelayedObject#startOut
          * @inheritdoc
          */
-        this.startOutAni = function(complete) {
-            var delay = this.delays.outAni || 0;
+        this.startOut = function(complete) {
+            var delay = this.delays.out || 0;
             var that = this;
             setTimeout(function() {
-                that.obj.startOutAni(complete);
+                that.obj.startOut(complete);
             }, delay);
+        };
+        
+        /**
+         * @method TA.DelayedObject#start
+         * @inheritdoc
+         */
+        this.start = function(name, complete) {
+            var delay = this.delays[name] || 0;
+            var that = this;
+            setTimeout(function() {
+                that.obj.start(name, complete);
+            }, delay);
+            
         };
 
         /**
@@ -1128,20 +1192,41 @@
         }
 
         /**
-         * @method TA.Composition#startInAni
+         * @method TA.Composition#startIn
          * @inheritdoc
          */
-        this.startInAni = startAni(this, "startInAni", "in");
+        this.startIn = startAni(this, "startIn", "in");
 
         /**
-         * @method TA.Composition#startOutAni
+         * @method TA.Composition#startOut
          * @inheritdoc
          */
-        this.startOutAni = startAni(this, "startOutAni", "out");
+        this.startOut = startAni(this, "startOut", "out");
+        
+        this.start = function(name, complete) {
+            var objCount = this.objects.length;
+            var that = this;
+            var subComplete = function() {
+                ++subComplete.count;
+                if(subComplete.count == objCount) {
+                    TA.App.trigger(that.getName()+":"+name);
+                    if(complete)complete(that);
+                }
+            };
+            subComplete.count=0;
+                
+            $.each(that.objects, function(idx, o) {
+                o.start(name, subComplete);
+            });            
+        };
 
         var that = this;
-        TA.App.on(this.name+":in:start", function() { that.startInAni(); });
-        TA.App.on(this.name+":out:start", function() { that.startOutAni(); });
+        //TA.App.on(this.name+":in:start", function() { that.startIn(); });
+        //TA.App.on(this.name+":out:start", function() { that.startOut(); });
+        
+        TA.App.onRegex(new RegExp('^'+this.name+':(.*?):start'), function(evt, matches) {
+            that.start(matches[1]);
+        });
     };
 
     /**
