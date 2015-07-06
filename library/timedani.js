@@ -1613,7 +1613,7 @@
          * @returns {TA.TimelineAction}
          */
         this.playTimeline = function(name) {
-            return new TA.TimelineAction_playTimeline();
+            return new TA.TimelineAction_playTimeline(name);
         };
 
         /**
