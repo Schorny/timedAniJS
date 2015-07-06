@@ -69,19 +69,9 @@
         }
 
         //TODO: check if own event bus might be better
-        var eventHistory = [];
-
-        function hasFired(evt) {
-            return eventHistory.indexOf(evt) !== -1;
-        }
-
-        function clearEventHistory() {
-            eventHistory = [];
-        }
-
         function trigger(evt) {
-            eventHistory.push(evt);
             ensureNodeExists();
+			TA.StatusHandler.notify(evt);
             $app.triggerHandler(evt);
         }
 
@@ -104,8 +94,6 @@
             off: off,
             trigger: trigger,
             start: start,
-            hasFired: hasFired,
-            clearEventHistory: clearEventHistory
         };
     })();
 
@@ -139,6 +127,53 @@
     TA.Error.DOMNodeNotFoundException = function(msg, node) {
         return new TA.Error.Exception('TA.Error.DOMNodeNotFoundException', msg+' ('+node+')');
     };
+	
+	TA.StatusHandler = (function() {
+		var statuses = {};
+		var defaultStatus = 'out';
+		
+		function splitEvent(evt) {
+			//split text:in
+			var parts = evt.split(':');
+			if(parts.length<2) return null;
+            if(parts.length==3) {
+                var state = parts[1]+':'+parts[2];
+            } else {
+			    var state = parts[1];
+            }
+			var name = trimObjectName(parts[0]);
+			
+			return {
+				name: name,
+				state: state
+			};
+		}
+		
+		function trimObjectName(name) {
+			//split composition/object
+			var parts = name.split('/');
+			return parts[parts.length-1];
+		}
+		
+		function notify(evt) {
+			var state = splitEvent(evt);
+			if(!state) return;
+			statuses[state.name]=state.state;
+		}
+		
+		function getStatus(name) {
+			name = trimObjectName(name);
+			
+			if(!statuses[name]) return defaultStatus;
+			
+			return statuses[name];
+		}
+		
+		return {
+			getStatus: getStatus,
+			notify: notify
+		};
+	})();
 
     /**
      * Interface for Animation objects
