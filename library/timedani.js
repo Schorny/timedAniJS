@@ -1737,7 +1737,7 @@
                         return;
                     }
                 }
-                throw "Unknown Label '" + label + "'";
+                throw new TA.Error.ArgumentException("label", "correct label name", "Unknown Label '"+label+"'");
             },0);
         };
 
@@ -1769,11 +1769,13 @@
 
         this.execute = function() {
             if(this.curPos >= this.steps.length) {
+                TA.App.trigger(this.name+":finish");
                 return;
             }
 
             if(this.breakOnExecute) {
                 this.breakOnExecute = false;
+                TA.App.trigger(this.name+":break");
                 return;
             }
 
@@ -1783,6 +1785,7 @@
 
             var action = this.steps[this.curPos];
             if(this.debug) console.log(this.name+": "+action.getDescription());
+            TA.App.trigger(this.name+":step");
             action.run(this);
         };
 
@@ -1805,6 +1808,15 @@
                 this.steps.push(action);
             }
         };
+        
+        var that=this;
+        TA.App.on(this.name+":pause", function() {
+            that.breakOnExecute = true;
+        });
+        TA.App.on(this.name+":start", function() {
+            that.go();
+        });
+
     };
 
     //expose
