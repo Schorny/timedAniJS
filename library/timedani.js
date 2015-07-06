@@ -155,6 +155,10 @@
         return new TA.Error.Exception('TA.Error.DOMNodeNotFoundException', msg+' ('+node+')');
     };
 	
+    TA.Error.StateException = function(unit, msg) {
+        return new TA.Error.Exception('TA.Error.StateException', 'Unexpected State in "'+unit+'": '+msg);
+    };
+    
 	TA.StatusHandler = (function() {
 		var statuses = {};
 		var defaultStatus = 'unknown';
@@ -190,6 +194,7 @@
         
         function check(name) {
             var evt = splitEvent(name);
+            if(!evt) return false;
             
             return getStatus(evt.name) === evt.state;
         }
@@ -1581,9 +1586,70 @@
         this.curPos = 0;
 
         this.debug = false;
+        this.honorReqs = false;
         this.breakOnExecute = false;
         this.singleStepMode = false;
 
+        this.requires = [];
+        
+        this.setReqs = function(reqs) {
+            if(!$.isArray(reqs)) {
+                throw new TA.Error.ArgumentException('reqs', 'Array', typeof reqs);
+            }
+            this.requires = reqs;
+        };
+        
+        this.addReq = function(req) {
+            this.requires.push(req);
+        };
+        
+        this.reqsMet = function() {
+            for(var r in this.requires) {
+                if(!TA.StatusHandler.check(this.requires[r])) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        
+        this.forceReqs = function(complete) {
+            var missing = [];
+            
+            $.each(this.requires, function(idx, o) {
+                if(!TA.StatusHandler.check(o)) {
+                    missing.push(o);
+                }
+            });
+            
+            var that=this;
+            
+            var subComplete = function() {
+                ++subComplete.count;
+                if(subComplete.count == missing.length) {
+                    if(complete) complete(that);
+                }
+            };
+            subComplete.count = 0;
+            
+            $.each(missing, function(idx, o) {
+                var f=function() {
+                    TA.App.off(o, f);
+                    subComplete();
+                };
+                TA.App.on(o, f);
+                TA.App.start(o);
+            });
+        };
+        
+        this.forceReqsAndGo = function() {
+            this.forceReqs(function(tl) {
+                tl.go();
+            });
+        }
+        
+        this.setHonorReqs = function(honor) {
+            this.honorReqs = honor;
+        };
         /**
          * Sets the debug value
          *
@@ -1636,6 +1702,9 @@
          */
 
         this.go = this.play = function() {
+            if(this.honorReqs && !this.reqsMet()) {
+                throw new TA.Error.StateException('Timeline', 'Requirements are not met');
+            }
             var that = this;
             setTimeout(function() {
                 that.execute();
