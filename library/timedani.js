@@ -174,6 +174,33 @@
         });
     };
     
+    /**
+     * StatusHandler knows all about in which status which object currently is
+     *
+     * This object cannot be instantiated, it is just a global object
+     * @constructor TA.StatusHandler
+     */
+
+    /**
+     * Notifies the object of a status change, do not call it yourself
+     *
+     * @method TA.StatusHandler.notify
+     * @param {String} event
+     */
+    /**
+     * Checks if the status is currently active
+     *
+     * @method TA.StatusHandler.check
+     * @param {String} event - like "text:in"
+     * @return {Boolean}
+     */
+    /**
+     * Returns the current status of the object
+     *
+     * @method TA.StatusHandler.getStatus
+     * @return {String} The status or "unknown"
+     */
+
 	TA.StatusHandler = (function() {
 		var statuses = {};
 		var defaultStatus = 'unknown';
