@@ -44,11 +44,11 @@
 
 
             //we animate relative to current position
-            var stepRightAnimation = new TAApp.TAVelocityAnimation(
+            var stepRightAnimation = new TA.VelocityAnimation(
                     {left:"+=50px"},{duration:500}
             );
 
-            var stepUpAnimation = new TAApp.TAVelocityAnimation(
+            var stepUpAnimation = new TA.VelocityAnimation(
                     {top:"-=50px"},{duration:500}
             );
 
@@ -58,7 +58,7 @@
             //switch TAChainedAnimation with TAParallelAnimation to see a diagonal move instead of a steps-like move
             //don't forget to add queue:false to the animation options if you switch to TAParallelAnimation
 
-            var fancyAnimation = new MyRepeatAnimation(5, new TAApp.TAChainedAnimation([stepRightAnimation, stepUpAnimation]));
+            var fancyAnimation = new MyRepeatAnimation(5, new TA.ChainedAnimation([stepRightAnimation, stepUpAnimation]));
 
             //we use display:inline and a top/left position in our init settings
             //this allows us to just set display:none for #box in CSS
@@ -68,22 +68,22 @@
             //but one more fancy way would be to write a fadeIn and fadeOut animation and chain them
             //like so:
 
-            var fadeInAnimation = new TAApp.TAVelocityAnimation(
+            var fadeInAnimation = new TA.VelocityAnimation(
                     {opacity:1},{duration:1000}
             );
-            var fadeOutAnimation = new TAApp.TAVelocityAnimation(
+            var fadeOutAnimation = new TA.VelocityAnimation(
                     {opacity:0},{duration:1000}
             );
 
-            var realFancyAnimation = new TAApp.TAChainedAnimation([fadeInAnimation,fancyAnimation, fadeOutAnimation]);
+            var realFancyAnimation = new TA.ChainedAnimation([fadeInAnimation,fancyAnimation, fadeOutAnimation]);
 
-            var box = new TAApp.TAObject(
+            var box = new TA.Object(
                     "box",
                     $("#box"),
                     {
-                        inAni: realFancyAnimation
+                        in: realFancyAnimation
                     },
-                    new TAApp.TACssSettings({top:"250px", left:"0px", display:"inline", opacity:0})
+                    new TA.CssSettings({top:"250px", left:"0px", display:"inline", opacity:0})
             );
 
             //inAni is now a
@@ -107,7 +107,7 @@
             //but we skip this here because it is not needed.
 
             var $button = $("#button");
-            var app = TAApp.TAApp;
+            var app = TA.App;
 
             //button clicked, disable button and start animation
             $button.click(function() {
@@ -124,7 +124,7 @@
 
             //for the curious, a looping timeline would look like this:
             /*
-            var tl = new TAApp.TATimeline("timeline");
+            var tl = new TA.Timeline("timeline");
             var d = tl.getDescriber();
 
             tl.add([

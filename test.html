@@ -79,8 +79,8 @@
                     "headline1",
                     $("#text1"),
                     {
-                        inAni: fadeInFromBottomAnimation,
-                        outAni: fadeOutToTopAnimation
+                        in: fadeInFromBottomAnimation,
+                        out: fadeOutToTopAnimation
                     },
                     headlineSettings
             );
@@ -89,8 +89,8 @@
                     "headline2",
                     $("#text2"),
                     {
-                        inAni: fadeInFromBottomAnimation,
-                        outAni: fadeOutToTopAnimation
+                        in: fadeInFromBottomAnimation,
+                        out: fadeOutToTopAnimation
                     },
                     headlineSettings
             );
@@ -101,13 +101,13 @@
             so we create each box as an own object and a wrapper object for all boxes
             we could have used a composition for this, but this here is much easier and cleaner
 
-            notice how each box only has an inAni and boxes only has an outAni.
+            notice how each box only has an in and boxes only has an out.
             */
             var box1 = new TA.Object(
                     "box1",
                     $("#box1"),
                     {
-                        inAni: appearAnimation
+                        in: appearAnimation
                     },
                     boxSettings
             );
@@ -115,7 +115,7 @@
                     "box2",
                     $("#box2"),
                     {
-                        inAni: appearAnimation
+                        in: appearAnimation
                     },
                     boxSettings
             );
@@ -123,7 +123,7 @@
                     "box3",
                     $("#box3"),
                     {
-                        inAni: appearAnimation
+                        in: appearAnimation
                     },
                     boxSettings
             );
@@ -132,7 +132,7 @@
                     "boxes",
                     $("#boxes"),
                     {
-                        outAni: fadeOutToRightAnimation
+                        out: fadeOutToRightAnimation
                     },
                     allBoxesSettings
             );
@@ -160,15 +160,15 @@
             states.push(comp);
 
             /*
-            notice how each box got the same inAni animation object?
+            notice how each box got the same in animation object?
             here we use TADelayedObject to delay the execution of each box individually.
             this allows us to set common animation times but delay certain animations for a
             more beautiful effect.
             */
             comp=new TA.Composition("allBoxes");
             comp.register(box1);
-            comp.register(new TA.DelayedObject(box2, {inAni:500}));
-            comp.register(new TA.DelayedObject(box3, {inAni:1000}));
+            comp.register(new TA.DelayedObject("dbox2", box2, {in:500}));
+            comp.register(new TA.DelayedObject("dbox3", box3, {in:1000}));
             comp.register(boxes);
             states.push(comp);
 
