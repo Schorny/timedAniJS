@@ -947,10 +947,10 @@
             var tempOptions = this.options;
             var that = this;
             
-            this.settings.applyInit(obj);
+            this.settings.applyInit(obj.getElement());
             //TODO: chaining with current complete, dont overwrite user data
             tempOptions.complete = function() {
-                that.settings.applyDeinit(obj);
+                that.settings.applyDeinit(obj.getElement());
                 if(complete) complete(that);
 
             };
@@ -988,11 +988,11 @@
         this.start = function(obj, complete) {
             var tempOptions = this.options;
             var that = this;
-            
-            this.settings.applyInit(obj);
+
+            this.settings.applyInit(obj.getElement());
             //TODO: chaining with current complete, dont overwrite user data
             tempOptions.complete = function() {
-                that.settings.applyDeinit(obj);
+                that.settings.applyDeinit(obj.getElement());
                 if(complete) complete(that);
 
             };
@@ -1048,6 +1048,9 @@
                 $e: overrideSettings.$e || $('#'+overrideSettings.name),
                 settings: overrideSettings.settings || settings
             };
+            if(s.$e.length===0) {
+                throw new TA.Error.ArgumentException('$e', 'jQuery Node', 'Element is empty');
+            }
             return new TA.Object(s.name, s.$e, s.anis, s.settings);
         };
 
