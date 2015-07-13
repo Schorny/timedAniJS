@@ -227,10 +227,11 @@
 			//split text:in
 			var parts = evt.split(':');
 			if(parts.length<2) return null;
+            var state=null;
             if(parts.length==3) {
-                var state = parts[1]+':'+parts[2];
+                state = parts[1]+':'+parts[2];
             } else {
-			    var state = parts[1];
+                state = parts[1];
             }
 			var name = trimObjectName(parts[0]);
 			
@@ -1025,7 +1026,7 @@
             this.anis.out = new TA.DummyAnimation();
         }
 
-        if(name == "") {
+        if(name === "") {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
         //TODO: check if $e is jQuery Object
@@ -1133,6 +1134,7 @@
         
         for(var key in this.anis) {
             if(key === 'in' || key === 'out') continue;
+            if(!this.anis.hasOwnProperty(key)) continue;
             TA.checkAnimName(key);
             TA.App.on(this.name+":"+key+":start", function() {
                 that.start(key);
@@ -1174,7 +1176,7 @@
         this.name = name;
         this.delays = delays || {};
 
-        if(name == "") {
+        if(name === "") {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
         if(!$.isFunction(this.obj.getName)) {
@@ -1253,7 +1255,7 @@
         this.name = name;
         this.objects = [];
 
-        if(name == "") {
+        if(name === "") {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
 
@@ -1811,8 +1813,8 @@
         };
         
         this.reqsMet = function() {
-            for(var r in this.requires) {
-                if(!TA.StatusHandler.check(this.requires[r])) {
+            for(var i=0,c=this.requires.length; i<c; ++i) {
+                if(!TA.StatusHandler.check(this.requires[i])) {
                     return false;
                 }
             }
@@ -1848,7 +1850,7 @@
             this.forceReqs(function(tl) {
                 tl.go();
             });
-        }
+        };
         
         this.setHonorReqs = function(honor) {
             this.honorReqs = honor;
@@ -2064,7 +2066,7 @@
             
             
             return $e;
-        }
+        };
         
         var that=this;
         TA.App.on(this.name+":pause", function() {
