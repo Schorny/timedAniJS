@@ -1933,12 +1933,24 @@
             }
         };
         
+        /**
+         * Displays controls to control this timeline in your Webpage
+         * 
+         * @method TA.Timeline#displayControls
+         * @param [jQuery|String] $e - either a jQuery Node object or an ID. The Element gets created if it does not exist.
+         * @return {jQuery} the jQuery Node the controls reside in
+         */
+        
         this.displayControls = function($e) {
             if(!$e) {
                 $e = this.name+'_controls';
             }
             if($.type($e) === 'string') {
-                $e = $('<div id="'+$e+'"></div>').appendTo('body');
+                if($($e).length===0) {
+                    $e = $('<div id="'+$e+'"></div>').appendTo('body');
+                } else {
+                    $e = $($e);
+                }
             }
             
             $e.append('<button href="#" class="tapause">Pause</button>');
