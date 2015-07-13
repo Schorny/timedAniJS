@@ -77,6 +77,7 @@
                     e.handler(evt, matches);
                 }
             });
+            return this;
         }
 
         //TODO: check if own event bus might be better
@@ -85,25 +86,30 @@
 			TA.StatusHandler.notify(evt);
             matchRegex(evt);
             $app.triggerHandler(evt);
+            return this;
         }
 
         function start(evt) {
             trigger(evt+":start");
+            return this;
         }
 
         function on(evt, func) {
             ensureNodeExists();
             $app.on(evt, func);
+            return this;
         }
 
         function off(evt, func) {
             ensureNodeExists();
             $app.off(evt, func);
+            return this;
         }
         
         function onRegex(evt, func) {
             ensureNodeExists();
             regex.push({regex: evt, handler: func});
+            return this;
         }
         
         function offRegex(evt, func) {
@@ -112,6 +118,7 @@
                     regex.splice(i, 1);
                 }
             }
+            return this;
         }
 
         return {
@@ -243,6 +250,7 @@
 			var state = splitEvent(evt);
 			if(!state) return;
 			statuses[state.name]=state.state;
+            return this;
 		}
         
         function check(name) {
@@ -433,6 +441,7 @@
                 that.events = [];
                 TA.App.trigger(target);
             }
+            return this;
         }
 
         /**
@@ -444,6 +453,7 @@
             $.each(sources, function(idx, s) {
                 TA.App.on(s,listen);
             });
+            return this;
         };
 
         /**
@@ -455,9 +465,12 @@
             $.each(sources, function(idx, s) {
                 TA.App.off(s,listen);
             });
+            return this;
         };
 
         this.activate();
+        
+        return this;
     };
 
     /**
@@ -491,6 +504,7 @@
                     this.list.push(settings);
                 }
             }
+            return this;
         };
 
         /**
@@ -501,6 +515,7 @@
             $.each(this.list, function(idx, o) {
                 o.applyInit($e);
             });
+            return this;
         };
 
         /**
@@ -511,9 +526,12 @@
             $.each(this.list, function(idx, o) {
                 o.applyDeinit($e);
             });
+            return this;
         };
 
         this.addSettings(settings);
+
+        return this;
     };
 
     /**
@@ -545,6 +563,7 @@
                 throw new TA.Error.ArgumentException('$e', 'jQuery object', '$e.css not callable in  in ' + typeof $e);
             }
             $e.css(this.init);
+            return this;
         };
 
         /**
@@ -556,7 +575,10 @@
                 throw new TA.Error.ArgumentException('$e', 'jQuery object', '$e.css not callable in ' + typeof $e);
             }
             $e.css(this.deinit);
+            return this;
         };
+        
+        return this;
     };
 
     /**
@@ -588,6 +610,7 @@
                 throw new TA.Error.ArgumentException('$e', 'jQuery Object', '$e.velocity not callable in ' + typeof $e);
             }
             $e.velocity(this.init);
+            return this;
         };
 
         /**
@@ -599,7 +622,10 @@
                 throw new TA.Error.ArgumentException('$e', 'jQuery Object', '$e.velocity not callable in ' + typeof $e);
             }
             $e.velocity(this.deinit);
+            return this;
         };
+        
+        return this;
     };
 
     /**
@@ -610,7 +636,9 @@
      */
     TA.DummySettings = function() {
 
-        this.applyInit = this.applyDeinit = function(e) {};
+        this.applyInit = this.applyDeinit = function(e) { return this; };
+        
+        return this;
     };
 
 
@@ -621,7 +649,9 @@
      * @constructor TA.DummyAnimation
      */
     TA.DummyAnimation = function() {
-        this.start = function(obj, complete) { if(complete)complete(this); };
+        this.start = function(obj, complete) { if(complete)complete(this); return this; };
+        
+        return this;
     };
 
     /**
@@ -643,8 +673,10 @@
          */
         this.start = function(obj, complete) {
             func(obj, complete);
+            return this;
         };
         
+        return this;
     };
 
     /**
@@ -678,6 +710,8 @@
                 throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
             }
             this.animations.push(animation);
+            
+            return this;
         };
 
         /**
@@ -699,7 +733,10 @@
                 that.animations[idx].start(obj, func);
             };
             func();
+            return this;
         };
+        
+        return this;
     };
 
     /**
@@ -734,6 +771,7 @@
                 throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
             }
             this.animations.push(animation);
+            return this;
         };
 
         /**
@@ -749,7 +787,10 @@
             $.each(this.animations, function(idx, o) {
                 o.start(obj, subComplete);
             });
+            return this;
         };
+        
+        return this;
     };
 
     /**
@@ -776,7 +817,10 @@
                     animation.start(obj, complete);
                 }, delay
             );
+            return this;
         };
+        
+        return this;
     };
 
     /**
@@ -795,7 +839,10 @@
         this.start = function(obj, complete) {
             complete(this);
             animation.start(obj, function(){});
-        }
+            return this;
+        };
+        
+        return this;
     };
 
     /**
@@ -828,7 +875,10 @@
                 animation.start(obj, subComplete);
             };
             subComplete();
-        }
+            return this;
+        };
+        
+        return this;
     };
 
     /**
@@ -862,7 +912,10 @@
                 animation.start(obj, subComplete);
             };
             subComplete();
-        }
+            return this;
+        };
+        
+        return this;
     };
 
     /**
@@ -901,7 +954,10 @@
 
             };
             obj.getElement().animate(this.properties, tempOptions);
+            return this;
         };
+        
+        return this;
     };
     
     /**
@@ -940,7 +996,10 @@
 
             };
             obj.getElement().velocity(this.properties, tempOptions);
+            return this;
         };
+        
+        return this;
     };
 
     /**
@@ -1015,17 +1074,19 @@
             this.settings.addSettings(settings);
         };
 
+        var that = this;
+
         function startAni(obj, ani, name) {
             return function(complete) {
-                ani.start(obj, function () {
+                ani.start(obj, function() {
                     TA.App.trigger(obj.getName() + ":" + name);
                     if(complete) complete(obj);
                 });
+                return that;
             };
         }
 
-        var that = this;
-
+ 
         /**
          * @method TA.Object#startIn
          * @inheritdoc
@@ -1033,6 +1094,7 @@
         this.startIn = function(complete) {
             this.settings.applyInit(this.getElement());
             startAni(this, this.anis.in, "in")(complete);
+            return this;
         };
 
         /**
@@ -1045,6 +1107,7 @@
                 that.settings.applyDeinit(that.getElement());
                 if(complete)complete(obj);
             });
+            return this;
         };
 
         /**
@@ -1062,6 +1125,7 @@
             }
             
             this.startAni(this, this.anis[name], name)(complete);
+            return this;
         };
 
         TA.App.on(this.name+":in:start", function() { that.startIn(); });
@@ -1074,6 +1138,8 @@
                 that.start(key);
             });
         }
+        
+        return this;
     };
 
     /**
@@ -1124,6 +1190,7 @@
          */
         this.startIn = function(complete) {
             this.start("in", complete);
+            return this;
         };
 
         /**
@@ -1132,6 +1199,7 @@
          */
         this.startOut = function(complete) {
             this.start("out", complete);
+            return this;
         };
         
         /**
@@ -1147,7 +1215,7 @@
             setTimeout(function() {
                 that.obj.start(name, complete);
             }, delay);
-            
+            return this;
         };
         
         var that = this;
@@ -1170,6 +1238,8 @@
         this.getElement = function() {
             return this.obj.getElement();
         };
+        
+        return this;
     };
 
     /**
@@ -1194,6 +1264,7 @@
         this.register = function(obj) {
             //TODO: check if obj is TA.Object
             this.objects.push(obj);
+            return this;
         };
 
         /**
@@ -1210,6 +1281,7 @@
          */
         this.startIn = function(complete) {
             this.start("in", complete);
+            return this;
         };
         
         /**
@@ -1218,6 +1290,7 @@
          */
         this.startOut = function(complete) {
             this.start("out", complete);
+            return this;
         };
         
         this.start = function(name, complete) {
@@ -1230,7 +1303,8 @@
                 
             $.each(that.objects, function(idx, o) {
                 o.start(name, subComplete);
-            });            
+            });
+            return this;            
         };
 
         var that = this;
@@ -1238,6 +1312,8 @@
         TA.App.onRegex(new RegExp('^'+this.name+':(.*?):start$'), function(evt, matches) {
             that.start(matches[1]);
         });
+        
+        return this;
     };
 
     /**
@@ -1726,10 +1802,12 @@
                 throw new TA.Error.ArgumentException('reqs', 'Array', typeof reqs);
             }
             this.requires = reqs;
+            return this;
         };
         
         this.addReq = function(req) {
             this.requires.push(req);
+            return this;
         };
         
         this.reqsMet = function() {
@@ -1763,6 +1841,7 @@
                 TA.App.on(o, f);
                 TA.App.start(o);
             });
+            return this;
         };
         
         this.forceReqsAndGo = function() {
@@ -1773,6 +1852,7 @@
         
         this.setHonorReqs = function(honor) {
             this.honorReqs = honor;
+            return this;
         };
         /**
          * Sets the debug value
@@ -1782,6 +1862,7 @@
          */
         this.setDebug = function(dbg) {
             this.debug = dbg;
+            return this;
         };
 
         /**
@@ -1792,6 +1873,7 @@
          */
         this.setSingleStep = function(singleStepValue) {
             this.singleStepMode = singleStepValue;
+            return this;
         };
 
         /**
@@ -1833,6 +1915,7 @@
             setTimeout(function() {
                 that.execute();
             }, 0);
+            return this;
         };
 
         /**
@@ -1842,6 +1925,7 @@
          */
         this.pause = function() {
             this.breakOnExecute = true;
+            return this;
         };
 
         /**
@@ -1863,10 +1947,12 @@
                 }
                 throw new TA.Error.ArgumentException("label", "correct label name", "Unknown Label '"+label+"'");
             },0);
+            return this;
         };
 
         this.step = function(offset) {
             this.curPos += offset;
+            return this;
         };
 
         this.getCurPos = function() {
@@ -1884,6 +1970,7 @@
          */
         this.rewind = function() {
             this.curPos = 0;
+            return this;
         };
 
         this.next = function() {
@@ -1931,8 +2018,9 @@
                 }
                 this.steps.push(action);
             }
+            return this;
         };
-        
+                
         /**
          * Displays controls to control this timeline in your Webpage
          * 
@@ -1985,7 +2073,8 @@
         TA.App.on(this.name+":start", function() {
             that.go();
         });
-
+        
+        return this;
     };
 
     //expose
