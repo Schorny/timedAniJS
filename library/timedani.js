@@ -174,6 +174,17 @@
         });
     };
     
+    var createCallNFunction = function(times, func) {
+        var callN = function() {
+            ++callN.count;
+            if(callN.count >= times) {
+                func();
+            }
+        };
+        callN.count=0;
+        return callN;
+    };
+    
     /**
      * StatusHandler knows all about in which status which object currently is
      *
@@ -732,13 +743,9 @@
         this.start = function(obj, complete) {
             var animCount = this.animations.length;
             var that = this;
-            var subComplete = function() {
-                ++subComplete.count;
-                if(subComplete.count == animCount) {
-                    if(complete) complete(that);
-                }
-            };
-            subComplete.count = 0;
+            var subComplete = createCallNFunction(animCount, function() {
+                if(complete)complete(that);
+            });
             $.each(this.animations, function(idx, o) {
                 o.start(obj, subComplete);
             });
@@ -814,7 +821,7 @@
             var that = this;
             var subComplete = function() {
                 if(idx >= count) {
-                    complete(that);
+                    if(complete)complete(that);
                     return;
                 }
                 ++idx;
@@ -1216,14 +1223,10 @@
         this.start = function(name, complete) {
             var objCount = this.objects.length;
             var that = this;
-            var subComplete = function() {
-                ++subComplete.count;
-                if(subComplete.count == objCount) {
-                    TA.App.trigger(that.getName()+":"+name);
-                    if(complete)complete(that);
-                }
-            };
-            subComplete.count=0;
+            var subComplete = createCallNFunction(objCount, function() {
+                TA.App.trigger(that.getName()+":"+name);
+                if(complete)complete(that);               
+            });
                 
             $.each(that.objects, function(idx, o) {
                 o.start(name, subComplete);
@@ -1721,14 +1724,9 @@
             });
             
             var that=this;
-            
-            var subComplete = function() {
-                ++subComplete.count;
-                if(subComplete.count == missing.length) {
-                    if(complete) complete(that);
-                }
-            };
-            subComplete.count = 0;
+            var subComplete = createCallNFunction(missing.length, function() {
+                if(complete)complete(that);
+            });
             
             $.each(missing, function(idx, o) {
                 var f=function() {
