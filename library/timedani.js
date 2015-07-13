@@ -1019,22 +1019,22 @@
         this.$e = $e;
         this.settings = new TA.CombinedSettings([settings]);
 
-        if(!this.anis.in) {
-            this.anis.in = new TA.DummyAnimation();
+        if(!this.anis['in']) {
+            this.anis['in'] = new TA.DummyAnimation();
         }
-        if(!this.anis.out) {
-            this.anis.out = new TA.DummyAnimation();
+        if(!this.anis['out']) {
+            this.anis['out'] = new TA.DummyAnimation();
         }
 
         if(name === "") {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
         //TODO: check if $e is jQuery Object
-        if(!$.isFunction(this.anis.in.start)) {
-            throw new TA.Error.ArgumentException('anis.in', 'TA.Animation', 'anis.in.start not callable in ' + typeof this.anis.in);
+        if(!$.isFunction(this.anis['in'].start)) {
+            throw new TA.Error.ArgumentException('anis.in', 'TA.Animation', 'anis.in.start not callable in ' + typeof this.anis['in']);
         }
-        if(!$.isFunction(this.anis.out.start)) {
-            throw new TA.Error.ArgumentException('anis.out', 'TA.Animation', 'anis.out.start not callable in ' + typeof this.anis.out);
+        if(!$.isFunction(this.anis['out'].start)) {
+            throw new TA.Error.ArgumentException('anis.out', 'TA.Animation', 'anis.out.start not callable in ' + typeof this.anis['out']);
         }
 
         /**
@@ -1094,7 +1094,7 @@
          */
         this.startIn = function(complete) {
             this.settings.applyInit(this.getElement());
-            startAni(this, this.anis.in, "in")(complete);
+            startAni(this, this.anis['in'], "in")(complete);
             return this;
         };
 
@@ -1104,7 +1104,7 @@
          */
         this.startOut = function(complete) {
 
-            startAni(this, this.anis.out, "out")(function(obj) {
+            startAni(this, this.anis['out'], "out")(function(obj) {
                 that.settings.applyDeinit(that.getElement());
                 if(complete)complete(obj);
             });
