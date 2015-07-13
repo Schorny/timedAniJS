@@ -2,24 +2,64 @@
 
 timedAni.js (or TA) is a library to make it easier to run predefined or non-interactive animations on a site by defining a simple Timeline. All animations and state changes in TA trigger events on which you can listen or let TA do the automagic itself.
 
+It does not provide any animations itself, it uses jQuery Animate, velocity.js or whatever you want. TA is simple the framework to time, repeat, loop, arrange, etc. your animations.
+
+# Example
+
+A little bit of Code may help to understand it better:
+```javascript
+var boxTimeline = new TA.Timeline('boxtimeline');
+var d=boxTimeline.getDescriber();
+boxTimeline.add([
+    d.startAndWaitFor('cornerbox:left'),
+    d.startAndWaitFor('cornerbox:up'),
+    d.startAndWaitFor('cornerbox:right'),
+    d.startAndWaitFor('cornerbox:down'),
+    d.loop()
+]);
+boxTimeline.play();
+```
+This simple timeline tells an *TA.Object* named *cornerbox* to move left, up, right, down and then start all over again.
+
+This is done by first creating the 4 animations:
+```javascript
+var moveLeft = new TA.VelocityAnimation({left: '0px'},{duration:1000});
+var moveUp = new TA.VelocityAnimation({top: '0px'},{duration:1000});
+var moveRight = new TA.VelocityAnimation({left: '90px'},{duration:1000});
+var moveDown = new TA.VelocityAnimation({top: '90px'},{duration:1000});
+```
+Here we are using *velocity.js* to do our Animation but TA is not tied to *velocity.js* - use whatever library you want.
+
+Then we create the cornerbox object:
+```javascript
+TA.createObjectFromId('cornerbox', {
+    left: moveLeft,
+    up: moveUp,
+    right: moveRight,
+    down: moveDown,
+});
+```
+
+This *TA.Object* represents the DOM element with the id 'cornerbox'. We defined the 4 animations for this objects and now we can play the timeline.
+
 # Explanation
 
 A *TA* application consists of the following layers:
 
 ### Animations
-The basic unit in *TA* is a *TA.Animation* Object. This be implemented using different libararies like *velocity.js* or *jQuery.animate*. A *TA.Animation* Object knows nothing about the *TA* structure, it just knows how to animate an object and what settings are necessary to make the animation work.
+The basic unit in *TA* is a *TA.Animation* Object. This be implemented using different libararies like *velocity.js* or *jQuery.animate*. A *TA.Animation* Object knows nothing about the *TA* structure, it just knows how to animate an object and what settings are necessary to make the animation work. You can even use a *TA.FunctionAnimation* Object that simple defers the animation to a user defined function.
 
 ### Objects
 Objects are of the Type *TA.Object*. They own multiple *TA.Animation* Objects. Two *TA.Animation* Objects are very important: the "in" animation and the "out" animation. They also know which DOM Element they represent.
 
 ### Compositions
-A *TA.Composition* is a collection of *TA.Object*s. *TA.Objects* get registered into the Composition and once a Composition starts an Animation, all *TAObject*s get animated. A Composition is kind of like a fancy array of *TA.Objects*s.
+A *TA.Composition* is a collection of *TA.Object*s. *TA.Objects* get registered into the Composition and once a Composition starts an Animation, all *TAObject*s get animated. A Composition is kind of like a fancy array of *TA.Objects*.
 
 ### Settings
-A *TA.Settings* Object is useful to keep your DOM or CSS-Files clean. It allows to set properties on DOM Elements right before or after an animation starts/finishes.
+A *TA.Settings* Object is useful to keep your DOM or CSS-Files clean. It allows to set properties on DOM Elements right before or after an animation starts/finishes. For example you might want to hide an element in CSS using *display:none;* but want to fade it in using opacity. You can set *display:block;opacity:0;* using a *TA.CssSettings* object. It will get applied right before the animation starts.
 
 ### Timeline
-The *TA.Timeline* Object clues all compositions and objects together by providing a simple Timeline in which you can define your desired actions and events.
+The *TA.Timeline* Object clues all compositions and objects together by providing a simple Timeline in which you can define your desired actions and events. This is what *TA* is all about.
 
 ### Events
 Each *TA.Object*, *TA.Composition* and *TA.Timeline* has a unique name. Based on these names, events get triggered and listened for. This allows a simple work flow when executing different animations.
@@ -98,5 +138,28 @@ app.on("composition:out", function() {
 app.start("composition:in");
 ```
 We can see how *TA.Timeline* works internally. It listens for events and starts events at certain times.
+
+You can also go further and interlink *TA.Timeline* objects. You can, for example set up an initializing Timeline and then after all initializing is done, play the real Timeline:
+```Javascript
+var init = new TA.Timeline("inittimeline");
+
+var d=init.getDescriber();
+init.add([
+	d.startAndWaitFor('cornerbox:in'),
+	d.playTimeline('boxtimeline')
+]);
+            
+var boxTimeline = new TA.Timeline("boxtimeline");
+d=boxTimeline.getDescriber();
+boxTimeline.add([
+	d.startAndWaitFor('cornerbox:left'),
+	d.startAndWaitFor('cornerbox:up'),
+	d.startAndWaitFor('cornerbox:right'),
+	d.startAndWaitFor('cornerbox:down'),
+	d.loop()
+]);
+
+init.play();
+```
 
 See *test.html* or *test2.html* or *test3.html* for more complex examples.
