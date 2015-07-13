@@ -1502,6 +1502,22 @@
     };
 
     /**
+     * @implements TA.TimelineAction
+     * @constructor TA.TimelineAction_playTimelineAsync
+     */
+    TA.TimelineAction_playTimelineAsync = function(name) {
+
+        this.getDescription = function() {
+            return "playTimelineAsync("+name+")";
+        };
+
+        this.run = function(tl) {
+            TA.App.start(name);
+            tl.next();
+        };
+    };
+
+    /**
      * Describer for a TA.Timeline actions
      *
      * This is for convenience. It create TA.TimelineAction objects for ease of use
@@ -1650,15 +1666,26 @@
             return new TA.TimelineAction_finish();
         };
         
-       /**
-         * Plays a timeline
-         *
-         * @method TA.TimelineDescriber#playTimeline
-         * @param {String} name - name of timeline
-         * @returns {TA.TimelineAction}
-         */
+        /**
+          * Plays a timeline
+          *
+          * @method TA.TimelineDescriber#playTimeline
+          * @param {String} name - name of timeline
+          * @returns {TA.TimelineAction}
+          */
         this.playTimeline = function(name) {
             return new TA.TimelineAction_playTimeline(name);
+        };
+
+        /**
+          * Plays a timeline
+          *
+          * @method TA.TimelineDescriber#playTimelineAsync
+          * @param {String} name - name of timeline
+          * @returns {TA.TimelineAction}
+          */
+        this.playTimelineAsync = function(name) {
+            return new TA.TimelineAction_playTimelineAsync(name);
         };
 
         /**
