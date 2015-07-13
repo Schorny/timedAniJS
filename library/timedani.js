@@ -433,7 +433,7 @@
         this.events = [];
         var that = this;
         function listen(evt) {
-            if(that.events.indexOf(evt) !== -1) {
+            if(!$.inArray(that.events, evt)) {
                 return;
             }
 
