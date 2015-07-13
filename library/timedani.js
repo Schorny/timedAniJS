@@ -1124,8 +1124,7 @@
                 this.startOut(complete);
                 return;
             }
-            
-            this.startAni(this, this.anis[name], name)(complete);
+            startAni(this, this.anis[name], name)(complete);
             return this;
         };
 
@@ -1136,9 +1135,12 @@
             if(key === 'in' || key === 'out') continue;
             if(!this.anis.hasOwnProperty(key)) continue;
             TA.checkAnimName(key);
-            TA.App.on(this.name+":"+key+":start", function() {
-                that.start(key);
-            });
+            var f=function(key) {
+                return function() {
+                    that.start(key);
+                }
+            };
+            TA.App.on(this.name+":"+key+":start", f(key));
         }
         
         return this;
