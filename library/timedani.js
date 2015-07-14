@@ -127,7 +127,7 @@
             onRegex: onRegex,
             offRegex: offRegex,
             trigger: trigger,
-            start: start,
+            start: start
         };
     })();
 
