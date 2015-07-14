@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+
+	<title>Animations - TA Docs</title>
+
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../..">TA Docs</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../usage/">Usage</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../overview/">Overview</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../settings/">Settings</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Animations</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../objects/">Objects</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../compositions/">Compositions</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../timelines/">Timelines</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../api/">API Docu</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../demos/">Demos</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../license/">License</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../settings/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../objects/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#taanimation">TA.Animation</a></li>
+        
+            <li><a href="#tajqueryanimation-jsdoc">TA.JQueryAnimation (JSDoc)</a></li>
+        
+            <li><a href="#tavelocityanimation-jsdoc">TA.VelocityAnimation (JSDoc)</a></li>
+        
+            <li><a href="#tadummyanimation-jsdoc">TA.DummyAnimation (JSDoc)</a></li>
+        
+            <li><a href="#tarepeatwhileanimation-jsdoc">TA.RepeatWhileAnimation (JSDoc)</a></li>
+        
+            <li><a href="#tarepeatanimation-jsdoc">TA.RepeatAnimation (JSDoc)</a></li>
+        
+            <li><a href="#tabackgroundanimation-jsdoc">TA.BackgroundAnimation (JSDoc)</a></li>
+        
+            <li><a href="#tadelayedanimation-jsdoc">TA.DelayedAnimation (JSDoc)</a></li>
+        
+            <li><a href="#taparallelanimation-jsdoc">TA.ParallelAnimation (JSDoc)</a></li>
+        
+            <li><a href="#tachainedanimation-jsdoc">TA.ChainedAnimation (JSDoc)</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="taanimation">TA.Animation</h1>
+<p><em>TA.Animation</em> Objects are descriptions on <strong>how</strong> to animate an object. They can use <a href="http://api.jquery.com/animate/">jQuery.animate</a>, <a href="http://julian.com/research/velocity/">velocity.js</a>, <a href="http://greensock.com/gsap">GSAP</a> or the other libraries for that purpose.</p>
+<p><em>TA.Animation</em> Objects have optionally own <em>TA.Settings</em> objects to apply before and/or after the animation is finished.</p>
+<p>There are 2 types of animations in TA: Concrete-Animations and <a href="https://en.wikipedia.org/wiki/Decorator_pattern">Decorator</a>-Animations.
+There are currently the following concrete Animation classes available:</p>
+<ul>
+<li>TA.JQueryAnimation</li>
+<li>TA.VelocityAnimation</li>
+<li>TA.FunctionAnimation</li>
+<li>TA.DummyAnimation</li>
+</ul>
+<p>These classes implement a concrete animation like a fade-in or move animation.</p>
+<p>There are currently the following decorator Animation classes available:</p>
+<ul>
+<li>TA.RepeatWhileAnimation</li>
+<li>TA.RepeatAnimation</li>
+<li>TA.BackgroundAnimation</li>
+<li>TA.DelayedAnimation</li>
+<li>TA.ParallelAnimation</li>
+<li>TA.ChainedAnimation</li>
+</ul>
+<p>These classes are just decorators for concrete Animations and add functionality without altering the concrete Animation.</p>
+<h2 id="tajqueryanimation-jsdoc">TA.JQueryAnimation (<a href="../../external/doc/TA.JQueryAnimation.html">JSDoc</a>)</h2>
+<p>It uses <code>jQuery.animate</code> to do the animation. The first and second parameters are the two objects <code>jQuery.animate</code> takes. The optional third parameter is a <em>TA.Settings</em> object.</p>
+<pre><code class="javascript">var fadeIn = new TA.JQueryAnimation(
+  {opacity:1},
+  {duration:1000},
+  new TA.CssSettings({display:inline, opacity:0})
+);
+</code></pre>
+
+<h2 id="tavelocityanimation-jsdoc">TA.VelocityAnimation (<a href="../../external/doc/TA.VelocityAnimation.html">JSDoc</a>)</h2>
+<p>It uses <em>velocity.js</em> to do the animation. The first and second parameters are the two objects <code>jQuery.velocity</code> takes. The optional third parameter is a <em>TA.Settings</em> object.</p>
+<pre><code class="javascript">var fadeIn = new TA.VelocityAnimation(
+  {opacity:1},
+  {duration:1000},
+  new TA.CssSettings({display:inline, opacity:0})
+);
+</code></pre>
+
+<h2 id="tadummyanimation-jsdoc">TA.DummyAnimation (<a href="../../external/doc/TA.DummyAnimation.html">JSDoc</a>)</h2>
+<p><em>TA.DummyAnimation</em> is a class that you probably will never use. It does nothing but confirms to the <em>TA.Animation</em> interface. It can be used as <code>noop</code> in situations where a <em>TA.Animation</em> object is needed but no animation should be played.</p>
+<h2 id="tarepeatwhileanimation-jsdoc">TA.RepeatWhileAnimation (<a href="../../external/doc/TA.RepeatWhileAnimation.html">JSDoc</a>)</h2>
+<p>This is a decorator for an animation. It takes a <em>predicate</em> as first parameter, which is a function that returns true or false. As long as the <em>predicate</em> returns <em>true</em> the <em>animation</em> (second parameter) gets started again after it finishes.</p>
+<pre><code class="javascript">var pulseAnimation = new TA.RepeatWhileAnimation(function() {
+  return !TA.StatusHandler.check('something:in');
+}, someAnimation);
+</code></pre>
+
+<h2 id="tarepeatanimation-jsdoc">TA.RepeatAnimation (<a href="../../external/doc/TA.RepeatAnimation.html">JSDoc</a>)</h2>
+<p>This is a decorator for an animation. It takes the number of times to repeat the animation as first parameter and the animation itself as second.</p>
+<pre><code class="javascript">var loopAnimation = new TA.RepeatAnimation(10, someAnimation);
+</code></pre>
+
+<h2 id="tabackgroundanimation-jsdoc">TA.BackgroundAnimation (<a href="../../external/doc/TA.BackgroundAnimation.html">JSDoc</a>)</h2>
+<p>This is a decorator for an animation. It pretends the animation finishes instantly making the animation run in the background.</p>
+<pre><code class="javascript">var bgAnimation = new TA.BackgroundAnimation(someAnimation);
+</code></pre>
+
+<h2 id="tadelayedanimation-jsdoc">TA.DelayedAnimation (<a href="../../external/doc/TA.DelayedAnimation.html">JSDoc</a>)</h2>
+<p>This is a decorator for an animation. It delays the execution of the animation by <em>delay</em> milliseconds.</p>
+<pre><code class="javascript">var delayedAnimation = new TA.DelayedAnimation(someAnimation, 2000);
+</code></pre>
+
+<h2 id="taparallelanimation-jsdoc">TA.ParallelAnimation (<a href="../../external/doc/TA.ParallelAnimation.html">JSDoc</a>)</h2>
+<p>This is a decorator for an animation. It takes an array of <em>TA.Animation</em>s and executes them in parallel, meaning at the same time. It finishes once the last animation is finished.</p>
+<pre><code class="javascript">var multipleAnimation = new TA.ParallelAnimation([
+  fadeIn, moveLeft, incSize
+]);
+</code></pre>
+
+<h2 id="tachainedanimation-jsdoc">TA.ChainedAnimation (<a href="../../external/doc/TA.ChainedAnimation.html">JSDoc</a>)</h2>
+<p>This is a decorator for an animation. It takes an array of <em>TA.Animation</em>s and executes them one after the other. It finishes once the last animation is finished.</p>
+<pre><code class="javascript">var multipleAnimation = new TA.ParallelAnimation([
+  fadeIn, moveLeft, incSize
+]);
+</code></pre></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script>
+        <script>var base_url = '../..';</script>
+        <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+        <script src="../../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+
+	<title>Settings - TA Docs</title>
+
+        <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../..">TA Docs</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../usage/">Usage</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../overview/">Overview</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Settings</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../animations/">Animations</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../objects/">Objects</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../compositions/">Compositions</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../timelines/">Timelines</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../api/">API Docu</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../demos/">Demos</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../../license/">License</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../overview/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../animations/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#tasettings">TA.Settings</a></li>
+        
+            <li><a href="#tacsssettings-jsdoc">TA.CssSettings (JSDoc)</a></li>
+        
+            <li><a href="#tavelocitysettings-jsdoc">TA.VelocitySettings (JSDoc)</a></li>
+        
+            <li><a href="#tacombinedsettings-jsdoc">TA.CombinedSettings (JSDoc)</a></li>
+        
+            <li><a href="#tadummysettings-jsdoc">TA.DummySettings (JSDoc)</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="tasettings">TA.Settings</h1>
+<p><em>TA.Settings</em> Objects are there to allow you or animations to set certain settings on the DOM node before or after an animation. For example you might want to set <code>display:none;</code> after the element faded out.</p>
+<p>There are currently the following <em>TA.Settings</em> classes available:</p>
+<ul>
+<li>TA.CssSettings</li>
+<li>TA.VelocitySettings</li>
+<li>TA.CombinedSettings</li>
+<li>TA.DummySettings</li>
+</ul>
+<p>Each <em>TA.Settings</em> class has 2 basic properties: the Init-Settings and the Deinit-Settings. Either one can be <code>null</code> or <code>{}</code>. Init-Settings are applied before the in-Animation is started and Deinit-Settings are applied after the out-Animation is finished.</p>
+<p>This allows you to set DOM settings inside your animation code and outside of your CSS. For example you might have an invisible object in your DOM with a <code>display:none;</code> set to make it invisible. Now you want to fade it in using <code>opacity</code>. You can set <code>display:block;</code> in your Init-Settings and <code>display:none;</code> in your Deinit-Settings.</p>
+<h2 id="tacsssettings-jsdoc">TA.CssSettings (<a href="../../external/doc/TA.CssSettings.html">JSDoc</a>)</h2>
+<p><em>TA.CssSettings</em> uses <code>jQuery.css</code> to apply the settings to a DOM node.</p>
+<pre><code class="javascript">var settings = new TA.CssSettings(
+  {display:block},{display:none}
+);
+</code></pre>
+
+<h2 id="tavelocitysettings-jsdoc">TA.VelocitySettings (<a href="../../external/doc/TA.VelocitySettings.html">JSDoc</a>)</h2>
+<p><em>TA.VelocitySettings</em> uses <code>jQuery.velocity</code> to apply the settings to a DOM node. This is needed for some velocity animations that can't be reset/changed by <code>jQuery.css</code>.</p>
+<pre><code class="javascript">var settings = new TA.VelocitySettings(
+  {rotateZ:'90deg'},{rotateZ:'0deg'}
+);
+</code></pre>
+
+<h2 id="tacombinedsettings-jsdoc">TA.CombinedSettings (<a href="../../external/doc/TA.CombinedSettings.html">JSDoc</a>)</h2>
+<p><em>TA.CombinedSettings</em> is a meta class that enables you to treat multiple <em>TA.Settings</em> object as one.</p>
+<pre><code class="javascript">var settings = new TA.CombinedSettings([
+  new TA.CssSettings({display:block},{display:none}),
+  new TA.VelocitySettings({rotateZ:'90deg'},{rotateZ:'0deg'})
+]);
+</code></pre>
+
+<p>In most cases you can use a simple array of <em>TA.Settings</em> objects and let TA do the autoboxing.</p>
+<pre><code class="javascript">var obj2 = obj.clone({
+  settings: [setting1, setting2, settings3]
+});
+</code></pre>
+
+<h2 id="tadummysettings-jsdoc">TA.DummySettings (<a href="../../external/doc/TA.DummySettings.html">JSDoc</a>)</h2>
+<p><em>TA.DummySettings</em> is a class that you probably will never use. It does nothing but confirms to the <em>TA.Settings</em> interface. It can be used as <code>noop</code> in situations where a <em>TA.Settings</em> object is needed but no settings are there to be applied.</p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../js/highlight.pack.js"></script>
+        <script>var base_url = '../..';</script>
+        <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+        <script src="../../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+	<title>Usage - TA Docs</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">TA Docs</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">Usage</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../doc/overview/">Overview</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../doc/settings/">Settings</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../doc/animations/">Animations</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../doc/objects/">Objects</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../doc/compositions/">Compositions</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../doc/timelines/">Timelines</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../doc/api/">API Docu</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../demos/">Demos</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../license/">License</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="..">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../doc/overview/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#usage">Usage</a></li>
+        
+            <li><a href="#dependencies">Dependencies</a></li>
+        
+            <li><a href="#browser-support">Browser Support</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="usage">Usage</h1>
+<p>TA is <a href="http://requirejs.org/docs/whyamd.html">AMD</a> compatible. You can easily <code>require('timedAni');</code> if you are using <a href="http://requirejs.org/">require.js</a>. If not, TA automatically detects this and writes itself into <code>window.TA</code>.</p>
+<p>You can move TA from <code>window.TA</code> to whatever other object you want, TA itself does not refer to <code>window.TA</code>.</p>
+<h2 id="dependencies">Dependencies</h2>
+<p>TAs only dependency is <a href="https://jquery.com/">jQuery</a>. It is developed using jQuery 2.1.3, but nearly all halfway recent jQuery version should work fine. jQuery needs to be loaded before TA is loaded.</p>
+<p>If you want to use <em>TA.VelocitySetting</em> and/or <em>TA.VelocityAnimation</em> you need <a href="http://julian.com/research/velocity/">velocity.js</a> as well. TA is developed using velocity.js 1.2.1 but nearly all halfway recent velocity.js version should work fine.</p>
+<h2 id="browser-support">Browser Support</h2>
+<p><em>Warning</em>: this is not yet fully tested.
+TA should work on:</p>
+<ul>
+<li>Chrome 19+</li>
+<li>Firefox 19+</li>
+<li>Safari 6.1+</li>
+<li>IE 9+</li>
+</ul>
+<p>probably on older versions as well. <strong>This is subject to change.</strong></p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
