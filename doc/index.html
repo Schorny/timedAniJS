@@ -43,52 +43,102 @@
 
 
     <section>
-        <article><h1>Synopsis</h1><p>timedAni.js (or TA) is a library to make it easier to run predefined or non-interactive animations on a site.</p>
+        <article><h1>Synopsis</h1><p>timedAni.js (or TA) is a library to make it easier to run predefined or non-interactive animations on a site by defining a simple Timeline. All animations and state changes in TA trigger events on which you can listen or let TA do the automagic itself.</p>
+<p>It does not provide any animations itself, it uses jQuery Animate, velocity.js or whatever you want. TA is simple the framework to time, repeat, loop, arrange, etc. your animations.</p>
+<h1>Documentation</h1><p>See: <a href="http://schorny.github.io/timedAniJS/">schorny.github.io/timedAniJS/</a></p>
+<h1>Example</h1><p>A little bit of Code may help to understand it better:</p>
+<pre class="prettyprint source lang-javascript"><code>var boxTimeline = new TA.Timeline('boxtimeline');
+var d=boxTimeline.getDescriber();
+boxTimeline.add([
+    d.startAndWaitFor('cornerbox:left'),
+    d.startAndWaitFor('cornerbox:up'),
+    d.startAndWaitFor('cornerbox:right'),
+    d.startAndWaitFor('cornerbox:down'),
+    d.loop()
+]);
+boxTimeline.play();</code></pre><p>This simple timeline tells an <em>TA.Object</em> named <em>cornerbox</em> to move left, up, right, down and then start all over again.</p>
+<p>This is done by first creating the 4 animations:</p>
+<pre class="prettyprint source lang-javascript"><code>var moveLeft = new TA.VelocityAnimation({left: '0px'},{duration:1000});
+var moveUp = new TA.VelocityAnimation({top: '0px'},{duration:1000});
+var moveRight = new TA.VelocityAnimation({left: '90px'},{duration:1000});
+var moveDown = new TA.VelocityAnimation({top: '90px'},{duration:1000});</code></pre><p>Here we are using <em>velocity.js</em> to do our Animation but TA is not tied to <em>velocity.js</em> - use whatever library you want.</p>
+<p>Then we create the cornerbox object:</p>
+<pre class="prettyprint source lang-javascript"><code>TA.createObjectFromId('cornerbox', {
+    left: moveLeft,
+    up: moveUp,
+    right: moveRight,
+    down: moveDown,
+});</code></pre><p>This <em>TA.Object</em> represents the DOM element with the id 'cornerbox'. We defined the 4 animations for this objects and now we can play the timeline.</p>
 <h1>Explanation</h1><p>A <em>TA</em> application consists of the following layers:</p>
-<h3>Animations</h3><p>The basic unit in <em>TA</em> is a <em>TAAnimation</em> Object. This be implemented using different libararies like <em>velocity.js</em> or <em>jQuery.animate</em>. A <em>TAAnimation</em> Object knows nothing about the <em>TA</em> structure, it just knows how to animate an object.</p>
-<h3>Objects</h3><p>Objects are of the Type <em>TAObject</em>. They own up to 2 <em>TAAnimation</em> Objects, one for the &quot;in&quot; animation and one for the &quot;out&quot; animation. They also know which DOM Element they represent.</p>
-<h3>Compositions</h3><p>A <em>TAComposition</em> is a collection of <em>TAObject</em>s. They get registered into the Composition and once a Composition starts an Animation, all <em>TAObject</em>s get animated.</p>
-<h3>Events</h3><p>Each <em>TAObject</em> and <em>TAComposition</em> has a unique name. Based on these names, events get triggered and listened for. This allows a simple work flow when executing different animations.</p>
-<p>When an object or composition finished it's animation, it triggers the &quot;name:in&quot; or &quot;name:out&quot; event. You can listen to those or even start one on your own </p>
-<pre class="prettyprint source lang-Javascript"><code>TAApp.start(&quot;name:in&quot;);</code></pre><h3>Timeline</h3><p>The <em>TATimeline</em> Object clues all compositions and objects together</p>
-<h1>Example</h1><p>First we create 2 Animation objects, one to fade in and one to fade out.</p>
-<pre class="prettyprint source lang-Javascript"><code>var appear = new TAApp.TAVelocityAnimation(
+<h3>Animations</h3><p>The basic unit in <em>TA</em> is a <em>TA.Animation</em> Object. This be implemented using different libararies like <em>velocity.js</em> or <em>jQuery.animate</em>. A <em>TA.Animation</em> Object knows nothing about the <em>TA</em> structure, it just knows how to animate an object and what settings are necessary to make the animation work. You can even use a <em>TA.FunctionAnimation</em> Object that simple defers the animation to a user defined function.</p>
+<h3>Objects</h3><p>Objects are of the Type <em>TA.Object</em>. They own multiple <em>TA.Animation</em> Objects. Two <em>TA.Animation</em> Objects are very important: the &quot;in&quot; animation and the &quot;out&quot; animation. They also know which DOM Element they represent.</p>
+<h3>Compositions</h3><p>A <em>TA.Composition</em> is a collection of <em>TA.Object</em>s. <em>TA.Objects</em> get registered into the Composition and once a Composition starts an Animation, all <em>TAObject</em>s get animated. A Composition is kind of like a fancy array of <em>TA.Objects</em>.</p>
+<h3>Settings</h3><p>A <em>TA.Settings</em> Object is useful to keep your DOM or CSS-Files clean. It allows to set properties on DOM Elements right before or after an animation starts/finishes. For example you might want to hide an element in CSS using <em>display:none;</em> but want to fade it in using opacity. You can set <em>display:block;opacity:0;</em> using a <em>TA.CssSettings</em> object. It will get applied right before the animation starts.</p>
+<h3>Timeline</h3><p>The <em>TA.Timeline</em> Object clues all compositions and objects together by providing a simple Timeline in which you can define your desired actions and events. This is what <em>TA</em> is all about.</p>
+<h3>Events</h3><p>Each <em>TA.Object</em>, <em>TA.Composition</em> and <em>TA.Timeline</em> has a unique name. Based on these names, events get triggered and listened for. This allows a simple work flow when executing different animations.</p>
+<p>When an object or composition finished its animation, it triggers the &quot;name:in&quot; or &quot;name:out&quot; event. You can listen to those or even start one on your own </p>
+<pre class="prettyprint source lang-Javascript"><code>TA.App.on(&quot;name:in&quot;, function() {
+    console.log(&quot;name:in just finished&quot;);
+});
+
+TA.App.start(&quot;name:in&quot;);</code></pre><h1>Example</h1><p>First we create 2 Animation objects, one to fade in and one to fade out.</p>
+<pre class="prettyprint source lang-Javascript"><code>var appear = new TA.VelocityAnimation(
     {opacity: 1},{duration: 1000}
 );
-var disappear = new TAApp.TAVelocityAnimation(
+var disappear = new TA.VelocityAnimation(
     {opacity: 0},{duration: 1000}
-);</code></pre><p>This is a simple <em>TAVelocityAnimation</em> that uses <em>velocity.js</em> to do the actual work.</p>
-<p>Now we need an Object</p>
-<pre class="prettyprint source lang-Javascript"><code>var obj = new TAApp.TAObject(
+);</code></pre><p>This is a simple <em>TA.VelocityAnimation</em> that uses <em>velocity.js</em> to do the actual work. The first Argument of <em>TA.VelocityAnimation</em> is the animation property that gets passed to <em>velocity.js</em>, the second are the options parameter that also get passed to <em>velocity.js</em>.</p>
+<p>Next we need an Object</p>
+<pre class="prettyprint source lang-Javascript"><code>var obj = new TA.Object(
     &quot;object&quot;,
     $(&quot;#id&quot;),
-    { inAni: appear, outAni: disappear }
-);</code></pre><p>We can now make our object appear and disappear:</p>
-<pre class="prettyprint source lang-Javascript"><code>obj.startInAni(function() {
-    obj.startOutAni();
+    { in: appear, out: disappear }
+);</code></pre><p>The Object has a name, a jQuery element and an animation object with the two magic animations: in and out.</p>
+<p>We can now make our object appear and disappear:</p>
+<pre class="prettyprint source lang-Javascript"><code>obj.startIn(function() {
+    obj.startOut();
 });</code></pre><p>This is not really fun though. So we create a Composition. Normally a composition contains multiple objects with multiple animations.</p>
-<pre class="prettyprint source lang-Javascript"><code>var comp = new TAApp.TAComposition(&quot;composition&quot;);
+<pre class="prettyprint source lang-Javascript"><code>var comp = new TA.Composition(&quot;composition&quot;);
 comp.register(obj);</code></pre><p>We have created a composition object and registered one object into it. We can now do the same animation from above:</p>
-<pre class="prettyprint source lang-Javascript"><code>comp.startInAni(function() {
-    comp.startOutAni();
-});</code></pre><p>Now it is time to glue this together with a <em>TATimeline</em> object.</p>
-<pre class="prettyprint source lang-Javascript"><code>var tl = new TAApp.TATimeline(&quot;timeline&quot;);
-var desc = tl.getDescriber();
+<pre class="prettyprint source lang-Javascript"><code>comp.startIn(function() {
+    comp.startOut();
+});</code></pre><p>Now it is time to glue this together with a <em>TA.Timeline</em> object.</p>
+<pre class="prettyprint source lang-Javascript"><code>var tl = new TA.Timeline(&quot;timeline&quot;);
+var d = tl.getDescriber();
 tl.add([
-  desc.startAndWaitFor(&quot;composition:in&quot;),
-  desc.startAndWaitFor(&quot;composition:out&quot;),
-  desc.loop(),
-]);</code></pre><p>And now the magic begins. We created a <em>TATimeline</em> object and used a <em>TATimelineDescriber</em> to set the actions. Now the names we set in the code above come into play. Each object and each composition has a name. This name is used to trigger and listen for certain events. With <em>startAndWaitFor</em> we can start an event and wait for it to finish. Our animation loops now endlessly.</p>
-<p>We could get the same result using <em>TAApp</em> and its event handling directly:</p>
-<pre class="prettyprint source lang-Javascript"><code>var app = TAApp.TAApp; //for ease of use
+  d.startAndWaitFor(&quot;composition:in&quot;),
+  d.startAndWaitFor(&quot;composition:out&quot;),
+  d.loop(),
+]);</code></pre><p>And now the magic begins. We created a <em>TA.Timeline</em> object and used a <em>TA.TimelineDescriber</em> to set the actions. Now the names we set in the code above come into play. Each object and each composition has a name. This name is used to trigger and listen for certain events. With <em>startAndWaitFor</em> we can start an event and wait for it to finish. Our animation loops now endlessly.</p>
+<p>We could get the same result using <em>TA.App</em> and its event handling directly. This comes in handy if you need to do more complex stuff than <em>TA.Timeline</em> allows you to do.</p>
+<pre class="prettyprint source lang-Javascript"><code>var app = TA.App; //for ease of use
 app.on(&quot;composition:in&quot;, function() {
     app.start(&quot;composition:out&quot;);
 });
 app.on(&quot;composition:out&quot;, function() {
     app.start(&quot;composition:in&quot;);
 });
-app.start(&quot;composition:in&quot;);</code></pre><p>We can see how <em>TATimeline</em> works internally. It listens for events and starts events at certain times.</p>
-<p>See <em>test.html</em> or <em>test2.html</em> or <em>test3.html</em> for more complex examples.</p></article>
+app.start(&quot;composition:in&quot;);</code></pre><p>We can see how <em>TA.Timeline</em> works internally. It listens for events and starts events at certain times.</p>
+<p>You can also go further and interlink <em>TA.Timeline</em> objects. You can, for example set up an initializing Timeline and then after all initializing is done, play the real Timeline:</p>
+<pre class="prettyprint source lang-Javascript"><code>var init = new TA.Timeline(&quot;inittimeline&quot;);
+
+var d=init.getDescriber();
+init.add([
+    d.startAndWaitFor('cornerbox:in'),
+    d.playTimeline('boxtimeline')
+]);
+
+var boxTimeline = new TA.Timeline(&quot;boxtimeline&quot;);
+d=boxTimeline.getDescriber();
+boxTimeline.add([
+    d.startAndWaitFor('cornerbox:left'),
+    d.startAndWaitFor('cornerbox:up'),
+    d.startAndWaitFor('cornerbox:right'),
+    d.startAndWaitFor('cornerbox:down'),
+    d.loop()
+]);
+
+init.play();</code></pre><p>See <em>test.html</em> or <em>test2.html</em> or <em>test3.html</em> for more complex examples.</p></article>
     </section>
 
 
@@ -99,13 +149,13 @@ app.start(&quot;composition:in&quot;);</code></pre><p>We can see how <em>TATimel
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TAApp.html">TAApp</a></li><li><a href="TAChainedAnimation.html">TAChainedAnimation</a></li><li><a href="TAComposition.html">TAComposition</a></li><li><a href="TACssSettings.html">TACssSettings</a></li><li><a href="TADelayedAnimation.html">TADelayedAnimation</a></li><li><a href="TADelayedObject.html">TADelayedObject</a></li><li><a href="TADummyAnimation.html">TADummyAnimation</a></li><li><a href="TADummySettings.html">TADummySettings</a></li><li><a href="TAEventConverter.html">TAEventConverter</a></li><li><a href="TAFunctionAnimation.html">TAFunctionAnimation</a></li><li><a href="TAObject.html">TAObject</a></li><li><a href="TAParallelAnimation.html">TAParallelAnimation</a></li><li><a href="TATimeline.html">TATimeline</a></li><li><a href="TATimelineAction_delay.html">TATimelineAction_delay</a></li><li><a href="TATimelineAction_execute.html">TATimelineAction_execute</a></li><li><a href="TATimelineAction_if.html">TATimelineAction_if</a></li><li><a href="TATimelineAction_jumpTo.html">TATimelineAction_jumpTo</a></li><li><a href="TATimelineAction_label.html">TATimelineAction_label</a></li><li><a href="TATimelineAction_loop.html">TATimelineAction_loop</a></li><li><a href="TATimelineAction_start.html">TATimelineAction_start</a></li><li><a href="TATimelineAction_startAndWaitFor.html">TATimelineAction_startAndWaitFor</a></li><li><a href="TATimelineAction_step.html">TATimelineAction_step</a></li><li><a href="TATimelineAction_stop.html">TATimelineAction_stop</a></li><li><a href="TATimelineAction_trigger.html">TATimelineAction_trigger</a></li><li><a href="TATimelineAction_waitFor.html">TATimelineAction_waitFor</a></li><li><a href="TATimelineDescriber.html">TATimelineDescriber</a></li><li><a href="TAVelocityAnimation.html">TAVelocityAnimation</a></li></ul><h3>Interfaces</h3><ul><li><a href="TAAnimation.html">TAAnimation</a></li><li><a href="TABaseComposition.html">TABaseComposition</a></li><li><a href="TABaseObject.html">TABaseObject</a></li><li><a href="TAObjectSettings.html">TAObjectSettings</a></li><li><a href="TATimelineAction.html">TATimelineAction</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TA.App.html">App</a></li><li><a href="TA.BackgroundAnimation.html">BackgroundAnimation</a></li><li><a href="TA.ChainedAnimation.html">ChainedAnimation</a></li><li><a href="TA.CombinedSettings.html">CombinedSettings</a></li><li><a href="TA.Composition.html">Composition</a></li><li><a href="TA.CssSettings.html">CssSettings</a></li><li><a href="TA.DelayedAnimation.html">DelayedAnimation</a></li><li><a href="TA.DelayedObject.html">DelayedObject</a></li><li><a href="TA.DummyAnimation.html">DummyAnimation</a></li><li><a href="TA.DummySettings.html">DummySettings</a></li><li><a href="TA.EventConverter.html">EventConverter</a></li><li><a href="TA.FunctionAnimation.html">FunctionAnimation</a></li><li><a href="TA.JQueryAnimation.html">JQueryAnimation</a></li><li><a href="TA.Object.html">Object</a></li><li><a href="TA.ParallelAnimation.html">ParallelAnimation</a></li><li><a href="TA.RepeatAnimation.html">RepeatAnimation</a></li><li><a href="TA.RepeatWhileAnimation.html">RepeatWhileAnimation</a></li><li><a href="TA.StatusHandler.html">StatusHandler</a></li><li><a href="TA.Timeline.html">Timeline</a></li><li><a href="TA.TimelineAction_delay.html">TimelineAction_delay</a></li><li><a href="TA.TimelineAction_execute.html">TimelineAction_execute</a></li><li><a href="TA.TimelineAction_finish.html">TimelineAction_finish</a></li><li><a href="TA.TimelineAction_if.html">TimelineAction_if</a></li><li><a href="TA.TimelineAction_jumpTo.html">TimelineAction_jumpTo</a></li><li><a href="TA.TimelineAction_label.html">TimelineAction_label</a></li><li><a href="TA.TimelineAction_loop.html">TimelineAction_loop</a></li><li><a href="TA.TimelineAction_loopN.html">TimelineAction_loopN</a></li><li><a href="TA.TimelineAction_playTimeline.html">TimelineAction_playTimeline</a></li><li><a href="TA.TimelineAction_playTimelineAsync.html">TimelineAction_playTimelineAsync</a></li><li><a href="TA.TimelineAction_start.html">TimelineAction_start</a></li><li><a href="TA.TimelineAction_startAndWaitFor.html">TimelineAction_startAndWaitFor</a></li><li><a href="TA.TimelineAction_step.html">TimelineAction_step</a></li><li><a href="TA.TimelineAction_stop.html">TimelineAction_stop</a></li><li><a href="TA.TimelineAction_trigger.html">TimelineAction_trigger</a></li><li><a href="TA.TimelineAction_waitFor.html">TimelineAction_waitFor</a></li><li><a href="TA.TimelineDescriber.html">TimelineDescriber</a></li><li><a href="TA.VelocityAnimation.html">VelocityAnimation</a></li><li><a href="TA.VelocitySettings.html">VelocitySettings</a></li></ul><h3>Interfaces</h3><ul><li><a href="TA.Animation.html">Animation</a></li><li><a href="TA.BaseComposition.html">BaseComposition</a></li><li><a href="TA.BaseObject.html">BaseObject</a></li><li><a href="TA.ObjectSettings.html">ObjectSettings</a></li><li><a href="TA.TimelineAction.html">TimelineAction</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Wed Feb 04 2015 01:04:22 GMT+0100 (MEZ)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Tue Jul 14 2015 18:14:15 GMT+0200 (MESZ)
 </footer>
 
 <script> prettyPrint(); </script>
