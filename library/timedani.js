@@ -388,14 +388,14 @@
      *
      * @function
      * @name TA.ObjectSettings#applyInit
-     * @param {Object} e - DOM Element to apply Settings to
+     * @param {jQuery} e - DOM Element to apply Settings to
      */
     /**
      * Applys the deinitializing Setting to an object
      *
      * @function
      * @name TA.ObjectSettings#applyDeinit
-     * @param {Object} e - DOM Element to apply Settings to
+     * @param {jQuery} e - DOM Element to apply Settings to
      */
 
 
