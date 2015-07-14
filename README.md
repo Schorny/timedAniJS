@@ -4,6 +4,9 @@ timedAni.js (or TA) is a library to make it easier to run predefined or non-inte
 
 It does not provide any animations itself, it uses jQuery Animate, velocity.js or whatever you want. TA is simple the framework to time, repeat, loop, arrange, etc. your animations.
 
+# Documentation
+See: [schorny.github.io/timedAniJS/](http://schorny.github.io/timedAniJS/)
+
 # Example
 
 A little bit of Code may help to understand it better:
