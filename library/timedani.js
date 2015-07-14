@@ -888,7 +888,7 @@
      * @implements TA.Animation
      * @param {Function} predicate - function that returns true to repeat the animation or false to complete it
      * @param {TA.Animation} animation - the animation to repeat
-     * @constructor TA.RepeatAnimation
+     * @constructor TA.RepeatWhileAnimation
      */
     TA.RepeatWhileAnimation = function(predicate, animation) {
 
@@ -900,7 +900,7 @@
         }
 
         /**
-         * @method TA.RepeatAnimation#start
+         * @method TA.RepeatWhileAnimation#start
          * @inheritdoc
          */
         this.start = function(obj, complete) {
