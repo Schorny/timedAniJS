@@ -1,77 +1,28 @@
-Random Ideas, Todos and Remarks
-
-suppressTriggers() on TAObject and TAComposition
+TODOs:
+suppressTriggers() on Object and Composition
 (and a reenable function of course)
 
-better event bus system?
+every start(), trigger(), on(), off(), wait() function should be able to take array of events
+especially startAndWaitFor()
 
-wait for more than 1 event? like app.on(["state1:in", "state2:in"], func) so when BOTH are triggered...
-sucks because we need stateful handling, currently done by event converter
+we need a stop() function for animations or at least a requestCancel(callback)
 
-we have states, an array with names. you can move a composition to another state if it is in.
-the composition knows all states but its members dont have to have all states (no animation is done then)
-do we want steps instead? named steps maybe?
-maybe keep in and out and make while a multistep system with something like a cycleAnimation object?
-maybe a complex system with named steps. maybe something like curPos independent animations? but how to do that?
-maybe just a normal step system where each object may or may not animate a certain step - these could be named
-instead of just numbered. a gotoStep(3) would animate 1,2,3 in order.
-a step skipping would be cool
-figure out how this would work with an object that is registred in multiple composition.
-maybe prevent that??
-
-we need a stop() function for animations
-
-what about endless loop animations? they have no complete. how to handle that?
-maybe change while for endless animations? but how to stop them? how does velocity handles that?
-
-add TAJQueryAnimation and GSOCKS tween animation
-
-redesign code!
-class names SUCK!!!
-allow method chaining (return this all the time)
-find out how to properly expose constructors
-make it AMD compatible
-find out what CommonJS has to say about JS lib design
-
-composition and object should have onIn and onOut callback
-this means callbacks that get called once onIn STARTS
-or should we just use events? app.on("foo:in:start") works. but should we expose that "start"?
-we maybe need another event name - always : is bad. maybe comp/obj:in#start ?
-
-desc.start, desc.trigger, desc.waitFor, desc.startAndWaitFor need to take arrays as param as well
-
-desc.waitForMulti() takes array of desc and waits until all are finished executing before advancing
-
-timeline needs a stop() and triggerAndStop() and startAndStop
-stop stops execution until someone manually calls next()
-this might be set as single step mode in the tl object, so we can advance manually while debugging
+add more Animation objects for GSAP, tween.js, etc.
 
 split code up in modules
 
-check if we really need jquery and drop dependency if possible
-
-implement a pause/play mechanic for timeline
-
-isnt TAComposition basically a TAParallelAnimation ?
-
-maybe TABackgroundAnimation with TARepeatWhileAnimation can be our endless looping animations?
-but we need to be able to cancel an animation.
-maybe requestCancel(complete) ?
-
-figure out whats the deal about complete() param. is it the object, is it the animation, what the hell?
-do we even need it???
+implemented build step to minify
 
 objects registered to a composition should be targetable by composition/object:in
 keep in mind this means they need to trigger the right stuff too once complete
 
-TAComposition.unregister()
-TAObject.destroy()
-general cleanup stuff
+Composition.unregister()
 
-make a baseOnTAObject function, which clones a TAObject but replaces $e and name (to allow easy cloning)
+Object.destroy()
 
-ease of use: make animation skeletons like createFadeInAnimation(msecs) which returns a TAVelocityAnimation that
-fades in using opacity in msecs millisecs
-this means we need to be able to add TAObjectSettings to TAObjects.
+events should send info on what event it is. kind of like onRegex does.
 
-add onNext() callback to TATimeline that gets called everytime the timeline advances.
+create a describer for animations much like TATimelineDescriber to allow something like
+d.delay(500, d.repeat(5, d.chain([d.velocity(), d.velocity()])));
+
+implement a TimelineAnimation animation class
