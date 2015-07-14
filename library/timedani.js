@@ -379,22 +379,22 @@
 
 
     /**
-     * Interface for TA.ObjectSettings
+     * Interface for TA.Settings
      *
-     * @interface TA.ObjectSettings
+     * @interface TA.Settings
      */
     /**
      * Applys the initializing Setting to an object
      *
      * @function
-     * @name TA.ObjectSettings#applyInit
+     * @name TA.Settings#applyInit
      * @param {jQuery} e - DOM Element to apply Settings to
      */
     /**
      * Applys the deinitializing Setting to an object
      *
      * @function
-     * @name TA.ObjectSettings#applyDeinit
+     * @name TA.Settings#applyDeinit
      * @param {jQuery} e - DOM Element to apply Settings to
      */
 
@@ -538,7 +538,7 @@
     /**
      * Settings class to apply CSS Settings to an object
      *
-     * @implements TA.ObjectSettings
+     * @implements TA.Settings
      * @param {Object} [init] - CSS settings
      * @param {Object} [deinit] - CSS settings
      * @constructor TA.CssSettings
@@ -585,7 +585,7 @@
     /**
      * Settings class to apply velocity Settings to an object
      *
-     * @implements TA.ObjectSettings
+     * @implements TA.Settings
      * @param {Object} [init] - CSS settings
      * @param {Object} [deinit] - CSS settings
      * @constructor TA.VelocitySettings
@@ -630,9 +630,9 @@
     };
 
     /**
-     * A TA.ObjectSettings object that does nothing
+     * A TA.Settings object that does nothing
      *
-     * @implements TA.ObjectSettings
+     * @implements TA.Settings
      * @constructor TA.DummySettings
      */
     TA.DummySettings = function() {
@@ -1010,7 +1010,7 @@
      * @param {String} name - name of the object
      * @param {Object} $e - DOM element of the object
      * @param {Object} anis - object that contains TA.Animation (anis.in and anis.out - both are options)
-     * @param {TA.ObjectSettings|TA.ObjectSettings[]} settings - object settings
+     * @param {TA.Settings|TA.Settings[]} settings - object settings
      * @constructor TA.Object
      */
     TA.Object = function(name, $e, anis, settings) {
@@ -1155,7 +1155,7 @@
      * @method TA.createObjectFromId
      * @param {String} id - name of the object (also used as ID selector for the DOM element of the object)
      * @param {Object} anis - object that contains TA.Animation (anis.in and anis.out - both are options)
-     * @param {TA.ObjectSettings|TA.ObjectSettings[]} settings - object settings
+     * @param {TA.Settings|TA.Settings[]} settings - object settings
      * @return TA.Object
      */
 
