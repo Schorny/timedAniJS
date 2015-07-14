@@ -1,0 +1,14 @@
+site_name: TA Docs
+pages:
+- Home: index.md
+- Usage: usage.md
+- Documentation:
+  - Overview: doc/overview.md
+  - Settings: doc/settings.md
+  - Animations: doc/animations.md
+  - Objects: doc/objects.md
+  - Compositions: doc/compositions.md
+  - Timelines: doc/timelines.md
+- API Docu: doc/api.md
+- Demos: demos.md
+- License: license.md
