@@ -42,7 +42,7 @@
         },
         {
             "location": "/doc/overview/",
-            "text": "Overview\n\n\nTA uses different layers to implement its functionality.\n\n\nSettings\n\n\nTA.Settings\n Objects are there to allow you or animations to set certain settings on the DOM node before or after an animation. For example you might want to set \ndisplay:none;\n after the element faded out.\n\n\nAnimations\n\n\nTA.Animation\n Objects are descriptions on \nhow\n to animate an object. They can use \njQuery.animate\n, \nvelocity.js\n, \nGSAP\n or the other libraries for that purpose.\n\n\nObjects\n\n\nTA.Objects\n are descriptions on \nwhat\n to animate. They can own multiple \nTA.Animation\n objects and know which DOM node they represent.\n\n\nCompositions\n\n\nTA.Composition\n objects are a collection of \nTA.Objects\n to enable you to animate multiple objects at once.\n\n\nTimelines\n\n\nTA.Timeline\n objects clue all this together and are the core of what TA actually is.",
+            "text": "Overview\n\n\nTA uses different layers to implement its functionality.\n\n\nSettings\n\n\nTA.Settings\n Objects are there to allow you or animations to set certain settings on the DOM node before or after an animation. For example you might want to set \ndisplay:none;\n after the element faded out.\n\n\nAnimations\n\n\nTA.Animation\n Objects are descriptions on \nhow\n to animate an object. They can use \njQuery.animate\n, \nvelocity.js\n, \nGSAP\n or the other libraries for that purpose.\n\n\nObjects\n\n\nTA.Objects\n are descriptions on \nwhat\n to animate. They can own multiple \nTA.Animation\n objects and know which DOM node they represent.\n\n\nCompositions\n\n\nTA.Composition\n objects are a collection of \nTA.Objects\n to enable you to animate multiple objects at once.\n\n\nTimelines\n\n\nTA.Timeline\n objects glue all this together and are the core of what TA actually is.",
             "title": "Overview"
         },
         {
@@ -72,7 +72,7 @@
         },
         {
             "location": "/doc/overview/#timelines",
-            "text": "TA.Timeline  objects clue all this together and are the core of what TA actually is.",
+            "text": "TA.Timeline  objects glue all this together and are the core of what TA actually is.",
             "title": "Timelines"
         },
         {
@@ -182,13 +182,23 @@
         },
         {
             "location": "/doc/timelines/",
-            "text": "TA.Timeline",
+            "text": "TA.Timeline\n\n\nTA.Timeline\n objects glue all together and are the core of what TA actually is.\n\n\nA Timeline actually consists of two parts: the \nTA.Timeline\n itself and a \nTA.TimelineDescriber\n that helps you write the Timeline.\n\n\nTA.TimelineDescriber (\nJSDoc\n)\n\n\nTo get a describer call \ntimeline.getDescriber();\n on a \nTA.Timeline\n object. Keep in mind that each Timeline has its own Describer.\n\n\nTA.Timeline (\nJSDoc\n)",
             "title": "Timelines"
         },
         {
             "location": "/doc/timelines/#tatimeline",
-            "text": "",
+            "text": "TA.Timeline  objects glue all together and are the core of what TA actually is.  A Timeline actually consists of two parts: the  TA.Timeline  itself and a  TA.TimelineDescriber  that helps you write the Timeline.",
             "title": "TA.Timeline"
+        },
+        {
+            "location": "/doc/timelines/#tatimelinedescriber-jsdoc",
+            "text": "To get a describer call  timeline.getDescriber();  on a  TA.Timeline  object. Keep in mind that each Timeline has its own Describer.",
+            "title": "TA.TimelineDescriber (JSDoc)"
+        },
+        {
+            "location": "/doc/timelines/#tatimeline-jsdoc",
+            "text": "",
+            "title": "TA.Timeline (JSDoc)"
         },
         {
             "location": "/doc/api/",
@@ -199,6 +209,56 @@
             "location": "/doc/api/#api-documentation",
             "text": "The automatically generated API documentation can be found  here .",
             "title": "API Documentation"
+        },
+        {
+            "location": "/tutorial/setup/",
+            "text": "Setup\n\n\nFirst you need to load \nTA\n correctly. If you are using \nrequire.js\n you need to \nrequire('timedAni')\n in your dependencies to load the \nTA\n object. If you are not using \nrequire.js\n you need to load \ntimedAni.js\n after you have loaded jQuery.",
+            "title": "Setup"
+        },
+        {
+            "location": "/tutorial/setup/#setup",
+            "text": "First you need to load  TA  correctly. If you are using  require.js  you need to  require('timedAni')  in your dependencies to load the  TA  object. If you are not using  require.js  you need to load  timedAni.js  after you have loaded jQuery.",
+            "title": "Setup"
+        },
+        {
+            "location": "/tutorial/step-01/",
+            "text": "Let's Start\n\n\nThere are 3 basic elements to a \nTA\n app. Animations, Objects and Timelines. Let us create a very basic \nTA.Object\n. Imagine we have a div in our DOM with the id 'mydiv'. We can create a \nTA.Object\n that represents this div very easily:\n\n\nvar o = TA.createObjectFromId('mydiv');\n\n\n\n\nObject can be more complex and provide certain functionality, but for now let's stay with this simple example.\n\n\nAnimations are the description on \nwhat\n happens. On how the animation should look like. The animation itself does not know what it animates, just how the animation is supposed to look like.\n\n\nThe most basic animation is a \nTA.FunctionAnimation\n. Let's write one that just prints some text to the console:\n\n\nvar anim = new TA.FunctionAnimation(function(obj, complete) {\n  console.log('animation is running');\n  if(complete)complete();\n});\n\n\n\n\nOur function takes two parameters. The first, \nobj\n is a \nTA.Object\n that describes \nwhat\n DOM element we want to animate.\n\n\nThe second parameter, the complete Callback is very important. It tells us when our animation is finished. We need to know this, so we can start the next animation. In general you don't have to deal with complete Callbacks, because \nTA\n hides all this from you. Let's run our animation:\n\n\nanim.start(o);\n\n\n\n\nWe omitted the complete Callback, because in this example it is not necessary. But let's do a \njQuery.animate\n animation.\n\n\nvar anim = new TA.FunctionAnimation(function(obj, complete) {\n  obj.getElement().animate(\n    {marginLeft: '20px'},\n    {duration: 500, complete: complete}\n  );\n});\n\nanim.start(o);\n\n\n\n\nWe now make use of the \nobj\n parameter. It is a \nTA.Object\n and all \nTA.Object\ns provide the function \ngetElement()\n which returns a \njQuery\n object representing the objects DOM node(s). While in general a \nTA.Object\n represents one DOM node, \nTA\n works with complex selectors as well.\n\n\nWe can call \njQuery.animate\n on our \njQuery\n object. This is cumbersome to do, so \nTA\n provides an animation object for this case: \nTA.JQueryAnimation\n.\n\n\nvar anim = new TA.JQueryAnimation(\n  {marginLeft: '20px'}, {duration: 500}\n);\n\nanim.start(o);\n\n\n\n\nThis is much easier to write and we can see how \nTA\n hides the complete Callback complexity from us.",
+            "title": "Step 01 - Animations"
+        },
+        {
+            "location": "/tutorial/step-01/#lets-start",
+            "text": "There are 3 basic elements to a  TA  app. Animations, Objects and Timelines. Let us create a very basic  TA.Object . Imagine we have a div in our DOM with the id 'mydiv'. We can create a  TA.Object  that represents this div very easily:  var o = TA.createObjectFromId('mydiv');  Object can be more complex and provide certain functionality, but for now let's stay with this simple example.  Animations are the description on  what  happens. On how the animation should look like. The animation itself does not know what it animates, just how the animation is supposed to look like.  The most basic animation is a  TA.FunctionAnimation . Let's write one that just prints some text to the console:  var anim = new TA.FunctionAnimation(function(obj, complete) {\n  console.log('animation is running');\n  if(complete)complete();\n});  Our function takes two parameters. The first,  obj  is a  TA.Object  that describes  what  DOM element we want to animate.  The second parameter, the complete Callback is very important. It tells us when our animation is finished. We need to know this, so we can start the next animation. In general you don't have to deal with complete Callbacks, because  TA  hides all this from you. Let's run our animation:  anim.start(o);  We omitted the complete Callback, because in this example it is not necessary. But let's do a  jQuery.animate  animation.  var anim = new TA.FunctionAnimation(function(obj, complete) {\n  obj.getElement().animate(\n    {marginLeft: '20px'},\n    {duration: 500, complete: complete}\n  );\n});\n\nanim.start(o);  We now make use of the  obj  parameter. It is a  TA.Object  and all  TA.Object s provide the function  getElement()  which returns a  jQuery  object representing the objects DOM node(s). While in general a  TA.Object  represents one DOM node,  TA  works with complex selectors as well.  We can call  jQuery.animate  on our  jQuery  object. This is cumbersome to do, so  TA  provides an animation object for this case:  TA.JQueryAnimation .  var anim = new TA.JQueryAnimation(\n  {marginLeft: '20px'}, {duration: 500}\n);\n\nanim.start(o);  This is much easier to write and we can see how  TA  hides the complete Callback complexity from us.",
+            "title": "Let's Start"
+        },
+        {
+            "location": "/tutorial/step-02/",
+            "text": "Objects Objects Objects\n\n\nWe took a look on how animations work. But we only used a simple, basic \nTA.Object\n as target. \nTA\n provides much more functionality than just wrapping a \njQuery.animate\n call. Let's create an object that gets faded in and out. First we create a fadeIn and fadeOut animation.\n\n\nvar fadeIn = new TA.JQueryAnimation({opacity:1},{duration:500});\nvar fadeOut = new TA.JQueryAnimation({opacity:0},{duration:500});\n\n\n\n\nAnd let's use them in our object.\n\n\nvar o = TA.createObjectFromId('mydiv', {\n  in: fadeIn, out: fadeOut\n});\n\n\n\n\nThe second parameter in \nTA.createObjectFromId\n is our anis-object. It describes what animations the object is capable of performing. We defined two: in and out. We can use any name we want, but in and out are handled a little bit special. More on that later. For now, we can use any name we like. To start an animation we tell the object to perform it.\n\n\no.start('in', function() { o.start('out'); });\n\n\n\n\nWe are now using the complete Callback to trigger the next animation. \nTA\n hides this complexity from us as well, once we start using Timelines. For now, the complete Callback suffices. The \nstart()\n function allows us to tell our object to perform any animation it knows.",
+            "title": "Step 02 - Objects"
+        },
+        {
+            "location": "/tutorial/step-02/#objects-objects-objects",
+            "text": "We took a look on how animations work. But we only used a simple, basic  TA.Object  as target.  TA  provides much more functionality than just wrapping a  jQuery.animate  call. Let's create an object that gets faded in and out. First we create a fadeIn and fadeOut animation.  var fadeIn = new TA.JQueryAnimation({opacity:1},{duration:500});\nvar fadeOut = new TA.JQueryAnimation({opacity:0},{duration:500});  And let's use them in our object.  var o = TA.createObjectFromId('mydiv', {\n  in: fadeIn, out: fadeOut\n});  The second parameter in  TA.createObjectFromId  is our anis-object. It describes what animations the object is capable of performing. We defined two: in and out. We can use any name we want, but in and out are handled a little bit special. More on that later. For now, we can use any name we like. To start an animation we tell the object to perform it.  o.start('in', function() { o.start('out'); });  We are now using the complete Callback to trigger the next animation.  TA  hides this complexity from us as well, once we start using Timelines. For now, the complete Callback suffices. The  start()  function allows us to tell our object to perform any animation it knows.",
+            "title": "Objects Objects Objects"
+        },
+        {
+            "location": "/tutorial/step-03/",
+            "text": "Events\n\n\nWe created objects and animations. But until now we called \nstart()\n on our objects and used the complete Callback to chain the animations. This is not really different to how \njQuery.animate\n works. But \nTA\n is much more. It provides you with Events to simplify the handling. So let's start with a simple fadeIn/fadeOut object.\n\n\nvar fadeIn = new TA.JQueryAnimation({opacity:1},{duration:500});\nvar fadeOut = new TA.JQueryAnimation({opacity:0},{duration:500});\nvar o = TA.createObjectFromId('mydiv', {\n  in: fadeIn, out: fadeOut\n});\n\n\n\n\nEvery Object has a name. Our object here is named \nmydiv\n. We can now use \nTA.App\n to do some magic.\n\n\nTA.App.start('mydiv:in');\n\n\n\n\nTA.App.start\n triggers the start event for \nmydiv:in\n, which he defined as a fadeIn animation on our div. We can also listen for events to react on them:\n\n\nTA.App.on('mydiv:in', function() {\n  TA.App.start('mydiv:out');\n});\n\nTA.App.on('mydiv:out', function() {\n  TA.App.start('mydiv:in');\n});\n\nTA.App.start('mydiv:in');\n\n\n\n\nWe now created a loop.",
+            "title": "Step 03 - Events"
+        },
+        {
+            "location": "/tutorial/step-03/#events",
+            "text": "We created objects and animations. But until now we called  start()  on our objects and used the complete Callback to chain the animations. This is not really different to how  jQuery.animate  works. But  TA  is much more. It provides you with Events to simplify the handling. So let's start with a simple fadeIn/fadeOut object.  var fadeIn = new TA.JQueryAnimation({opacity:1},{duration:500});\nvar fadeOut = new TA.JQueryAnimation({opacity:0},{duration:500});\nvar o = TA.createObjectFromId('mydiv', {\n  in: fadeIn, out: fadeOut\n});  Every Object has a name. Our object here is named  mydiv . We can now use  TA.App  to do some magic.  TA.App.start('mydiv:in');  TA.App.start  triggers the start event for  mydiv:in , which he defined as a fadeIn animation on our div. We can also listen for events to react on them:  TA.App.on('mydiv:in', function() {\n  TA.App.start('mydiv:out');\n});\n\nTA.App.on('mydiv:out', function() {\n  TA.App.start('mydiv:in');\n});\n\nTA.App.start('mydiv:in');  We now created a loop.",
+            "title": "Events"
+        },
+        {
+            "location": "/tutorial/step-04/",
+            "text": "Timelines\n\n\nWe created an object and triggered some events. Now it is time to glue this all together with a \nTA.Timeline\n.\n\n\nLet's first create two objects.\n\n\nvar fadeIn = new TA.JQueryAnimation({opacity:1},{duration:500});\nvar fadeOut = new TA.JQueryAnimation({opacity:0},{duration:500});\n\nvar o1 = TA.createObjectFromId('mydiv1', {\n  in: fadeIn, out: fadeOut\n});\nvar o2 = TA.createObjectFromId('mydiv2', {\n  in: fadeIn, out: fadeOut\n});\n\n\n\n\nWe use the same animations on both objects, because we can (and it is easier to reuse animations than to create new ones all the time). Now let's write a timeline.\n\n\nvar tl = new TA.Timeline('timeline');\n\n\n\n\nA timeline has a name, like any other object. But now we need a \nTA.TimelineDescriber\n to describe what our timeline looks like.\n\n\nvar d = tl.getDescriber();\n\ntl.add([\n  d.startAndWaitFor('mydiv1:in'),\n  d.startAndWaitFor('mydiv2:in'),\n  d.delay(1000),\n  d.startAndWaitFor('mydiv2:out'),\n  d.startAndWaitFor('mydiv1:out')\n]);\n\ntl.play();\n\n\n\n\nThe describer helps us create \nTA.TimelineAction\n objects to describe our timeline. \nstartAndWaitFor()\n is the most important action. It starts an event and waits for it to finish before advancing the timeline to the next action. \ndelay()\n just waits the number of milliseconds you stated. Last but not least, we \nplay()\n our timeline.",
+            "title": "Step 04 - Timelines"
+        },
+        {
+            "location": "/tutorial/step-04/#timelines",
+            "text": "We created an object and triggered some events. Now it is time to glue this all together with a  TA.Timeline .  Let's first create two objects.  var fadeIn = new TA.JQueryAnimation({opacity:1},{duration:500});\nvar fadeOut = new TA.JQueryAnimation({opacity:0},{duration:500});\n\nvar o1 = TA.createObjectFromId('mydiv1', {\n  in: fadeIn, out: fadeOut\n});\nvar o2 = TA.createObjectFromId('mydiv2', {\n  in: fadeIn, out: fadeOut\n});  We use the same animations on both objects, because we can (and it is easier to reuse animations than to create new ones all the time). Now let's write a timeline.  var tl = new TA.Timeline('timeline');  A timeline has a name, like any other object. But now we need a  TA.TimelineDescriber  to describe what our timeline looks like.  var d = tl.getDescriber();\n\ntl.add([\n  d.startAndWaitFor('mydiv1:in'),\n  d.startAndWaitFor('mydiv2:in'),\n  d.delay(1000),\n  d.startAndWaitFor('mydiv2:out'),\n  d.startAndWaitFor('mydiv1:out')\n]);\n\ntl.play();  The describer helps us create  TA.TimelineAction  objects to describe our timeline.  startAndWaitFor()  is the most important action. It starts an event and waits for it to finish before advancing the timeline to the next action.  delay()  just waits the number of milliseconds you stated. Last but not least, we  play()  our timeline.",
+            "title": "Timelines"
         },
         {
             "location": "/demos/",

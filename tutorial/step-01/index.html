@@ -9,7 +9,7 @@
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
 
-	<title>Timelines - TA Docs</title>
+	<title>Step 01 - Animations - TA Docs</title>
 
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -65,43 +65,43 @@
                 
                 
                 
-                    <li class="dropdown active">
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
 <li >
-    <a href="../overview/">Overview</a>
+    <a href="../../doc/overview/">Overview</a>
 </li>
 
                         
                             
 <li >
-    <a href="../settings/">Settings</a>
+    <a href="../../doc/settings/">Settings</a>
 </li>
 
                         
                             
 <li >
-    <a href="../animations/">Animations</a>
+    <a href="../../doc/animations/">Animations</a>
 </li>
 
                         
                             
 <li >
-    <a href="../objects/">Objects</a>
+    <a href="../../doc/objects/">Objects</a>
 </li>
 
                         
                             
 <li >
-    <a href="../compositions/">Compositions</a>
+    <a href="../../doc/compositions/">Compositions</a>
 </li>
 
                         
                             
-<li class="active">
-    <a href="./">Timelines</a>
+<li >
+    <a href="../../doc/timelines/">Timelines</a>
 </li>
 
                         
@@ -111,42 +111,42 @@
                 
                 
                     <li >
-                        <a href="../api/">API Docu</a>
+                        <a href="../../doc/api/">API Docu</a>
                     </li>
                 
                 
                 
-                    <li class="dropdown">
+                    <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tutorial <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
 <li >
-    <a href="../../tutorial/setup/">Setup</a>
+    <a href="../setup/">Setup</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Step 01 - Animations</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../tutorial/step-01/">Step 01 - Animations</a>
+    <a href="../step-02/">Step 02 - Objects</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../tutorial/step-02/">Step 02 - Objects</a>
+    <a href="../step-03/">Step 03 - Events</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../tutorial/step-03/">Step 03 - Events</a>
-</li>
-
-                        
-                            
-<li >
-    <a href="../../tutorial/step-04/">Step 04 - Timelines</a>
+    <a href="../step-04/">Step 04 - Timelines</a>
 </li>
 
                         
@@ -177,12 +177,12 @@
                 </li>
                 
                     <li >
-                        <a rel="next" href="../compositions/">
+                        <a rel="next" href="../setup/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../api/">
+                        <a rel="prev" href="../step-02/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -198,23 +198,53 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#tatimeline">TA.Timeline</a></li>
-        
-            <li><a href="#tatimelinedescriber-jsdoc">TA.TimelineDescriber (JSDoc)</a></li>
-        
-            <li><a href="#tatimeline-jsdoc">TA.Timeline (JSDoc)</a></li>
+        <li class="main active"><a href="#lets-start">Let's Start</a></li>
         
     
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="tatimeline">TA.Timeline</h1>
-<p><em>TA.Timeline</em> objects glue all together and are the core of what TA actually is.</p>
-<p>A Timeline actually consists of two parts: the <em>TA.Timeline</em> itself and a <em>TA.TimelineDescriber</em> that helps you write the Timeline.</p>
-<h2 id="tatimelinedescriber-jsdoc">TA.TimelineDescriber (<a href="../../external/doc/TA.TimelineDescriber.html">JSDoc</a>)</h2>
-<p>To get a describer call <code>timeline.getDescriber();</code> on a <em>TA.Timeline</em> object. Keep in mind that each Timeline has its own Describer.</p>
-<h2 id="tatimeline-jsdoc">TA.Timeline (<a href="../../external/doc/TA.Timeline.html">JSDoc</a>)</h2></div>
+<h1 id="lets-start">Let's Start</h1>
+<p>There are 3 basic elements to a <em>TA</em> app. Animations, Objects and Timelines. Let us create a very basic <code>TA.Object</code>. Imagine we have a div in our DOM with the id 'mydiv'. We can create a <code>TA.Object</code> that represents this div very easily:</p>
+<pre><code class="javascript">var o = TA.createObjectFromId('mydiv');
+</code></pre>
+
+<p>Object can be more complex and provide certain functionality, but for now let's stay with this simple example.</p>
+<p>Animations are the description on <strong>what</strong> happens. On how the animation should look like. The animation itself does not know what it animates, just how the animation is supposed to look like.</p>
+<p>The most basic animation is a <code>TA.FunctionAnimation</code>. Let's write one that just prints some text to the console:</p>
+<pre><code class="javascript">var anim = new TA.FunctionAnimation(function(obj, complete) {
+  console.log('animation is running');
+  if(complete)complete();
+});
+</code></pre>
+
+<p>Our function takes two parameters. The first, <code>obj</code> is a <code>TA.Object</code> that describes <strong>what</strong> DOM element we want to animate.</p>
+<p>The second parameter, the complete Callback is very important. It tells us when our animation is finished. We need to know this, so we can start the next animation. In general you don't have to deal with complete Callbacks, because <em>TA</em> hides all this from you. Let's run our animation:</p>
+<pre><code class="javascript">anim.start(o);
+</code></pre>
+
+<p>We omitted the complete Callback, because in this example it is not necessary. But let's do a <code>jQuery.animate</code> animation.</p>
+<pre><code class="javascript">var anim = new TA.FunctionAnimation(function(obj, complete) {
+  obj.getElement().animate(
+    {marginLeft: '20px'},
+    {duration: 500, complete: complete}
+  );
+});
+
+anim.start(o);
+</code></pre>
+
+<p>We now make use of the <code>obj</code> parameter. It is a <code>TA.Object</code> and all <code>TA.Object</code>s provide the function <code>getElement()</code> which returns a <code>jQuery</code> object representing the objects DOM node(s). While in general a <code>TA.Object</code> represents one DOM node, <em>TA</em> works with complex selectors as well.</p>
+<p>We can call <code>jQuery.animate</code> on our <code>jQuery</code> object. This is cumbersome to do, so <em>TA</em> provides an animation object for this case: <code>TA.JQueryAnimation</code>.</p>
+<pre><code class="javascript">var anim = new TA.JQueryAnimation(
+  {marginLeft: '20px'}, {duration: 500}
+);
+
+anim.start(o);
+</code></pre>
+
+<p>This is much easier to write and we can see how <em>TA</em> hides the complete Callback complexity from us.</p></div>
             
         </div>
 

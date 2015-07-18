@@ -9,7 +9,7 @@
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
 
-	<title>Timelines - TA Docs</title>
+	<title>Step 02 - Objects - TA Docs</title>
 
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -65,43 +65,43 @@
                 
                 
                 
-                    <li class="dropdown active">
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
 <li >
-    <a href="../overview/">Overview</a>
+    <a href="../../doc/overview/">Overview</a>
 </li>
 
                         
                             
 <li >
-    <a href="../settings/">Settings</a>
+    <a href="../../doc/settings/">Settings</a>
 </li>
 
                         
                             
 <li >
-    <a href="../animations/">Animations</a>
+    <a href="../../doc/animations/">Animations</a>
 </li>
 
                         
                             
 <li >
-    <a href="../objects/">Objects</a>
+    <a href="../../doc/objects/">Objects</a>
 </li>
 
                         
                             
 <li >
-    <a href="../compositions/">Compositions</a>
+    <a href="../../doc/compositions/">Compositions</a>
 </li>
 
                         
                             
-<li class="active">
-    <a href="./">Timelines</a>
+<li >
+    <a href="../../doc/timelines/">Timelines</a>
 </li>
 
                         
@@ -111,42 +111,42 @@
                 
                 
                     <li >
-                        <a href="../api/">API Docu</a>
+                        <a href="../../doc/api/">API Docu</a>
                     </li>
                 
                 
                 
-                    <li class="dropdown">
+                    <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tutorial <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
 <li >
-    <a href="../../tutorial/setup/">Setup</a>
+    <a href="../setup/">Setup</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../tutorial/step-01/">Step 01 - Animations</a>
+    <a href="../step-01/">Step 01 - Animations</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Step 02 - Objects</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../tutorial/step-02/">Step 02 - Objects</a>
+    <a href="../step-03/">Step 03 - Events</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../tutorial/step-03/">Step 03 - Events</a>
-</li>
-
-                        
-                            
-<li >
-    <a href="../../tutorial/step-04/">Step 04 - Timelines</a>
+    <a href="../step-04/">Step 04 - Timelines</a>
 </li>
 
                         
@@ -177,12 +177,12 @@
                 </li>
                 
                     <li >
-                        <a rel="next" href="../compositions/">
+                        <a rel="next" href="../step-01/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../api/">
+                        <a rel="prev" href="../step-03/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -198,23 +198,30 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#tatimeline">TA.Timeline</a></li>
-        
-            <li><a href="#tatimelinedescriber-jsdoc">TA.TimelineDescriber (JSDoc)</a></li>
-        
-            <li><a href="#tatimeline-jsdoc">TA.Timeline (JSDoc)</a></li>
+        <li class="main active"><a href="#objects-objects-objects">Objects Objects Objects</a></li>
         
     
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="tatimeline">TA.Timeline</h1>
-<p><em>TA.Timeline</em> objects glue all together and are the core of what TA actually is.</p>
-<p>A Timeline actually consists of two parts: the <em>TA.Timeline</em> itself and a <em>TA.TimelineDescriber</em> that helps you write the Timeline.</p>
-<h2 id="tatimelinedescriber-jsdoc">TA.TimelineDescriber (<a href="../../external/doc/TA.TimelineDescriber.html">JSDoc</a>)</h2>
-<p>To get a describer call <code>timeline.getDescriber();</code> on a <em>TA.Timeline</em> object. Keep in mind that each Timeline has its own Describer.</p>
-<h2 id="tatimeline-jsdoc">TA.Timeline (<a href="../../external/doc/TA.Timeline.html">JSDoc</a>)</h2></div>
+<h1 id="objects-objects-objects">Objects Objects Objects</h1>
+<p>We took a look on how animations work. But we only used a simple, basic <code>TA.Object</code> as target. <em>TA</em> provides much more functionality than just wrapping a <code>jQuery.animate</code> call. Let's create an object that gets faded in and out. First we create a fadeIn and fadeOut animation.</p>
+<pre><code class="javascript">var fadeIn = new TA.JQueryAnimation({opacity:1},{duration:500});
+var fadeOut = new TA.JQueryAnimation({opacity:0},{duration:500});
+</code></pre>
+
+<p>And let's use them in our object.</p>
+<pre><code class="javascript">var o = TA.createObjectFromId('mydiv', {
+  in: fadeIn, out: fadeOut
+});
+</code></pre>
+
+<p>The second parameter in <code>TA.createObjectFromId</code> is our anis-object. It describes what animations the object is capable of performing. We defined two: in and out. We can use any name we want, but in and out are handled a little bit special. More on that later. For now, we can use any name we like. To start an animation we tell the object to perform it.</p>
+<pre><code class="javascript">o.start('in', function() { o.start('out'); });
+</code></pre>
+
+<p>We are now using the complete Callback to trigger the next animation. <em>TA</em> hides this complexity from us as well, once we start using Timelines. For now, the complete Callback suffices. The <code>start()</code> function allows us to tell our object to perform any animation it knows.</p></div>
             
         </div>
 
