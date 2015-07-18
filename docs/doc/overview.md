@@ -15,4 +15,4 @@ TA uses different layers to implement its functionality.
 *TA.Composition* objects are a collection of *TA.Objects* to enable you to animate multiple objects at once.
 
 ## Timelines
-*TA.Timeline* objects clue all this together and are the core of what TA actually is.
+*TA.Timeline* objects glue all this together and are the core of what TA actually is.
