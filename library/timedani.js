@@ -62,17 +62,10 @@
      */
     TA.App = (function() {
 
-        var $app = $('#taapp');
-        
+        var $app = $({});
+
         var regex = [];
 
-        function ensureNodeExists() {
-            if(!$app.length) {
-                $('<div id="taapp"></div>').appendTo($('body'));
-                $app = $('#taapp');
-            }
-        }
-        
         function matchRegex(evt) {
             $.each(regex, function(idx, e) {
                 var matches= evt.match(e.regex);
@@ -85,7 +78,6 @@
 
         //TODO: check if own event bus might be better
         function trigger(evt) {
-            ensureNodeExists();
 			TA.StatusHandler.notify(evt);
             matchRegex(evt);
             $app.triggerHandler(evt);
@@ -98,19 +90,16 @@
         }
 
         function on(evt, func) {
-            ensureNodeExists();
             $app.on(evt, func);
             return this;
         }
 
         function off(evt, func) {
-            ensureNodeExists();
             $app.off(evt, func);
             return this;
         }
         
         function onRegex(evt, func) {
-            ensureNodeExists();
             regex.push({regex: evt, handler: func});
             return this;
         }
