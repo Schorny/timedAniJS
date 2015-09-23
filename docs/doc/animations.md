@@ -86,7 +86,10 @@ var multipleAnimation = new TA.ParallelAnimation([
 ## TA.ChainedAnimation ([JSDoc](/external/doc/TA.ChainedAnimation.html))
 This is a decorator for an animation. It takes an array of *TA.Animation*s and executes them one after the other. It finishes once the last animation is finished.
 ```javascript
-var multipleAnimation = new TA.ParallelAnimation([
-  fadeIn, moveLeft, incSize
+var animation1 = new TA.VelocityAnimation({opacity: 1}, {duration: 1000);
+var animation2 = new TA.VelocityAnimation({left: '100%'}, {duration: 2500);
+
+var chainedAnimation = new TA.ChainedAnimation([
+  animation1, animation2
 ]);
 ```
