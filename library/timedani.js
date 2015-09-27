@@ -78,7 +78,7 @@
 
         //TODO: check if own event bus might be better
         function trigger(evt) {
-			TA.StatusHandler.notify(evt);
+            TA.StatusHandler.notify(evt);
             matchRegex(evt);
             $app.triggerHandler(evt);
             return this;
@@ -217,40 +217,40 @@
      * @return {String} The status or "unknown"
      */
 
-	TA.StatusHandler = (function() {
-		var statuses = {};
-		var defaultStatus = 'unknown';
+    TA.StatusHandler = (function() {
+        var statuses = {};
+        var defaultStatus = 'unknown';
 
-		function splitEvent(evt) {
-			//split text:in
-			var parts = evt.split(':');
-			if(parts.length<2) return null;
+        function splitEvent(evt) {
+            //split text:in
+            var parts = evt.split(':');
+            if(parts.length<2) return null;
             var state=null;
             if(parts.length==3) {
                 state = parts[1]+':'+parts[2];
             } else {
                 state = parts[1];
             }
-			var name = trimObjectName(parts[0]);
+            var name = trimObjectName(parts[0]);
 
-			return {
-				name: name,
-				state: state
-			};
-		}
+            return {
+                name: name,
+                state: state
+            };
+        }
 
-		function trimObjectName(name) {
-			//split composition/object
-			var parts = name.split('/');
-			return parts[parts.length-1];
-		}
+        function trimObjectName(name) {
+            //split composition/object
+            var parts = name.split('/');
+            return parts[parts.length-1];
+        }
 
-		function notify(evt) {
-			var state = splitEvent(evt);
-			if(!state) return;
-			statuses[state.name]=state.state;
+        function notify(evt) {
+            var state = splitEvent(evt);
+            if(!state) return;
+            statuses[state.name]=state.state;
             return this;
-		}
+        }
 
         function check(name) {
             var evt = splitEvent(name);
@@ -259,20 +259,20 @@
             return getStatus(evt.name) === evt.state;
         }
 
-		function getStatus(name) {
-			name = trimObjectName(name);
+        function getStatus(name) {
+            name = trimObjectName(name);
 
-			if(!statuses[name]) return defaultStatus;
+            if(!statuses[name]) return defaultStatus;
 
-			return statuses[name];
-		}
+            return statuses[name];
+        }
 
-		return {
-			getStatus: getStatus,
-			notify: notify,
+        return {
+            getStatus: getStatus,
+            notify: notify,
             check: check
-		};
-	})();
+        };
+    })();
 
     /**
      * Interface for Animation objects
