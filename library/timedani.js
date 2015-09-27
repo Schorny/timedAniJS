@@ -2072,10 +2072,10 @@
         };
 
         var that=this;
-        TA.App.on(this.name+":pause", function() {
+        TA.App.on(this.name+':pause', function() {
             that.breakOnExecute = true;
         });
-        TA.App.on(this.name+":start", function() {
+        TA.App.on(this.name+':start', function() {
             that.go();
         });
 
@@ -2085,5 +2085,3 @@
     //expose
     return TA;
 }));
-
-
