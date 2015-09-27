@@ -18,17 +18,22 @@
                 $e = this.name+'_controls';
             }
             if($.type($e) === 'string') {
-                if($($e).length===0) {
-                    $e = $('<div id="'+$e+'"></div>').appendTo('body');
+                if($($e).length === 0) {
+                    $e = $('<div></div>').attr('id', $e);
                 } else {
                     $e = $($e);
                 }
             }
 
-            $e.append('<button href="#" class="tapause">Pause</button>');
-            $e.append('<button href="#" class="tastep">Step</button>');
-            $e.append('<button href="#" class="taskip">Skip</button>');
-            $e.append('<button href="#" class="taplay">Play</button>');
+            var $btn = $('<button></button>'),
+                btns = [
+                    $btn.clone().addClass('tapause').text('Pause'),
+                    $btn.clone().addClass('tastep').text('Step'),
+                    $btn.clone().addClass('taskip').text('Skip'),
+                    $btn.clone().addClass('taplay').text('Play')
+                ]
+            ;
+            $e.append(btns);
 
             var that = this;
             $e.on('click', '.tapause', function(evt) {
@@ -45,6 +50,11 @@
                 that.breakOnExecute = false;
                 that.play();
             });
+
+            if (!$.contains(document.documentElement, $e[0])) {
+                $e.appendTo('body');
+            }
+
             return $e;
         };
 
