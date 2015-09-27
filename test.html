@@ -17,15 +17,15 @@
             css independent!
              */
 
-            var headlineSettings = new TAApp.TACssSettings({
+            var headlineSettings = new TA.CssSettings({
                 opacity: 0, display: 'inline', position: 'absolute', top: '600px', left: '0px'
             });
 
-            var boxSettings = new TAApp.TACssSettings({
+            var boxSettings = new TA.CssSettings({
                 opacity: 0, display: 'block'
             });
 
-            var allBoxesSettings = new TAApp.TACssSettings({
+            var allBoxesSettings = new TA.CssSettings({
                 position:"absolute", left:"220px", top:"30px", opacity: 1
             });
 
@@ -33,27 +33,27 @@
             now we define a few animations to use later on
             */
 
-            var fadeInFromBottomAnimation = new TAApp.TAVelocityAnimation(
+            var fadeInFromBottomAnimation = new TA.VelocityAnimation(
                     {top: '80px', opacity: 1},
                     {duration: 5000}
             );
 
-            var fadeOutToTopAnimation = new TAApp.TAVelocityAnimation(
+            var fadeOutToTopAnimation = new TA.VelocityAnimation(
                     {top: 0, opacity: 0},
                     {duration: 3000}
             );
 
-            var appearAnimation = new TAApp.TAVelocityAnimation(
+            var appearAnimation = new TA.VelocityAnimation(
                     {opacity: 1},
                     {duration: 2000}
             );
 
-            var disappearAnimation = new TAApp.TAVelocityAnimation(
+            var disappearAnimation = new TA.VelocityAnimation(
                     {opacity: 0},
                     {duration: 700, queue:false}
             );
 
-            var moveOutToRightAnimation = new TAApp.TAVelocityAnimation(
+            var moveOutToRightAnimation = new TA.VelocityAnimation(
                     {left: '300px'},
                     {duration: 2000, queue:false}
             );
@@ -66,8 +66,8 @@
             just for lolz we add a TADelayedAnimation to the mix. The disappearAnimation gets started
             700msecs after the moveOutToRightAnimation
             */
-            var fadeOutToRightAnimation = new TAApp.TAParallelAnimation(
-                    [moveOutToRightAnimation, new TAApp.TADelayedAnimation(disappearAnimation, 700)]
+            var fadeOutToRightAnimation = new TA.ParallelAnimation(
+                    [moveOutToRightAnimation, new TA.DelayedAnimation(disappearAnimation, 700)]
             );
 
             /*
@@ -75,22 +75,22 @@
             names need to be unique!!!
             */
 
-            var h1 = new TAApp.TAObject(
+            var h1 = new TA.Object(
                     "headline1",
                     $("#text1"),
                     {
-                        inAni: fadeInFromBottomAnimation,
-                        outAni: fadeOutToTopAnimation
+                        in: fadeInFromBottomAnimation,
+                        out: fadeOutToTopAnimation
                     },
                     headlineSettings
             );
 
-            var h2 = new TAApp.TAObject(
+            var h2 = new TA.Object(
                     "headline2",
                     $("#text2"),
                     {
-                        inAni: fadeInFromBottomAnimation,
-                        outAni: fadeOutToTopAnimation
+                        in: fadeInFromBottomAnimation,
+                        out: fadeOutToTopAnimation
                     },
                     headlineSettings
             );
@@ -101,38 +101,38 @@
             so we create each box as an own object and a wrapper object for all boxes
             we could have used a composition for this, but this here is much easier and cleaner
 
-            notice how each box only has an inAni and boxes only has an outAni.
+            notice how each box only has an in and boxes only has an out.
             */
-            var box1 = new TAApp.TAObject(
+            var box1 = new TA.Object(
                     "box1",
                     $("#box1"),
                     {
-                        inAni: appearAnimation
+                        in: appearAnimation
                     },
                     boxSettings
             );
-            var box2 = new TAApp.TAObject(
+            var box2 = new TA.Object(
                     "box2",
                     $("#box2"),
                     {
-                        inAni: appearAnimation
+                        in: appearAnimation
                     },
                     boxSettings
             );
-            var box3 = new TAApp.TAObject(
+            var box3 = new TA.Object(
                     "box3",
                     $("#box3"),
                     {
-                        inAni: appearAnimation
+                        in: appearAnimation
                     },
                     boxSettings
             );
 
-            var boxes = new TAApp.TAObject(
+            var boxes = new TA.Object(
                     "boxes",
                     $("#boxes"),
                     {
-                        outAni: fadeOutToRightAnimation
+                        out: fadeOutToRightAnimation
                     },
                     allBoxesSettings
             );
@@ -151,24 +151,24 @@
 
             so we create 3 compositions and name them accordingly
             */
-            var comp = new TAApp.TAComposition("firstHeadline");
+            var comp = new TA.Composition("firstHeadline");
             comp.register(h1);
             states.push(comp);
 
-            comp=new TAApp.TAComposition("secondHeadline");
+            comp=new TA.Composition("secondHeadline");
             comp.register(h2);
             states.push(comp);
 
             /*
-            notice how each box got the same inAni animation object?
+            notice how each box got the same in animation object?
             here we use TADelayedObject to delay the execution of each box individually.
             this allows us to set common animation times but delay certain animations for a
             more beautiful effect.
             */
-            comp=new TAApp.TAComposition("allBoxes");
+            comp=new TA.Composition("allBoxes");
             comp.register(box1);
-            comp.register(new TAApp.TADelayedObject(box2, {inAni:500}));
-            comp.register(new TAApp.TADelayedObject(box3, {inAni:1000}));
+            comp.register(new TA.DelayedObject("dbox2", box2, {in:500}));
+            comp.register(new TA.DelayedObject("dbox3", box3, {in:1000}));
             comp.register(boxes);
             states.push(comp);
 
@@ -178,7 +178,7 @@
             we create a TATimeline object
             and get the describer for it
             */
-            var tl = new TAApp.TATimeline("timeline");
+            var tl = new TA.Timeline("timeline");
 
             var desc = tl.getDescriber();
             /*
@@ -241,7 +241,7 @@
             now we need some cool stuff
             we write whats happening in a status field
             */
-            var app = TAApp.TAApp;
+            var app = TA.App;
 
             var $status = $("#status");
             app.on("firstHeadline:in", function() {
