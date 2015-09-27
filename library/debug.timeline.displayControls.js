@@ -31,25 +31,30 @@
                     $btn.clone().addClass('tastep').text('Step'),
                     $btn.clone().addClass('taskip').text('Skip'),
                     $btn.clone().addClass('taplay').text('Play')
-                ]
+                ],
+                that = this
             ;
-            $e.append(btns);
 
-            var that = this;
-            $e.on('click', '.tapause', function(evt) {
-                that.pause();
-            }).on('click', '.tastep', function(evt) {
-                that.setSingleStep(true);
-                that.play();
-            }).on('click', '.taskip', function(evt) {
-                that.step(1);
-                that.setSingleStep(true);
-                that.play();
-            }).on('click', '.taplay', function(evt) {
-                that.setSingleStep(false);
-                that.breakOnExecute = false;
-                that.play();
-            });
+            $e
+                .append(btns)
+                .on('click', '.tapause', function(evt) {
+                    that.pause();
+                })
+                .on('click', '.tastep', function(evt) {
+                    that.setSingleStep(true);
+                    that.play();
+                })
+                .on('click', '.taskip', function(evt) {
+                    that.step(1);
+                    that.setSingleStep(true);
+                    that.play();
+                })
+                .on('click', '.taplay', function(evt) {
+                    that.setSingleStep(false);
+                    that.breakOnExecute = false;
+                    that.play();
+                })
+            ;
 
             if (!$.contains(document.documentElement, $e[0])) {
                 $e.appendTo('body');
