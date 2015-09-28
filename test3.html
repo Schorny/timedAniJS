@@ -22,40 +22,40 @@
             //and we don't want to reset BEFORE the animation, we want to reset
             //AFTER we are finished moving the boxes
             //so we set deinit settings that get applied after all:out has finished
-            var defaultSettings = new TAApp.TACssSettings(
+            var defaultSettings = new TA.CssSettings(
                     null,{top:"325px"}
             );
 
             //each step is 25px upwards
-            var moveUpAnimation = new TAApp.TAVelocityAnimation(
+            var moveUpAnimation = new TA.VelocityAnimation(
                     {top:"-=25px"}
             );
 
             //we know this stuff, create 3 boxes
             //and inAni them upwards
-            var box1 = new TAApp.TAObject(
+            var box1 = new TA.Object(
                     "box1",
                     $("#box1"),
                     {
-                        inAni: moveUpAnimation
+                        in: moveUpAnimation
                     },
                     defaultSettings
             );
 
-            var box2 = new TAApp.TAObject(
+            var box2 = new TA.Object(
                     "box2",
                     $("#box2"),
                     {
-                        inAni: moveUpAnimation
+                        in: moveUpAnimation
                     },
                     defaultSettings
             );
 
-            var box3 = new TAApp.TAObject(
+            var box3 = new TA.Object(
                     "box3",
                     $("#box3"),
                     {
-                        inAni: moveUpAnimation
+                        in: moveUpAnimation
                     },
                     defaultSettings
             );
@@ -63,13 +63,13 @@
 
             //we display a dialog
             //which is a fancy way of saying: a div with buttons
-            var fadeIn = new TAApp.TAVelocityAnimation(
+            var fadeIn = new TA.VelocityAnimation(
                     {opacity:1},{duration:1000}
             );
-            var fadeOut = new TAApp.TAVelocityAnimation(
+            var fadeOut = new TA.VelocityAnimation(
                     {opacity:0},{duration:1000}
             );
-            var dialogSettings = new TAApp.TACssSettings(
+            var dialogSettings = new TA.CssSettings(
                     {display:"block",opacity:0},{display:"none"}
             );
 
@@ -82,27 +82,27 @@
             //sometimes they can just add logic to our code
             //remember: this is an animation library, not a GUI library
             //so while we CAN do this, we probably SHOULDN'T do it.
-            var dialogInAnimation = new TAApp.TAChainedAnimation([
+            var dialogInAnimation = new TA.ChainedAnimation([
                 fadeIn,
-                new TAApp.TAFunctionAnimation(function(obj, complete) {
+                new TA.FunctionAnimation(function(obj, complete) {
                     obj.getElement().find("input").prop("disabled", false);
                     if(complete)complete(this);
                 })
             ]);
-            var dialogOutAnimation = new TAApp.TAChainedAnimation([
-                new TAApp.TAFunctionAnimation(function(obj, complete) {
+            var dialogOutAnimation = new TA.ChainedAnimation([
+                new TA.FunctionAnimation(function(obj, complete) {
                     obj.getElement().find("input").prop("disabled", true);
                     if(complete)complete(this);
                 }),
                 fadeOut
             ]);
 
-            var dialog = new TAApp.TAObject(
+            var dialog = new TA.Object(
                 "dialog",
                 $("#dialog"),
                 {
-                    inAni: dialogInAnimation,
-                    outAni: dialogOutAnimation
+                    in: dialogInAnimation,
+                    out: dialogOutAnimation
                 },
                 dialogSettings
             );
@@ -110,7 +110,7 @@
             //register all 3 boxes into this composition
             //dialog is NOT in the composition, it exists outside of it
             //we use this composition to reset all boxes, we don't want to touch the dialog
-            var comp = new TAApp.TAComposition("all");
+            var comp = new TA.Composition("all");
 
             comp.register(box1);
             comp.register(box2);
@@ -118,7 +118,7 @@
 
             //create a timeline
             //everything normal now
-            var tl = new TAApp.TATimeline("timeline");
+            var tl = new TA.Timeline("timeline");
             var d = tl.getDescriber();
 
             //click handler for all 4 buttons
