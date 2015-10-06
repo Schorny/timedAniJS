@@ -9,7 +9,7 @@
         root.TA = factory(window.jQuery);
     }
 }(this, function($) {
-    "use strict";
+    'use strict';
 
     var TA = {};
     /**
@@ -85,7 +85,7 @@
         }
 
         function start(evt) {
-            trigger(evt+":start");
+            trigger(evt+':start');
             return this;
         }
 
@@ -98,12 +98,12 @@
             $app.off(evt, func);
             return this;
         }
-        
+
         function onRegex(evt, func) {
             regex.push({regex: evt, handler: func});
             return this;
         }
-        
+
         function offRegex(evt, func) {
             for(var i=0, c=regex.length; i<c; ++i) {
                 if(regex[i].regex==evt && regex[i].handler==func) {
@@ -153,26 +153,26 @@
     TA.Error.DOMNodeNotFoundException = function(msg, node) {
         return new TA.Error.Exception('TA.Error.DOMNodeNotFoundException', msg+' ('+node+')');
     };
-	
+
     TA.Error.StateException = function(unit, msg) {
         return new TA.Error.Exception('TA.Error.StateException', 'Unexpected State in "'+unit+'": '+msg);
     };
-    
+
     TA.Error.InvalidNameException = function(unit, val) {
         return new TA.Error.Exception('TA.Error.InvalidNameException', 'Invalid Name: '+unit+': "'+val+'"');
     };
 
     var forbiddenAnimNames = [
-        "in", "out", "start", "stop", "finish", "pause", "break", "unknown"
+        'in', 'out', 'start', 'stop', 'finish', 'pause', 'break', 'unknown'
     ];
     TA.checkAnimName = function(name) {
         $.each(forbiddenAnimNames, function(idx, o) {
             if(o===name) {
-                throw new TA.Error.InvalidNameException("Animation Name", name);
+                throw new TA.Error.InvalidNameException('Animation Name', name);
             }
         });
     };
-    
+
     var createCallNFunction = function(times, func) {
         var callN = function() {
             ++callN.count;
@@ -183,7 +183,7 @@
         callN.count=0;
         return callN;
     };
-    
+
     /**
      * StatusHandler knows all about in which status which object currently is
      *
@@ -214,7 +214,7 @@
 	TA.StatusHandler = (function() {
 		var statuses = {};
 		var defaultStatus = 'unknown';
-		
+
 		function splitEvent(evt) {
 			//split text:in
 			var parts = evt.split(':');
@@ -226,41 +226,41 @@
                 state = parts[1];
             }
 			var name = trimObjectName(parts[0]);
-			
+
 			return {
 				name: name,
 				state: state
 			};
 		}
-		
+
 		function trimObjectName(name) {
 			//split composition/object
 			var parts = name.split('/');
 			return parts[parts.length-1];
 		}
-		
+
 		function notify(evt) {
 			var state = splitEvent(evt);
 			if(!state) return;
 			statuses[state.name]=state.state;
             return this;
 		}
-        
+
         function check(name) {
             var evt = splitEvent(name);
             if(!evt) return false;
-            
+
             return getStatus(evt.name) === evt.state;
         }
-		
+
 		function getStatus(name) {
 			name = trimObjectName(name);
-			
+
 			if(!statuses[name]) return defaultStatus;
-			
+
 			return statuses[name];
 		}
-		
+
 		return {
 			getStatus: getStatus,
 			notify: notify,
@@ -462,7 +462,7 @@
         };
 
         this.activate();
-        
+
         return this;
     };
 
@@ -570,7 +570,7 @@
             $e.css(this.deinit);
             return this;
         };
-        
+
         return this;
     };
 
@@ -617,7 +617,7 @@
             $e.velocity(this.deinit);
             return this;
         };
-        
+
         return this;
     };
 
@@ -630,7 +630,7 @@
     TA.DummySettings = function() {
 
         this.applyInit = this.applyDeinit = function(e) { return this; };
-        
+
         return this;
     };
 
@@ -643,7 +643,7 @@
      */
     TA.DummyAnimation = function() {
         this.start = function(obj, complete) { if(complete)complete(this); return this; };
-        
+
         return this;
     };
 
@@ -659,7 +659,7 @@
         if(!$.isFunction(func)) {
             throw new TA.Error.ArgumentException('func', 'function', typeof func);
         }
-        
+
         /**
          * @method TA.FunctionAnimation#start
          * @inheritdoc
@@ -668,7 +668,7 @@
             func(obj, complete);
             return this;
         };
-        
+
         return this;
     };
 
@@ -703,7 +703,7 @@
                 throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
             }
             this.animations.push(animation);
-            
+
             return this;
         };
 
@@ -728,7 +728,7 @@
             func();
             return this;
         };
-        
+
         return this;
     };
 
@@ -782,7 +782,7 @@
             });
             return this;
         };
-        
+
         return this;
     };
 
@@ -812,7 +812,7 @@
             );
             return this;
         };
-        
+
         return this;
     };
 
@@ -834,7 +834,7 @@
             animation.start(obj, function(){});
             return this;
         };
-        
+
         return this;
     };
 
@@ -870,7 +870,7 @@
             subComplete();
             return this;
         };
-        
+
         return this;
     };
 
@@ -907,7 +907,7 @@
             subComplete();
             return this;
         };
-        
+
         return this;
     };
 
@@ -938,7 +938,7 @@
         this.start = function(obj, complete) {
             var tempOptions = this.options;
             var that = this;
-            
+
             this.settings.applyInit(obj.getElement());
             //TODO: chaining with current complete, dont overwrite user data
             tempOptions.complete = function() {
@@ -949,10 +949,10 @@
             obj.getElement().animate(this.properties, tempOptions);
             return this;
         };
-        
+
         return this;
     };
-    
+
     /**
      * TA.Animation object that uses velocity.js to do the animation
      *
@@ -991,7 +991,7 @@
             obj.getElement().velocity(this.properties, tempOptions);
             return this;
         };
-        
+
         return this;
     };
 
@@ -1018,7 +1018,7 @@
             this.anis['out'] = new TA.DummyAnimation();
         }
 
-        if(name === "") {
+        if(name === '') {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
         //TODO: check if $e is jQuery Object
@@ -1075,21 +1075,21 @@
         function startAni(obj, ani, name) {
             return function(complete) {
                 ani.start(obj, function() {
-                    TA.App.trigger(obj.getName() + ":" + name);
+                    TA.App.trigger(obj.getName() + ':' + name);
                     if(complete) complete(obj);
                 });
                 return that;
             };
         }
 
- 
+
         /**
          * @method TA.Object#startIn
          * @inheritdoc
          */
         this.startIn = function(complete) {
             this.settings.applyInit(this.getElement());
-            startAni(this, this.anis['in'], "in")(complete);
+            startAni(this, this.anis['in'], 'in')(complete);
             return this;
         };
 
@@ -1099,7 +1099,7 @@
          */
         this.startOut = function(complete) {
 
-            startAni(this, this.anis['out'], "out")(function(obj) {
+            startAni(this, this.anis['out'], 'out')(function(obj) {
                 that.settings.applyDeinit(that.getElement());
                 if(complete)complete(obj);
             });
@@ -1123,9 +1123,9 @@
             return this;
         };
 
-        TA.App.on(this.name+":in:start", function() { that.startIn(); });
-        TA.App.on(this.name+":out:start", function() { that.startOut(); });
-        
+        TA.App.on(this.name+':in:start', function() { that.startIn(); });
+        TA.App.on(this.name+':out:start', function() { that.startOut(); });
+
         for(var key in this.anis) {
             if(key === 'in' || key === 'out') continue;
             if(!this.anis.hasOwnProperty(key)) continue;
@@ -1135,9 +1135,9 @@
                     that.start(key);
                 }
             };
-            TA.App.on(this.name+":"+key+":start", f(key));
+            TA.App.on(this.name+':'+key+':start', f(key));
         }
-        
+
         return this;
     };
 
@@ -1173,7 +1173,7 @@
         this.name = name;
         this.delays = delays || {};
 
-        if(name === "") {
+        if(name === '') {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
         if(!$.isFunction(this.obj.getName)) {
@@ -1182,13 +1182,13 @@
         if($.type(this.delays) !== 'object') {
             throw new TA.Error.ArgumentException('delays', 'Object', typeof this.delays);
         }
-        
+
         /**
          * @method TA.DelayedObject#startIn
          * @inheritdoc
          */
         this.startIn = function(complete) {
-            this.start("in", complete);
+            this.start('in', complete);
             return this;
         };
 
@@ -1197,10 +1197,10 @@
          * @inheritdoc
          */
         this.startOut = function(complete) {
-            this.start("out", complete);
+            this.start('out', complete);
             return this;
         };
-        
+
         /**
          * @method TA.DelayedObject#start
          * @inheritdoc
@@ -1216,7 +1216,7 @@
             }, delay);
             return this;
         };
-        
+
         var that = this;
         TA.App.onRegex(new RegExp('^'+this.name+':(.*?):start$'), function(evt, matches) {
             that.start(matches[1]);
@@ -1237,7 +1237,7 @@
         this.getElement = function() {
             return this.obj.getElement();
         };
-        
+
         return this;
     };
 
@@ -1252,7 +1252,7 @@
         this.name = name;
         this.objects = [];
 
-        if(name === "") {
+        if(name === '') {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
 
@@ -1279,39 +1279,39 @@
          * @inheritdoc
          */
         this.startIn = function(complete) {
-            this.start("in", complete);
+            this.start('in', complete);
             return this;
         };
-        
+
         /**
          * @method TA.Composition#startOut
          * @inheritdoc
          */
         this.startOut = function(complete) {
-            this.start("out", complete);
+            this.start('out', complete);
             return this;
         };
-        
+
         this.start = function(name, complete) {
             var objCount = this.objects.length;
             var that = this;
             var subComplete = createCallNFunction(objCount, function() {
-                TA.App.trigger(that.getName()+":"+name);
-                if(complete)complete(that);               
+                TA.App.trigger(that.getName()+':'+name);
+                if(complete)complete(that);
             });
-                
+
             $.each(that.objects, function(idx, o) {
                 o.start(name, subComplete);
             });
-            return this;            
+            return this;
         };
 
         var that = this;
-        
+
         TA.App.onRegex(new RegExp('^'+this.name+':(.*?):start$'), function(evt, matches) {
             that.start(matches[1]);
         });
-        
+
         return this;
     };
 
@@ -1322,7 +1322,7 @@
     TA.TimelineAction_start = function(action) {
 
         this.getDescription = function() {
-            return "start("+action+")";
+            return 'start('+action+')';
         };
 
         this.run = function(tl) {
@@ -1338,7 +1338,7 @@
     TA.TimelineAction_trigger = function(action) {
 
         this.getDescription = function() {
-            return "start("+action+")";
+            return 'start('+action+')';
         };
 
         this.run = function(tl) {
@@ -1354,7 +1354,7 @@
     TA.TimelineAction_waitFor = function(action) {
 
         this.getDescription = function() {
-            return "waitFor("+action+")";
+            return 'waitFor('+action+')';
         };
 
         this.run = function(tl) {
@@ -1373,7 +1373,7 @@
     TA.TimelineAction_delay = function(msecs) {
 
         this.getDescription = function() {
-            return "delay("+msecs+")";
+            return 'delay('+msecs+')';
         };
 
         this.run = function(tl) {
@@ -1390,7 +1390,7 @@
     TA.TimelineAction_loop = function() {
 
         this.getDescription = function() {
-            return "loop()";
+            return 'loop()';
         };
 
         this.run = function(tl) {
@@ -1408,7 +1408,7 @@
         this.count = 0;
 
         this.getDescription = function() {
-            return "loopN("+times+")";
+            return 'loopN('+times+')';
         };
 
         this.run = function(tl) {
@@ -1421,7 +1421,7 @@
             }
         };
     };
-    
+
     /**
      * @implements TA.TimelineAction
      * @constructor TA.TimelineAction_step
@@ -1429,7 +1429,7 @@
     TA.TimelineAction_step = function(steps) {
 
         this.getDescription = function() {
-            return "step("+steps+")";
+            return 'step('+steps+')';
         };
 
         this.run = function(tl) {
@@ -1445,7 +1445,7 @@
     TA.TimelineAction_label = function(name) {
 
         this.getDescription = function() {
-            return "label("+name+")";
+            return 'label('+name+')';
         };
 
         this.getLabel = function() {
@@ -1464,7 +1464,7 @@
     TA.TimelineAction_jumpTo = function(label) {
 
         this.getDescription = function() {
-            return "jumpTo("+label+")";
+            return 'jumpTo('+label+')';
         };
 
         this.run = function(tl) {
@@ -1479,7 +1479,7 @@
     TA.TimelineAction_startAndWaitFor = function(action) {
 
         this.getDescription = function() {
-            return "startAndWaitFor("+action+")";
+            return 'startAndWaitFor('+action+')';
         };
 
         this.run = function(tl) {
@@ -1499,7 +1499,7 @@
     TA.TimelineAction_execute = function(func) {
 
         this.getDescription = function() {
-            return "execute(userFunc)";
+            return 'execute(userFunc)';
         };
 
         this.run = function(tl) {
@@ -1514,7 +1514,7 @@
     TA.TimelineAction_if = function(func, action) {
 
         this.getDescription = function() {
-            return "if("+action.getDescription()+")";
+            return 'if('+action.getDescription()+')';
         };
 
         this.run = function(tl) {
@@ -1533,13 +1533,13 @@
     TA.TimelineAction_stop = function() {
 
         this.getDescription = function() {
-            return "stop()";
+            return 'stop()';
         };
 
         this.run = function(tl) {
         };
     };
-    
+
     /**
      * @implements TA.TimelineAction
      * @constructor TA.TimelineAction_finish
@@ -1547,14 +1547,14 @@
     TA.TimelineAction_finish = function() {
 
         this.getDescription = function() {
-            return "finish()";
+            return 'finish()';
         };
 
         this.run = function(tl) {
-            TA.App.trigger(tl.getName()+":finish");
+            TA.App.trigger(tl.getName()+':finish');
         };
     };
-    
+
     /**
      * @implements TA.TimelineAction
      * @constructor TA.TimelineAction_playTimeline
@@ -1562,16 +1562,16 @@
     TA.TimelineAction_playTimeline = function(name) {
 
         this.getDescription = function() {
-            return "playTimeline("+name+")";
+            return 'playTimeline('+name+')';
         };
 
         this.run = function(tl) {
             var f = function() {
-                TA.App.off(name+":finish", f);
+                TA.App.off(name+':finish', f);
                 tl.next();
             };
-            
-            TA.App.on(name+":finish", f);
+
+            TA.App.on(name+':finish', f);
             TA.App.start(name);
         };
     };
@@ -1583,7 +1583,7 @@
     TA.TimelineAction_playTimelineAsync = function(name) {
 
         this.getDescription = function() {
-            return "playTimelineAsync("+name+")";
+            return 'playTimelineAsync('+name+')';
         };
 
         this.run = function(tl) {
@@ -1710,7 +1710,7 @@
         this.loop = function() {
             return new TA.TimelineAction_loop();
         };
-        
+
         /**
          * Rewinds the timeline to the start and continues from there, but only times times
          *
@@ -1740,7 +1740,7 @@
         this.finish = function() {
             return new TA.TimelineAction_finish();
         };
-        
+
         /**
           * Plays a timeline
           *
@@ -1795,7 +1795,7 @@
         this.singleStepMode = false;
 
         this.requires = [];
-        
+
         this.setReqs = function(reqs) {
             if(!$.isArray(reqs)) {
                 throw new TA.Error.ArgumentException('reqs', 'Array', typeof reqs);
@@ -1803,12 +1803,12 @@
             this.requires = reqs;
             return this;
         };
-        
+
         this.addReq = function(req) {
             this.requires.push(req);
             return this;
         };
-        
+
         this.reqsMet = function() {
             for(var i=0,c=this.requires.length; i<c; ++i) {
                 if(!TA.StatusHandler.check(this.requires[i])) {
@@ -1817,21 +1817,21 @@
             }
             return true;
         };
-        
+
         this.forceReqs = function(complete) {
             var missing = [];
-            
+
             $.each(this.requires, function(idx, o) {
                 if(!TA.StatusHandler.check(o)) {
                     missing.push(o);
                 }
             });
-            
+
             var that=this;
             var subComplete = createCallNFunction(missing.length, function() {
                 if(complete)complete(that);
             });
-            
+
             $.each(missing, function(idx, o) {
                 var f=function() {
                     TA.App.off(o, f);
@@ -1842,13 +1842,13 @@
             });
             return this;
         };
-        
+
         this.forceReqsAndGo = function() {
             this.forceReqs(function(tl) {
                 tl.go();
             });
         };
-        
+
         this.setHonorReqs = function(honor) {
             this.honorReqs = honor;
             return this;
@@ -1944,7 +1944,7 @@
                         return;
                     }
                 }
-                throw new TA.Error.ArgumentException("label", "correct label name", "Unknown Label '"+label+"'");
+                throw new TA.Error.ArgumentException('label', 'correct label name', 'Unknown Label "'+label+'"');
             },0);
             return this;
         };
@@ -1979,13 +1979,13 @@
 
         this.execute = function() {
             if(this.curPos >= this.steps.length) {
-                TA.App.trigger(this.name+":finish");
+                TA.App.trigger(this.name+':finish');
                 return;
             }
 
             if(this.breakOnExecute) {
                 this.breakOnExecute = false;
-                TA.App.trigger(this.name+":break");
+                TA.App.trigger(this.name+':break');
                 return;
             }
 
@@ -1994,8 +1994,8 @@
             }
 
             var action = this.steps[this.curPos];
-            if(this.debug) console.log(this.name+": "+action.getDescription());
-            TA.App.trigger(this.name+":step");
+            if(this.debug) console.log(this.name+': '+action.getDescription());
+            TA.App.trigger(this.name+':step');
             action.run(this);
         };
 
@@ -2019,15 +2019,15 @@
             }
             return this;
         };
-                
+
         /**
          * Displays controls to control this timeline in your Webpage
-         * 
+         *
          * @method TA.Timeline#displayControls
          * @param [jQuery|String] $e - either a jQuery Node object or an ID. The Element gets created if it does not exist.
          * @return {jQuery} the jQuery Node the controls reside in
          */
-        
+
         this.displayControls = function($e) {
             if(!$e) {
                 $e = this.name+'_controls';
@@ -2039,12 +2039,12 @@
                     $e = $($e);
                 }
             }
-            
+
             $e.append('<button href="#" class="tapause">Pause</button>');
             $e.append('<button href="#" class="tastep">Step</button>');
             $e.append('<button href="#" class="taskip">Skip</button>');
             $e.append('<button href="#" class="taplay">Play</button>');
-            
+
             var that = this;
             $e.on('click', '.tapause', function(evt) {
                 that.pause();
@@ -2060,11 +2060,11 @@
                 that.breakOnExecute = false;
                 that.play();
             });
-            
-            
+
+
             return $e;
         };
-        
+
         var that=this;
         TA.App.on(this.name+":pause", function() {
             that.breakOnExecute = true;
@@ -2072,7 +2072,7 @@
         TA.App.on(this.name+":start", function() {
             that.go();
         });
-        
+
         return this;
     };
 
