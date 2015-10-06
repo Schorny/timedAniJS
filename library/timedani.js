@@ -94,6 +94,11 @@
             return this;
         }
 
+        function one(evt, func) {
+            $app.one(evt, func);
+            return this;
+        }
+
         function off(evt, func) {
             $app.off(evt, func);
             return this;
@@ -115,6 +120,7 @@
 
         return {
             on: on,
+            one: one,
             off: off,
             onRegex: onRegex,
             offRegex: offRegex,
