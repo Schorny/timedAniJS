@@ -78,7 +78,7 @@
 
         //TODO: check if own event bus might be better
         function trigger(evt) {
-			TA.StatusHandler.notify(evt);
+            TA.StatusHandler.notify(evt);
             matchRegex(evt);
             $app.triggerHandler(evt);
             return this;
@@ -217,40 +217,40 @@
      * @return {String} The status or "unknown"
      */
 
-	TA.StatusHandler = (function() {
-		var statuses = {};
-		var defaultStatus = 'unknown';
+    TA.StatusHandler = (function() {
+        var statuses = {};
+        var defaultStatus = 'unknown';
 
-		function splitEvent(evt) {
-			//split text:in
-			var parts = evt.split(':');
-			if(parts.length<2) return null;
+        function splitEvent(evt) {
+            //split text:in
+            var parts = evt.split(':');
+            if(parts.length<2) return null;
             var state=null;
             if(parts.length==3) {
                 state = parts[1]+':'+parts[2];
             } else {
                 state = parts[1];
             }
-			var name = trimObjectName(parts[0]);
+            var name = trimObjectName(parts[0]);
 
-			return {
-				name: name,
-				state: state
-			};
-		}
+            return {
+                name: name,
+                state: state
+            };
+        }
 
-		function trimObjectName(name) {
-			//split composition/object
-			var parts = name.split('/');
-			return parts[parts.length-1];
-		}
+        function trimObjectName(name) {
+            //split composition/object
+            var parts = name.split('/');
+            return parts[parts.length-1];
+        }
 
-		function notify(evt) {
-			var state = splitEvent(evt);
-			if(!state) return;
-			statuses[state.name]=state.state;
+        function notify(evt) {
+            var state = splitEvent(evt);
+            if(!state) return;
+            statuses[state.name]=state.state;
             return this;
-		}
+        }
 
         function check(name) {
             var evt = splitEvent(name);
@@ -259,20 +259,20 @@
             return getStatus(evt.name) === evt.state;
         }
 
-		function getStatus(name) {
-			name = trimObjectName(name);
+        function getStatus(name) {
+            name = trimObjectName(name);
 
-			if(!statuses[name]) return defaultStatus;
+            if(!statuses[name]) return defaultStatus;
 
-			return statuses[name];
-		}
+            return statuses[name];
+        }
 
-		return {
-			getStatus: getStatus,
-			notify: notify,
+        return {
+            getStatus: getStatus,
+            notify: notify,
             check: check
-		};
-	})();
+        };
+    })();
 
     /**
      * Interface for Animation objects
@@ -2026,56 +2026,11 @@
             return this;
         };
 
-        /**
-         * Displays controls to control this timeline in your Webpage
-         *
-         * @method TA.Timeline#displayControls
-         * @param [jQuery|String] $e - either a jQuery Node object or an ID. The Element gets created if it does not exist.
-         * @return {jQuery} the jQuery Node the controls reside in
-         */
-
-        this.displayControls = function($e) {
-            if(!$e) {
-                $e = this.name+'_controls';
-            }
-            if($.type($e) === 'string') {
-                if($($e).length===0) {
-                    $e = $('<div id="'+$e+'"></div>').appendTo('body');
-                } else {
-                    $e = $($e);
-                }
-            }
-
-            $e.append('<button href="#" class="tapause">Pause</button>');
-            $e.append('<button href="#" class="tastep">Step</button>');
-            $e.append('<button href="#" class="taskip">Skip</button>');
-            $e.append('<button href="#" class="taplay">Play</button>');
-
-            var that = this;
-            $e.on('click', '.tapause', function(evt) {
-                that.pause();
-            }).on('click', '.tastep', function(evt) {
-                that.setSingleStep(true);
-                that.play();
-            }).on('click', '.taskip', function(evt) {
-                that.step(1);
-                that.setSingleStep(true);
-                that.play();
-            }).on('click', '.taplay', function(evt) {
-                that.setSingleStep(false);
-                that.breakOnExecute = false;
-                that.play();
-            });
-
-
-            return $e;
-        };
-
         var that=this;
-        TA.App.on(this.name+":pause", function() {
+        TA.App.on(this.name+':pause', function() {
             that.breakOnExecute = true;
         });
-        TA.App.on(this.name+":start", function() {
+        TA.App.on(this.name+':start', function() {
             that.go();
         });
 
@@ -2085,5 +2040,3 @@
     //expose
     return TA;
 }));
-
-
