@@ -1789,35 +1789,30 @@
      * @constructor TA.Timeline
      */
     TA.Timeline = function(name) {
-        //TODO: refactor so we don't expose everything to the user
-
-        this.name = name;
-        this.steps = [];
-        this.curPos = 0;
-
-        this.debug = false;
-        this.honorReqs = false;
-        this.breakOnExecute = false;
-        this.singleStepMode = false;
-
-        this.requires = [];
+        var steps = [],
+            curPos = 0,
+            debug = false,
+            honorReqs = false,
+            breakOnExecute = false,
+            singleStepMode = false,
+            requires = [];
 
         this.setReqs = function(reqs) {
             if(!$.isArray(reqs)) {
                 throw new TA.Error.ArgumentException('reqs', 'Array', typeof reqs);
             }
-            this.requires = reqs;
+            requires = reqs;
             return this;
         };
 
         this.addReq = function(req) {
-            this.requires.push(req);
+            requires.push(req);
             return this;
         };
 
         this.reqsMet = function() {
-            for(var i=0,c=this.requires.length; i<c; ++i) {
-                if(!TA.StatusHandler.check(this.requires[i])) {
+            for(var i=0,c=requires.length; i<c; ++i) {
+                if(!TA.StatusHandler.check(requires[i])) {
                     return false;
                 }
             }
@@ -1827,7 +1822,7 @@
         this.forceReqs = function(complete) {
             var missing = [];
 
-            $.each(this.requires, function(idx, o) {
+            $.each(requires, function(idx, o) {
                 if(!TA.StatusHandler.check(o)) {
                     missing.push(o);
                 }
@@ -1850,13 +1845,13 @@
         };
 
         this.forceReqsAndGo = function() {
-            this.forceReqs(function(tl) {
+            forceReqs(function(tl) {
                 tl.go();
             });
         };
 
         this.setHonorReqs = function(honor) {
-            this.honorReqs = honor;
+            honorReqs = honor;
             return this;
         };
         /**
@@ -1866,7 +1861,7 @@
          * @param {Boolean} dbg
          */
         this.setDebug = function(dbg) {
-            this.debug = dbg;
+            debug = dbg;
             return this;
         };
 
@@ -1877,7 +1872,7 @@
          * @param {Boolean} singleStepValue
          */
         this.setSingleStep = function(singleStepValue) {
-            this.singleStepMode = singleStepValue;
+            singleStepMode = singleStepValue;
             return this;
         };
 
@@ -1898,7 +1893,7 @@
          * @returns {String}
          */
         this.getName = function() {
-            return this.name;
+            return name;
         };
 
         /**
@@ -1913,7 +1908,7 @@
          */
 
         this.go = this.play = function() {
-            if(this.honorReqs && !this.reqsMet()) {
+            if(honorReqs && !reqsMet()) {
                 throw new TA.Error.StateException('Timeline', 'Requirements are not met');
             }
             var that = this;
@@ -1929,7 +1924,7 @@
          * @method TA.Timeline#pause
          */
         this.pause = function() {
-            this.breakOnExecute = true;
+            breakOnExecute = true;
             return this;
         };
 
@@ -1942,10 +1937,10 @@
         this.jumpToLabel = function(label) {
             var that = this;
             setTimeout(function() {
-                for (var i = 0, c = that.steps.length; i < c; ++i) {
-                    var action = that.steps[i];
+                for (var i = 0, c = steps.length; i < c; ++i) {
+                    var action = steps[i];
                     if (action.getLabel && action.getLabel() == label) {
-                        that.curPos = i;
+                        curPos = i;
                         that.execute();
                         return;
                     }
@@ -1956,16 +1951,16 @@
         };
 
         this.step = function(offset) {
-            this.curPos += offset;
+            curPos += offset;
             return this;
         };
 
         this.getCurPos = function() {
-            return this.curPos;
+            return curPos;
         };
 
         this.getLength = function() {
-            return this.steps.length;
+            return steps.length;
         };
 
         /**
@@ -1974,7 +1969,7 @@
          * @method TA.Timeline#rewind
          */
         this.rewind = function() {
-            this.curPos = 0;
+            curPos = 0;
             return this;
         };
 
@@ -1984,24 +1979,24 @@
         };
 
         this.execute = function() {
-            if(this.curPos >= this.steps.length) {
-                TA.App.trigger(this.name+':finish');
+            if(curPos >= steps.length) {
+                TA.App.trigger(name+':finish');
                 return;
             }
 
-            if(this.breakOnExecute) {
-                this.breakOnExecute = false;
-                TA.App.trigger(this.name+':break');
+            if(breakOnExecute) {
+                breakOnExecute = false;
+                TA.App.trigger(name+':break');
                 return;
             }
 
-            if(this.singleStepMode) {
-                this.breakOnExecute = true;
+            if(singleStepMode) {
+                breakOnExecute = true;
             }
 
-            var action = this.steps[this.curPos];
-            if(this.debug) console.log(this.name+': '+action.getDescription());
-            TA.App.trigger(this.name+':step');
+            var action = steps[curPos];
+            if(debug) {console.log(name+': '+action.getDescription());}
+            TA.App.trigger(name+':step');
             action.run(this);
         };
 
@@ -2021,16 +2016,16 @@
                 if(!$.isFunction(action.run)) {
                     throw new TA.Error.ArgumentException('action', 'TA.TimelineAction', 'action.run not callable in ' + typeof action);
                 }
-                this.steps.push(action);
+                steps.push(action);
             }
             return this;
         };
 
         var that=this;
-        TA.App.on(this.name+':pause', function() {
+        TA.App.on(name+':pause', function() {
             that.breakOnExecute = true;
         });
-        TA.App.on(this.name+':start', function() {
+        TA.App.on(name+':start', function() {
             that.go();
         });
 
