@@ -3,12 +3,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 ;(function(root, factory) {
+    'use strict';
     if(typeof define === 'function' && define.amd) {
         define(['jquery'], factory);
     } else {
         root.TA = factory(window.jQuery);
     }
-}(this, function($) {
+})(this, function($) {
     'use strict';
 
     var TA = {};
@@ -111,7 +112,7 @@
 
         function offRegex(evt, func) {
             for(var i=0, c=regex.length; i<c; ++i) {
-                if(regex[i].regex==evt && regex[i].handler==func) {
+                if(regex[i].regex===evt && regex[i].handler===func) {
                     regex.splice(i, 1);
                 }
             }
@@ -224,9 +225,9 @@
         function splitEvent(evt) {
             //split text:in
             var parts = evt.split(':');
-            if(parts.length<2) return null;
+            if(parts.length<2) {return null;}
             var state=null;
-            if(parts.length==3) {
+            if(parts.length===3) {
                 state = parts[1]+':'+parts[2];
             } else {
                 state = parts[1];
@@ -247,14 +248,14 @@
 
         function notify(evt) {
             var state = splitEvent(evt);
-            if(!state) return;
+            if(!state) {return;}
             statuses[state.name]=state.state;
             return this;
         }
 
         function check(name) {
             var evt = splitEvent(name);
-            if(!evt) return false;
+            if(!evt) {return false;}
 
             return getStatus(evt.name) === evt.state;
         }
@@ -262,7 +263,7 @@
         function getStatus(name) {
             name = trimObjectName(name);
 
-            if(!statuses[name]) return defaultStatus;
+            if(!statuses[name]) {return defaultStatus;}
 
             return statuses[name];
         }
@@ -498,7 +499,7 @@
                     });
                 } else {
                     if(!settings.applyInit || !settings.applyDeinit) {
-                        throw TA.Error.ArgumentException('settings', 'TA.Settings[]|TA.Settings', 'settings.applyInit and/or settings.applyDeinit not callable in ' + typeof settings);
+                        throw new TA.Error.ArgumentException('settings', 'TA.Settings[]|TA.Settings', 'settings.applyInit and/or settings.applyDeinit not callable in ' + typeof settings);
                     }
                     this.list.push(settings);
                 }
@@ -648,7 +649,7 @@
      * @constructor TA.DummyAnimation
      */
     TA.DummyAnimation = function() {
-        this.start = function(obj, complete) { if(complete)complete(this); return this; };
+        this.start = function(obj, complete) { if(complete){complete(this);} return this; };
 
         return this;
     };
@@ -725,7 +726,7 @@
             var func = function() {
                 ++idx;
                 if(idx >= count) {
-                    if(complete) complete(that);
+                    if(complete) {complete(that);}
                     return;
                 }
 
@@ -781,7 +782,7 @@
             var animCount = this.animations.length;
             var that = this;
             var subComplete = createCallNFunction(animCount, function() {
-                if(complete)complete(that);
+                if(complete){complete(that);}
             });
             $.each(this.animations, function(idx, o) {
                 o.start(obj, subComplete);
@@ -867,7 +868,7 @@
             var that = this;
             var subComplete = function() {
                 if(idx >= count) {
-                    if(complete)complete(that);
+                    if(complete){complete(that);}
                     return;
                 }
                 ++idx;
@@ -949,7 +950,7 @@
             //TODO: chaining with current complete, dont overwrite user data
             tempOptions.complete = function() {
                 that.settings.applyDeinit(obj.getElement());
-                if(complete) complete(that);
+                if(complete) {complete(that);}
 
             };
             obj.getElement().animate(this.properties, tempOptions);
@@ -991,7 +992,7 @@
             //TODO: chaining with current complete, dont overwrite user data
             tempOptions.complete = function() {
                 that.settings.applyDeinit(obj.getElement());
-                if(complete) complete(that);
+                if(complete) {complete(that);}
 
             };
             obj.getElement().velocity(this.properties, tempOptions);
@@ -1082,7 +1083,7 @@
             return function(complete) {
                 ani.start(obj, function() {
                     TA.App.trigger(obj.getName() + ':' + name);
-                    if(complete) complete(obj);
+                    if(complete) {complete(obj);}
                 });
                 return that;
             };
@@ -1107,7 +1108,7 @@
 
             startAni(this, this.anis['out'], 'out')(function(obj) {
                 that.settings.applyDeinit(that.getElement());
-                if(complete)complete(obj);
+                if(complete){complete(obj);}
             });
             return this;
         };
@@ -1117,7 +1118,7 @@
          * @inheritdoc
          */
         this.start = function(name, complete) {
-            if(!this.anis[name]) return;
+            if(!this.anis[name]) {return;}
             if(name === 'in') {
                 this.startIn(complete);
                 return;
@@ -1133,13 +1134,13 @@
         TA.App.on(this.name+':out:start', function() { that.startOut(); });
 
         for(var key in this.anis) {
-            if(key === 'in' || key === 'out') continue;
-            if(!this.anis.hasOwnProperty(key)) continue;
+            if(key === 'in' || key === 'out') {continue;}
+            if(!this.anis.hasOwnProperty(key)) {continue;}
             TA.checkAnimName(key);
             var f=function(key) {
                 return function() {
                     that.start(key);
-                }
+                };
             };
             TA.App.on(this.name+':'+key+':start', f(key));
         }
@@ -1214,7 +1215,7 @@
         this.start = function(name, complete) {
             var delay = this.delays[name] || 0;
             var that = this;
-            if(name=='in') {
+            if(name==='in') {
                 this.obj.settings.applyInit(this.obj.getElement());
             }
             setTimeout(function() {
@@ -1303,7 +1304,7 @@
             var that = this;
             var subComplete = createCallNFunction(objCount, function() {
                 TA.App.trigger(that.getName()+':'+name);
-                if(complete)complete(that);
+                if(complete) {complete(that);}
             });
 
             $.each(that.objects, function(idx, o) {
@@ -1831,7 +1832,7 @@
 
             var that=this;
             var subComplete = createCallNFunction(missing.length, function() {
-                if(complete)complete(that);
+                if(complete) {complete(that);}
             });
 
             $.each(missing, function(idx, o) {
@@ -1940,7 +1941,7 @@
             setTimeout(function() {
                 for (var i = 0, c = steps.length; i < c; ++i) {
                     var action = steps[i];
-                    if (action.getLabel && action.getLabel() == label) {
+                    if (action.getLabel && action.getLabel() === label) {
                         curPos = i;
                         that.execute();
                         return;
@@ -2034,4 +2035,4 @@
 
     //expose
     return TA;
-}));
+});
