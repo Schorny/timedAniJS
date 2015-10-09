@@ -1326,7 +1326,7 @@
     TA.TimelineAction = (function() {
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_start
+         * @constructor TA.TimelineAction.Start
          */
         function _start(action) {
             return {
@@ -1342,7 +1342,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_trigger
+         * @constructor TA.TimelineAction.Trigger
          */
         function _trigger(action) {
             return {
@@ -1358,7 +1358,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_waitFor
+         * @constructor TA.TimelineAction.WaitFor
          */
         function _waitFor(action) {
             return {
@@ -1377,7 +1377,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_delay
+         * @constructor TA.TimelineAction.Delay
          */
         function _delay(msecs) {
             return {
@@ -1394,7 +1394,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_loop
+         * @constructor TA.TimelineAction.Loop
          */
         function _loop() {
             return {
@@ -1410,7 +1410,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_loopN
+         * @constructor TA.TimelineAction.LoopN
          */
         function _loopN(times) {
             var count = 0;
@@ -1433,7 +1433,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_step
+         * @constructor TA.TimelineAction.Step
          */
         function _step(steps) {
             return {
@@ -1449,7 +1449,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_label
+         * @constructor TA.TimelineAction.Label
          */
         function _label(name) {
             return {
@@ -1467,7 +1467,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_jumpTo
+         * @constructor TA.TimelineAction.JumpTo
          */
         function _jumpTo(label) {
             return {
@@ -1482,7 +1482,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_startAndWaitFor
+         * @constructor TA.TimelineAction.StartAndWaitFor
          */
         function _startAndWaitFor(action) {
             return {
@@ -1502,7 +1502,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_execute
+         * @constructor TA.TimelineAction.Execute
          */
         function _execute(func) {
             return {
@@ -1517,7 +1517,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_if
+         * @constructor TA.TimelineAction.If
          */
         function _if(func, action) {
             return {
@@ -1536,7 +1536,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_stop
+         * @constructor TA.TimelineAction.Stop
          */
         function _stop() {
             return {
@@ -1550,7 +1550,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_finish
+         * @constructor TA.TimelineAction.Finish
          */
         function _finish() {
             return {
@@ -1565,7 +1565,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_playTimeline
+         * @constructor TA.TimelineAction.PlayTimeline
          */
         function _playTimeline(name) {
             return {
@@ -1586,7 +1586,7 @@
 
         /**
          * @implements TA.TimelineAction
-         * @constructor TA.TimelineAction_playTimelineAsync
+         * @constructor TA.TimelineAction.PlayTimelineAsync
          */
         function _playTimelineAsync(name) {
             return {
