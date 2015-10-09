@@ -1323,7 +1323,7 @@
     };
 
 
-    TA.TimelineAction = (function() {
+    var TimelineAction = (function() {
         /**
          * @implements TA.TimelineAction
          * @constructor TA.TimelineAction.Start
@@ -1637,7 +1637,7 @@
          * @returns {TA.TimelineAction}
          */
         this.start = function(action) {
-            return new TA.TimelineAction.Start(action);
+            return new TimelineAction.Start(action);
         };
 
         /**
@@ -1648,7 +1648,7 @@
          * @returns {TA.TimelineAction}
          */
         this.trigger = function(action) {
-            return new TA.TimelineAction.Trigger(action);
+            return new TimelineAction.Trigger(action);
         };
 
         /**
@@ -1659,7 +1659,7 @@
          * @returns {TA.TimelineAction}
          */
         this.waitFor = function(action) {
-            return new TA.TimelineAction.WaitFor(action);
+            return new TimelineAction.WaitFor(action);
         };
 
         /**
@@ -1670,7 +1670,7 @@
          * @returns {TA.TimelineAction}
          */
         this.startAndWaitFor = function(action) {
-            return new TA.TimelineAction.StartAndWaitFor(action);
+            return new TimelineAction.StartAndWaitFor(action);
         };
 
         /**
@@ -1681,7 +1681,7 @@
          * @returns {TA.TimelineAction}
          */
         this.delay = function(msecs) {
-            return new TA.TimelineAction.Delay(msecs);
+            return new TimelineAction.Delay(msecs);
         };
 
         /**
@@ -1692,7 +1692,7 @@
          * @returns {TA.TimelineAction}
          */
         this.step = function(steps) {
-            return new TA.TimelineAction.Step(steps);
+            return new TimelineAction.Step(steps);
         };
 
         /**
@@ -1703,7 +1703,7 @@
          * @returns {TA.TimelineAction}
          */
         this.label = function(name) {
-            return new TA.TimelineAction.Label(name);
+            return new TimelineAction.Label(name);
         };
 
         /**
@@ -1714,7 +1714,7 @@
          * @returns {TA.TimelineAction}
          */
         this.jumpTo = function(label) {
-            return new TA.TimelineAction.JumpTo(label);
+            return new TimelineAction.JumpTo(label);
         };
 
         /**
@@ -1726,7 +1726,7 @@
          * @returns {TA.TimelineAction}
          */
         this.execute = function(func) {
-            return new TA.TimelineAction.Execute(func);
+            return new TimelineAction.Execute(func);
         };
 
         /**
@@ -1736,7 +1736,7 @@
          * @returns {TA.TimelineAction}
          */
         this.loop = function() {
-            return new TA.TimelineAction.Loop();
+            return new TimelineAction.Loop();
         };
 
         /**
@@ -1746,7 +1746,7 @@
          * @returns {TA.TimelineAction}
          */
         this.loopN = function(times) {
-            return new TA.TimelineAction.LoopN(times);
+            return new TimelineAction.LoopN(times);
         };
 
         /**
@@ -1756,7 +1756,7 @@
          * @returns {TA.TimelineAction}
          */
         this.stop = function() {
-            return new TA.TimelineAction.Stop();
+            return new TimelineAction.Stop();
         };
 
         /**
@@ -1766,7 +1766,7 @@
          * @returns {TA.TimelineAction}
          */
         this.finish = function() {
-            return new TA.TimelineAction.Finish();
+            return new TimelineAction.Finish();
         };
 
         /**
@@ -1777,7 +1777,7 @@
           * @returns {TA.TimelineAction}
           */
         this.playTimeline = function(name) {
-            return new TA.TimelineAction.PlayTimeline(name);
+            return new TimelineAction.PlayTimeline(name);
         };
 
         /**
@@ -1788,7 +1788,7 @@
           * @returns {TA.TimelineAction}
           */
         this.playTimelineAsync = function(name) {
-            return new TA.TimelineAction.PlayTimelineAsync(name);
+            return new TimelineAction.PlayTimelineAsync(name);
         };
 
         /**
@@ -1800,7 +1800,7 @@
          * @returns {TA.TimelineAction}
          */
         this.executeIf = function(func, action) {
-            return new TA.TimelineAction.If(func, action);
+            return new TimelineAction.If(func, action);
         };
     };
 
@@ -2055,5 +2055,6 @@
     };
 
     //expose
+    TA.TimelineAction = TimelineAction;
     return TA;
 });
