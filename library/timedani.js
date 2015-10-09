@@ -1347,7 +1347,7 @@
         function _trigger(action) {
             return {
                 getDescription: function() {
-                    return 'start('+action+')';
+                    return 'trigger('+action+')';
                 },
                 run: function(tl) {
                     TA.App.trigger(action);
