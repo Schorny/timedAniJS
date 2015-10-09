@@ -2023,7 +2023,7 @@
 
         var that=this;
         TA.App.on(name+':pause', function() {
-            that.breakOnExecute = true;
+            that.pause();
         });
         TA.App.on(name+':start', function() {
             that.go();
