@@ -1795,7 +1795,8 @@
             honorReqs = false,
             breakOnExecute = false,
             singleStepMode = false,
-            requires = [];
+            requires = [],
+            that = this;
 
         this.setReqs = function(reqs) {
             if(!$.isArray(reqs)) {
@@ -2021,7 +2022,6 @@
             return this;
         };
 
-        var that=this;
         TA.App.on(name+':pause', function() {
             that.pause();
         });
