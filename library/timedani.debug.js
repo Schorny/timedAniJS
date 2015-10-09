@@ -51,7 +51,6 @@
                 })
                 .on('click', '.taplay', function(evt) {
                     that.setSingleStep(false);
-                    that.breakOnExecute = false;
                     that.play();
                 })
             ;
