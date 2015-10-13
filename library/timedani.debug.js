@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 ;(function($, document) {
+    'use strict';
+
     var origTimeline = TA.Timeline;
 
     TA.Timeline = function() {
@@ -32,8 +34,7 @@
                     $btn.clone().addClass('taskip').text('Skip'),
                     $btn.clone().addClass('taplay').text('Play')
                 ],
-                that = this
-            ;
+                that = this;
 
             $e
                 .append(btns)

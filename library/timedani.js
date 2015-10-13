@@ -3,12 +3,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 ;(function(root, factory) {
+    'use strict';
     if(typeof define === 'function' && define.amd) {
         define(['jquery'], factory);
     } else {
         root.TA = factory(window.jQuery);
     }
-}(this, function($) {
+})(this, function($) {
     'use strict';
 
     var TA = {};
@@ -111,7 +112,7 @@
 
         function offRegex(evt, func) {
             for(var i=0, c=regex.length; i<c; ++i) {
-                if(regex[i].regex==evt && regex[i].handler==func) {
+                if(regex[i].regex===evt && regex[i].handler===func) {
                     regex.splice(i, 1);
                 }
             }
@@ -224,9 +225,9 @@
         function splitEvent(evt) {
             //split text:in
             var parts = evt.split(':');
-            if(parts.length<2) return null;
+            if(parts.length<2) {return null;}
             var state=null;
-            if(parts.length==3) {
+            if(parts.length===3) {
                 state = parts[1]+':'+parts[2];
             } else {
                 state = parts[1];
@@ -247,14 +248,14 @@
 
         function notify(evt) {
             var state = splitEvent(evt);
-            if(!state) return;
+            if(!state) {return;}
             statuses[state.name]=state.state;
             return this;
         }
 
         function check(name) {
             var evt = splitEvent(name);
-            if(!evt) return false;
+            if(!evt) {return false;}
 
             return getStatus(evt.name) === evt.state;
         }
@@ -262,7 +263,7 @@
         function getStatus(name) {
             name = trimObjectName(name);
 
-            if(!statuses[name]) return defaultStatus;
+            if(!statuses[name]) {return defaultStatus;}
 
             return statuses[name];
         }
@@ -498,7 +499,7 @@
                     });
                 } else {
                     if(!settings.applyInit || !settings.applyDeinit) {
-                        throw TA.Error.ArgumentException('settings', 'TA.Settings[]|TA.Settings', 'settings.applyInit and/or settings.applyDeinit not callable in ' + typeof settings);
+                        throw new TA.Error.ArgumentException('settings', 'TA.Settings[]|TA.Settings', 'settings.applyInit and/or settings.applyDeinit not callable in ' + typeof settings);
                     }
                     this.list.push(settings);
                 }
@@ -648,7 +649,7 @@
      * @constructor TA.DummyAnimation
      */
     TA.DummyAnimation = function() {
-        this.start = function(obj, complete) { if(complete)complete(this); return this; };
+        this.start = function(obj, complete) { if(complete){complete(this);} return this; };
 
         return this;
     };
@@ -725,7 +726,7 @@
             var func = function() {
                 ++idx;
                 if(idx >= count) {
-                    if(complete) complete(that);
+                    if(complete) {complete(that);}
                     return;
                 }
 
@@ -781,7 +782,7 @@
             var animCount = this.animations.length;
             var that = this;
             var subComplete = createCallNFunction(animCount, function() {
-                if(complete)complete(that);
+                if(complete){complete(that);}
             });
             $.each(this.animations, function(idx, o) {
                 o.start(obj, subComplete);
@@ -867,7 +868,7 @@
             var that = this;
             var subComplete = function() {
                 if(idx >= count) {
-                    if(complete)complete(that);
+                    if(complete){complete(that);}
                     return;
                 }
                 ++idx;
@@ -949,7 +950,7 @@
             //TODO: chaining with current complete, dont overwrite user data
             tempOptions.complete = function() {
                 that.settings.applyDeinit(obj.getElement());
-                if(complete) complete(that);
+                if(complete) {complete(that);}
 
             };
             obj.getElement().animate(this.properties, tempOptions);
@@ -991,7 +992,7 @@
             //TODO: chaining with current complete, dont overwrite user data
             tempOptions.complete = function() {
                 that.settings.applyDeinit(obj.getElement());
-                if(complete) complete(that);
+                if(complete) {complete(that);}
 
             };
             obj.getElement().velocity(this.properties, tempOptions);
@@ -1082,7 +1083,7 @@
             return function(complete) {
                 ani.start(obj, function() {
                     TA.App.trigger(obj.getName() + ':' + name);
-                    if(complete) complete(obj);
+                    if(complete) {complete(obj);}
                 });
                 return that;
             };
@@ -1107,7 +1108,7 @@
 
             startAni(this, this.anis['out'], 'out')(function(obj) {
                 that.settings.applyDeinit(that.getElement());
-                if(complete)complete(obj);
+                if(complete){complete(obj);}
             });
             return this;
         };
@@ -1117,7 +1118,7 @@
          * @inheritdoc
          */
         this.start = function(name, complete) {
-            if(!this.anis[name]) return;
+            if(!this.anis[name]) {return;}
             if(name === 'in') {
                 this.startIn(complete);
                 return;
@@ -1133,13 +1134,13 @@
         TA.App.on(this.name+':out:start', function() { that.startOut(); });
 
         for(var key in this.anis) {
-            if(key === 'in' || key === 'out') continue;
-            if(!this.anis.hasOwnProperty(key)) continue;
+            if(key === 'in' || key === 'out') {continue;}
+            if(!this.anis.hasOwnProperty(key)) {continue;}
             TA.checkAnimName(key);
             var f=function(key) {
                 return function() {
                     that.start(key);
-                }
+                };
             };
             TA.App.on(this.name+':'+key+':start', f(key));
         }
@@ -1214,7 +1215,7 @@
         this.start = function(name, complete) {
             var delay = this.delays[name] || 0;
             var that = this;
-            if(name=='in') {
+            if(name==='in') {
                 this.obj.settings.applyInit(this.obj.getElement());
             }
             setTimeout(function() {
@@ -1303,7 +1304,7 @@
             var that = this;
             var subComplete = createCallNFunction(objCount, function() {
                 TA.App.trigger(that.getName()+':'+name);
-                if(complete)complete(that);
+                if(complete) {complete(that);}
             });
 
             $.each(that.objects, function(idx, o) {
@@ -1321,282 +1322,303 @@
         return this;
     };
 
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_start
-     */
-    TA.TimelineAction_start = function(action) {
 
-        this.getDescription = function() {
-            return 'start('+action+')';
-        };
-
-        this.run = function(tl) {
-            TA.App.start(action);
-            tl.next();
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_trigger
-     */
-    TA.TimelineAction_trigger = function(action) {
-
-        this.getDescription = function() {
-            return 'start('+action+')';
-        };
-
-        this.run = function(tl) {
-            TA.App.trigger(action);
-            tl.next();
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_waitFor
-     */
-    TA.TimelineAction_waitFor = function(action) {
-
-        this.getDescription = function() {
-            return 'waitFor('+action+')';
-        };
-
-        this.run = function(tl) {
-            var func = function() {
-                TA.App.off(action, func);
-                tl.next();
+    var TimelineAction = (function() {
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.Start
+         */
+        function _start(action) {
+            return {
+                getDescription: function() {
+                    return 'start('+action+')';
+                },
+                run: function(tl) {
+                    TA.App.start(action);
+                    tl.next();
+                }
             };
-            TA.App.on(action, func);
-        };
-    };
+        }
 
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_delay
-     */
-    TA.TimelineAction_delay = function(msecs) {
-
-        this.getDescription = function() {
-            return 'delay('+msecs+')';
-        };
-
-        this.run = function(tl) {
-            setTimeout(function() {
-                tl.next();
-            }, msecs);
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_loop
-     */
-    TA.TimelineAction_loop = function() {
-
-        this.getDescription = function() {
-            return 'loop()';
-        };
-
-        this.run = function(tl) {
-            tl.rewind();
-            tl.execute();
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_loopN
-     */
-    TA.TimelineAction_loopN = function(times) {
-
-        this.count = 0;
-
-        this.getDescription = function() {
-            return 'loopN('+times+')';
-        };
-
-        this.run = function(tl) {
-            ++this.count;
-            if(this.count < times) {
-                tl.rewind();
-                tl.execute();
-            } else {
-                tl.next();
-            }
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_step
-     */
-    TA.TimelineAction_step = function(steps) {
-
-        this.getDescription = function() {
-            return 'step('+steps+')';
-        };
-
-        this.run = function(tl) {
-            tl.step(steps);
-            tl.execute();
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_label
-     */
-    TA.TimelineAction_label = function(name) {
-
-        this.getDescription = function() {
-            return 'label('+name+')';
-        };
-
-        this.getLabel = function() {
-            return name;
-        };
-
-        this.run = function(tl) {
-            tl.next();
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_jumpTo
-     */
-    TA.TimelineAction_jumpTo = function(label) {
-
-        this.getDescription = function() {
-            return 'jumpTo('+label+')';
-        };
-
-        this.run = function(tl) {
-            tl.jumpToLabel(label);
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_startAndWaitFor
-     */
-    TA.TimelineAction_startAndWaitFor = function(action) {
-
-        this.getDescription = function() {
-            return 'startAndWaitFor('+action+')';
-        };
-
-        this.run = function(tl) {
-            var func = function() {
-                TA.App.off(action, func);
-                tl.next();
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.Trigger
+         */
+        function _trigger(action) {
+            return {
+                getDescription: function() {
+                    return 'trigger('+action+')';
+                },
+                run: function(tl) {
+                    TA.App.trigger(action);
+                    tl.next();
+                }
             };
-            TA.App.on(action, func);
-            TA.App.start(action);
-        };
-    };
+        }
 
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_execute
-     */
-    TA.TimelineAction_execute = function(func) {
-
-        this.getDescription = function() {
-            return 'execute(userFunc)';
-        };
-
-        this.run = function(tl) {
-            func(tl);
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_if
-     */
-    TA.TimelineAction_if = function(func, action) {
-
-        this.getDescription = function() {
-            return 'if('+action.getDescription()+')';
-        };
-
-        this.run = function(tl) {
-            if(func()) {
-                action.run(tl);
-            } else {
-                tl.next();
-            }
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_stop
-     */
-    TA.TimelineAction_stop = function() {
-
-        this.getDescription = function() {
-            return 'stop()';
-        };
-
-        this.run = function(tl) {
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_finish
-     */
-    TA.TimelineAction_finish = function() {
-
-        this.getDescription = function() {
-            return 'finish()';
-        };
-
-        this.run = function(tl) {
-            TA.App.trigger(tl.getName()+':finish');
-        };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_playTimeline
-     */
-    TA.TimelineAction_playTimeline = function(name) {
-
-        this.getDescription = function() {
-            return 'playTimeline('+name+')';
-        };
-
-        this.run = function(tl) {
-            var f = function() {
-                TA.App.off(name+':finish', f);
-                tl.next();
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.WaitFor
+         */
+        function _waitFor(action) {
+            return {
+                getDescription: function() {
+                    return 'waitFor('+action+')';
+                },
+                run: function(tl) {
+                    var func = function() {
+                        TA.App.off(action, func);
+                        tl.next();
+                    };
+                    TA.App.on(action, func);
+                }
             };
+        }
 
-            TA.App.on(name+':finish', f);
-            TA.App.start(name);
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.Delay
+         */
+        function _delay(msecs) {
+            return {
+                getDescription: function() {
+                    return 'delay('+msecs+')';
+                },
+                run: function(tl) {
+                    setTimeout(function() {
+                        tl.next();
+                    }, msecs);
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.Loop
+         */
+        function _loop() {
+            return {
+                getDescription: function() {
+                    return 'loop()';
+                },
+                run: function(tl) {
+                    tl.rewind();
+                    tl.execute();
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.LoopN
+         */
+        function _loopN(times) {
+            var count = 0;
+
+            return {
+                getDescription: function() {
+                    return 'loopN('+times+')';
+                },
+                run: function(tl) {
+                    ++count;
+                    if(count < times) {
+                        tl.rewind();
+                        tl.execute();
+                    } else {
+                        tl.next();
+                    }
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.Step
+         */
+        function _step(steps) {
+            return {
+                getDescription: function() {
+                    return 'step('+steps+')';
+                },
+                run: function(tl) {
+                    tl.step(steps);
+                    tl.execute();
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.Label
+         */
+        function _label(name) {
+            return {
+                getDescription: function() {
+                    return 'label('+name+')';
+                },
+                getLabel: function() {
+                    return name;
+                },
+                run: function(tl) {
+                    tl.next();
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.JumpTo
+         */
+        function _jumpTo(label) {
+            return {
+                getDescription: function() {
+                    return 'jumpTo('+label+')';
+                },
+                run: function(tl) {
+                    tl.jumpToLabel(label);
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.StartAndWaitFor
+         */
+        function _startAndWaitFor(action) {
+            return {
+                getDescription: function() {
+                    return 'startAndWaitFor('+action+')';
+                },
+                run: function(tl) {
+                    var func = function() {
+                        TA.App.off(action, func);
+                        tl.next();
+                    };
+                    TA.App.on(action, func);
+                    TA.App.start(action);
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.Execute
+         */
+        function _execute(func) {
+            return {
+                getDescription: function() {
+                    return 'execute(userFunc)';
+                },
+                run: function(tl) {
+                    func(tl);
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.If
+         */
+        function _if(func, action) {
+            return {
+                getDescription: function() {
+                    return 'if('+action.getDescription()+')';
+                },
+                run: function(tl) {
+                    if(func()) {
+                        action.run(tl);
+                    } else {
+                        tl.next();
+                    }
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.Stop
+         */
+        function _stop() {
+            return {
+                getDescription: function() {
+                    return 'stop()';
+                },
+                run: function(tl) {
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.Finish
+         */
+        function _finish() {
+            return {
+                getDescription: function() {
+                    return 'finish()';
+                },
+                run: function(tl) {
+                    TA.App.trigger(tl.getName()+':finish');
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.PlayTimeline
+         */
+        function _playTimeline(name) {
+            return {
+                getDescription: function() {
+                    return 'playTimeline('+name+')';
+                },
+                run: function(tl) {
+                    var f = function() {
+                        TA.App.off(name+':finish', f);
+                        tl.next();
+                    };
+
+                    TA.App.on(name+':finish', f);
+                    TA.App.start(name);
+                }
+            };
+        }
+
+        /**
+         * @implements TA.TimelineAction
+         * @constructor TA.TimelineAction.PlayTimelineAsync
+         */
+        function _playTimelineAsync(name) {
+            return {
+                getDescription: function() {
+                    return 'playTimelineAsync('+name+')';
+                },
+                run: function(tl) {
+                    TA.App.start(name);
+                    tl.next();
+                }
+            };
+        }
+
+        return {
+            Start: _start,
+            Trigger: _trigger,
+            WaitFor: _waitFor,
+            Delay: _delay,
+            Loop: _loop,
+            LoopN: _loopN,
+            Step: _step,
+            Label: _label,
+            JumpTo: _jumpTo,
+            StartAndWaitFor: _startAndWaitFor,
+            Execute: _execute,
+            If: _if,
+            Stop: _stop,
+            Finish: _finish,
+            PlayTimeline: _playTimeline,
+            PlayTimelineAsync: _playTimelineAsync
         };
-    };
-
-    /**
-     * @implements TA.TimelineAction
-     * @constructor TA.TimelineAction_playTimelineAsync
-     */
-    TA.TimelineAction_playTimelineAsync = function(name) {
-
-        this.getDescription = function() {
-            return 'playTimelineAsync('+name+')';
-        };
-
-        this.run = function(tl) {
-            TA.App.start(name);
-            tl.next();
-        };
-    };
+    })();
 
     /**
      * Describer for a TA.Timeline actions
@@ -1615,7 +1637,7 @@
          * @returns {TA.TimelineAction}
          */
         this.start = function(action) {
-            return new TA.TimelineAction_start(action);
+            return new TimelineAction.Start(action);
         };
 
         /**
@@ -1626,7 +1648,7 @@
          * @returns {TA.TimelineAction}
          */
         this.trigger = function(action) {
-            return new TA.TimelineAction_trigger(action);
+            return new TimelineAction.Trigger(action);
         };
 
         /**
@@ -1637,7 +1659,7 @@
          * @returns {TA.TimelineAction}
          */
         this.waitFor = function(action) {
-            return new TA.TimelineAction_waitFor(action);
+            return new TimelineAction.WaitFor(action);
         };
 
         /**
@@ -1648,7 +1670,7 @@
          * @returns {TA.TimelineAction}
          */
         this.startAndWaitFor = function(action) {
-            return new TA.TimelineAction_startAndWaitFor(action);
+            return new TimelineAction.StartAndWaitFor(action);
         };
 
         /**
@@ -1659,7 +1681,7 @@
          * @returns {TA.TimelineAction}
          */
         this.delay = function(msecs) {
-            return new TA.TimelineAction_delay(msecs);
+            return new TimelineAction.Delay(msecs);
         };
 
         /**
@@ -1670,7 +1692,7 @@
          * @returns {TA.TimelineAction}
          */
         this.step = function(steps) {
-            return new TA.TimelineAction_step(steps);
+            return new TimelineAction.Step(steps);
         };
 
         /**
@@ -1681,7 +1703,7 @@
          * @returns {TA.TimelineAction}
          */
         this.label = function(name) {
-            return new TA.TimelineAction_label(name);
+            return new TimelineAction.Label(name);
         };
 
         /**
@@ -1692,7 +1714,7 @@
          * @returns {TA.TimelineAction}
          */
         this.jumpTo = function(label) {
-            return new TA.TimelineAction_jumpTo(label);
+            return new TimelineAction.JumpTo(label);
         };
 
         /**
@@ -1704,7 +1726,7 @@
          * @returns {TA.TimelineAction}
          */
         this.execute = function(func) {
-            return new TA.TimelineAction_execute(func);
+            return new TimelineAction.Execute(func);
         };
 
         /**
@@ -1714,7 +1736,7 @@
          * @returns {TA.TimelineAction}
          */
         this.loop = function() {
-            return new TA.TimelineAction_loop();
+            return new TimelineAction.Loop();
         };
 
         /**
@@ -1724,7 +1746,7 @@
          * @returns {TA.TimelineAction}
          */
         this.loopN = function(times) {
-            return new TA.TimelineAction_loopN(times);
+            return new TimelineAction.LoopN(times);
         };
 
         /**
@@ -1734,7 +1756,7 @@
          * @returns {TA.TimelineAction}
          */
         this.stop = function() {
-            return new TA.TimelineAction_stop();
+            return new TimelineAction.Stop();
         };
 
         /**
@@ -1744,7 +1766,7 @@
          * @returns {TA.TimelineAction}
          */
         this.finish = function() {
-            return new TA.TimelineAction_finish();
+            return new TimelineAction.Finish();
         };
 
         /**
@@ -1755,7 +1777,7 @@
           * @returns {TA.TimelineAction}
           */
         this.playTimeline = function(name) {
-            return new TA.TimelineAction_playTimeline(name);
+            return new TimelineAction.PlayTimeline(name);
         };
 
         /**
@@ -1766,7 +1788,7 @@
           * @returns {TA.TimelineAction}
           */
         this.playTimelineAsync = function(name) {
-            return new TA.TimelineAction_playTimelineAsync(name);
+            return new TimelineAction.PlayTimelineAsync(name);
         };
 
         /**
@@ -1778,7 +1800,7 @@
          * @returns {TA.TimelineAction}
          */
         this.executeIf = function(func, action) {
-            return new TA.TimelineAction_if(func, action);
+            return new TimelineAction.If(func, action);
         };
     };
 
@@ -1831,7 +1853,7 @@
 
             var that=this;
             var subComplete = createCallNFunction(missing.length, function() {
-                if(complete)complete(that);
+                if(complete) {complete(that);}
             });
 
             $.each(missing, function(idx, o) {
@@ -1940,7 +1962,7 @@
             setTimeout(function() {
                 for (var i = 0, c = steps.length; i < c; ++i) {
                     var action = steps[i];
-                    if (action.getLabel && action.getLabel() == label) {
+                    if (action.getLabel && action.getLabel() === label) {
                         curPos = i;
                         that.execute();
                         return;
@@ -2033,5 +2055,6 @@
     };
 
     //expose
+    TA.TimelineAction = TimelineAction;
     return TA;
-}));
+});
