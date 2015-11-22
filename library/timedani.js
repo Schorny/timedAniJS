@@ -1028,7 +1028,9 @@
         if(name === '') {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
-        //TODO: check if $e is jQuery Object
+        if(!($e instanceof $)) {
+            throw new TA.Error.ArgumentException('$e', 'jQuery', typeof $e);
+        }
         if(!$.isFunction(this.anis['in'].start)) {
             throw new TA.Error.ArgumentException('anis.in', 'TA.Animation', 'anis.in.start not callable in ' + typeof this.anis['in']);
         }
