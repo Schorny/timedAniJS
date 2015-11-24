@@ -543,16 +543,8 @@
      * @constructor TA.CssSettings
      */
     TA.CssSettings = function(init, deinit) {
-
-        this.init = init || {};
-        this.deinit = deinit || {};
-
-        if($.type(this.init) !== 'object') {
-            throw new TA.Error.ArgumentException('init', 'Object', typeof this.init);
-        }
-        if($.type(this.deinit) !== 'object') {
-            throw new TA.Error.ArgumentException('deinit', 'Object', typeof this.deinit);
-        }
+        this.init = $.extend({}, init);
+        this.deinit = $.extend({}, deinit);
 
         /**
          * @method TA.CssSettings#applyInit
@@ -590,16 +582,8 @@
      * @constructor TA.VelocitySettings
      */
     TA.VelocitySettings = function(init, deinit) {
-
-        this.init = init || {};
-        this.deinit = deinit || {};
-
-        if($.type(this.init) !== 'object') {
-            throw new TA.Error.ArgumentException('init', 'Object', typeof this.init);
-        }
-        if($.type(this.deinit) !== 'object') {
-            throw new TA.Error.ArgumentException('deinit', 'Object', typeof this.deinit);
-        }
+        this.init = $.extend({}, init);
+        this.deinit = $.extend({}, deinit);
 
         /**
          * @method TA.VelocitySettings#applyInit
@@ -927,16 +911,9 @@
      * @constructor TA.JQueryAnimation
      */
     TA.JQueryAnimation = function(properties, options, settings) {
-        this.properties = properties || {};
-        this.options = options || {};
+        this.properties = $.extend({}, properties);
+        this.options = $.extend({}, options);
         this.settings = settings ? new TA.CombinedSettings([settings]) : new TA.DummySettings();
-
-        if($.type(this.properties) !== 'object') {
-            throw new TA.Error.ArgumentException('properties', 'Object', typeof this.properties);
-        }
-        if($.type(this.options) !== 'object') {
-            throw new TA.Error.ArgumentException('options', 'Object', typeof this.options);
-        }
 
         /**
          * @method TA.JQueryAnimation#start
@@ -969,16 +946,9 @@
      * @constructor TA.VelocityAnimation
      */
     TA.VelocityAnimation = function(properties, options, settings) {
-        this.properties = properties || {};
-        this.options = options || {};
+        this.properties = $.extend({}, properties);
+        this.options = $.extend({}, options);
         this.settings = settings ? new TA.CombinedSettings([settings]) : new TA.DummySettings();
-
-        if($.type(this.properties) !== 'object') {
-            throw new TA.Error.ArgumentException('properties', 'Object', typeof this.properties);
-        }
-        if($.type(this.options) !== 'object') {
-            throw new TA.Error.ArgumentException('options', 'Object', typeof this.options);
-        }
 
         /**
          * @method TA.VelocityAnimation#start
@@ -1180,16 +1150,13 @@
     TA.DelayedObject = function(name, obj, delays) {
         this.obj = obj;
         this.name = name;
-        this.delays = delays || {};
+        this.delays = $.extend({}, delays);
 
         if(name === '') {
             throw new TA.Error.ArgumentException('name', 'String', 'empty value');
         }
         if(!$.isFunction(this.obj.getName)) {
             throw new TA.Error.ArgumentException('obj', 'TA.Object', 'obj.getName not callable in ' + typeof this.obj);
-        }
-        if($.type(this.delays) !== 'object') {
-            throw new TA.Error.ArgumentException('delays', 'Object', typeof this.delays);
         }
 
         /**
