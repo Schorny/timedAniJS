@@ -133,10 +133,11 @@
 
     //Errorhandling code copied from handlebars
     //https://github.com/wycats/handlebars.js/blob/4bed826d0e210c336fb9e500835b1c1926562da5/lib/handlebars/exception.js
-    TA.Error = {};
+    var TAError = {},
+        errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'],
+        TAException, TAErrorArgumentException, TAErrorDOMNodeNotFoundException, TAErrorStateException, TAErrorInvalidNameException;
 
-    var errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'];
-    TA.Error.Exception = function(name, message) {
+    TAError.Exception = TAException = function(name, message) {
         var tmp = Error.prototype.constructor.call(this, message);
 
         for(var i=0,c=errorProps.length; i<c; ++i) {
@@ -144,29 +145,26 @@
         }
 
         if(Error.captureStackTrace) {
-            Error.captureStackTrace(this, TA.Error.Exception);
+            Error.captureStackTrace(this, TAException);
         }
 
         this.name = name;
 
         return this;
     };
-    TA.Error.Exception.prototype = new Error();
+    TAException.prototype = new Error();
 
-    TA.Error.ArgumentException = function(arg, expected, got) {
-        return new TA.Error.Exception('TA.Error.ArgumentException', 'Unexpected Argument "'+arg+'", Expected: "'+expected+'", Got: "'+got+'"');
+    TAError.ArgumentException = TAErrorArgumentException = function(arg, expected, got) {
+        return new TAError.Exception('TA.Error.ArgumentException', 'Unexpected Argument "'+arg+'", Expected: "'+expected+'", Got: "'+got+'"');
     };
-
-    TA.Error.DOMNodeNotFoundException = function(msg, node) {
-        return new TA.Error.Exception('TA.Error.DOMNodeNotFoundException', msg+' ('+node+')');
+    TAError.DOMNodeNotFoundException = TAErrorDOMNodeNotFoundException = function(msg, node) {
+        return new TAError.Exception('TA.Error.DOMNodeNotFoundException', msg+' ('+node+')');
     };
-
-    TA.Error.StateException = function(unit, msg) {
-        return new TA.Error.Exception('TA.Error.StateException', 'Unexpected State in "'+unit+'": '+msg);
+    TAError.StateException = TAErrorStateException = function(unit, msg) {
+        return new TAError.Exception('TA.Error.StateException', 'Unexpected State in "'+unit+'": '+msg);
     };
-
-    TA.Error.InvalidNameException = function(unit, val) {
-        return new TA.Error.Exception('TA.Error.InvalidNameException', 'Invalid Name: '+unit+': "'+val+'"');
+    TAError.InvalidNameException = TAErrorInvalidNameException = function(unit, val) {
+        return new TAError.Exception('TA.Error.InvalidNameException', 'Invalid Name: '+unit+': "'+val+'"');
     };
 
     var forbiddenAnimNames = [
@@ -175,7 +173,7 @@
     TA.checkAnimName = function(name) {
         $.each(forbiddenAnimNames, function(idx, o) {
             if(o===name) {
-                throw new TA.Error.InvalidNameException('Animation Name', name);
+                throw new TAErrorInvalidNameException('Animation Name', name);
             }
         });
     };
@@ -499,7 +497,7 @@
                     });
                 } else {
                     if(!settings.applyInit || !settings.applyDeinit) {
-                        throw new TA.Error.ArgumentException('settings', 'TA.Settings[]|TA.Settings', 'settings.applyInit and/or settings.applyDeinit not callable in ' + typeof settings);
+                        throw new TAErrorArgumentException('settings', 'TA.Settings[]|TA.Settings', 'settings.applyInit and/or settings.applyDeinit not callable in ' + typeof settings);
                     }
                     this.list.push(settings);
                 }
@@ -543,16 +541,8 @@
      * @constructor TA.CssSettings
      */
     TA.CssSettings = function(init, deinit) {
-
-        this.init = init || {};
-        this.deinit = deinit || {};
-
-        if($.type(this.init) !== 'object') {
-            throw new TA.Error.ArgumentException('init', 'Object', typeof this.init);
-        }
-        if($.type(this.deinit) !== 'object') {
-            throw new TA.Error.ArgumentException('deinit', 'Object', typeof this.deinit);
-        }
+        this.init = $.extend({}, init);
+        this.deinit = $.extend({}, deinit);
 
         /**
          * @method TA.CssSettings#applyInit
@@ -560,7 +550,7 @@
          */
         this.applyInit = function($e) {
             if(!$.isFunction($e.css)) {
-                throw new TA.Error.ArgumentException('$e', 'jQuery object', '$e.css not callable in  in ' + typeof $e);
+                throw new TAErrorArgumentException('$e', 'jQuery object', '$e.css not callable in  in ' + typeof $e);
             }
             $e.css(this.init);
             return this;
@@ -572,7 +562,7 @@
          */
         this.applyDeinit = function($e) {
             if(!$.isFunction($e.css)) {
-                throw new TA.Error.ArgumentException('$e', 'jQuery object', '$e.css not callable in ' + typeof $e);
+                throw new TAErrorArgumentException('$e', 'jQuery object', '$e.css not callable in ' + typeof $e);
             }
             $e.css(this.deinit);
             return this;
@@ -590,16 +580,8 @@
      * @constructor TA.VelocitySettings
      */
     TA.VelocitySettings = function(init, deinit) {
-
-        this.init = init || {};
-        this.deinit = deinit || {};
-
-        if($.type(this.init) !== 'object') {
-            throw new TA.Error.ArgumentException('init', 'Object', typeof this.init);
-        }
-        if($.type(this.deinit) !== 'object') {
-            throw new TA.Error.ArgumentException('deinit', 'Object', typeof this.deinit);
-        }
+        this.init = $.extend({}, init);
+        this.deinit = $.extend({}, deinit);
 
         /**
          * @method TA.VelocitySettings#applyInit
@@ -607,7 +589,7 @@
          */
         this.applyInit = function($e) {
             if(!$.isFunction($e.velocity)) {
-                throw new TA.Error.ArgumentException('$e', 'jQuery Object', '$e.velocity not callable in ' + typeof $e);
+                throw new TAErrorArgumentException('$e', 'jQuery Object', '$e.velocity not callable in ' + typeof $e);
             }
             $e.velocity(this.init);
             return this;
@@ -619,7 +601,7 @@
          */
         this.applyDeinit = function($e) {
             if(!$.isFunction($e.velocity)) {
-                throw new TA.Error.ArgumentException('$e', 'jQuery Object', '$e.velocity not callable in ' + typeof $e);
+                throw new TAErrorArgumentException('$e', 'jQuery Object', '$e.velocity not callable in ' + typeof $e);
             }
             $e.velocity(this.deinit);
             return this;
@@ -664,7 +646,7 @@
     TA.FunctionAnimation = function(func) {
 
         if(!$.isFunction(func)) {
-            throw new TA.Error.ArgumentException('func', 'function', typeof func);
+            throw new TAErrorArgumentException('func', 'function', typeof func);
         }
 
         /**
@@ -690,12 +672,12 @@
 
         this.animations = animations || [];
         if(!$.isArray(this.animations)) {
-            throw new TA.Error.ArgumentException('animations', 'TA.Animation[]', typeof this.animations);
+            throw new TAErrorArgumentException('animations', 'TA.Animation[]', typeof this.animations);
         }
 
         $.each(this.animations, function(idx, e) {
             if(!$.isFunction(e.start)) {
-                throw new TA.Error.ArgumentException('animations[i]', 'TA.Animation', 'animations[i].start not callable in ' + typeof e);
+                throw new TAErrorArgumentException('animations[i]', 'TA.Animation', 'animations[i].start not callable in ' + typeof e);
             }
         });
 
@@ -707,7 +689,7 @@
          */
         this.addAnimation = function(animation) {
             if(!$.isFunction(animation.start)) {
-                throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
+                throw new TAErrorArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
             }
             this.animations.push(animation);
 
@@ -751,12 +733,12 @@
 
         this.animations = animations || [];
         if(!$.isArray(this.animations)) {
-            throw new TA.Error.ArgumentException('animations', 'TA.Animation[]', typeof this.animations);
+            throw new TAErrorArgumentException('animations', 'TA.Animation[]', typeof this.animations);
         }
 
         $.each(this.animations, function(idx, e) {
             if(!$.isFunction(e.start)) {
-                throw new TA.Error.ArgumentException('animations[i]', 'TA.Animation', 'animations[i].start not callable in ' + typeof e);
+                throw new TAErrorArgumentException('animations[i]', 'TA.Animation', 'animations[i].start not callable in ' + typeof e);
             }
         });
 
@@ -768,7 +750,7 @@
          */
         this.addAnimation = function(animation) {
             if(!$.isFunction(animation.start)) {
-                throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
+                throw new TAErrorArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
             }
             this.animations.push(animation);
             return this;
@@ -804,7 +786,7 @@
     TA.DelayedAnimation = function(animation, delay) {
 
         if(!$.isFunction(animation.start)) {
-            throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
+            throw new TAErrorArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
         }
 
         /**
@@ -856,7 +838,7 @@
     TA.RepeatAnimation = function(count, animation) {
 
         if(!$.isFunction(animation.start)) {
-            throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
+            throw new TAErrorArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
         }
 
         /**
@@ -892,10 +874,10 @@
     TA.RepeatWhileAnimation = function(predicate, animation) {
 
         if(!$.isFunction(predicate)) {
-            throw new TA.Error.ArgumentException('predicate', 'Function', typeof predicate);
+            throw new TAErrorArgumentException('predicate', 'Function', typeof predicate);
         }
         if(!$.isFunction(animation.start)) {
-            throw new TA.Error.ArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
+            throw new TAErrorArgumentException('animation', 'TA.Animation', 'animation.start not callable in ' + typeof animation);
         }
 
         /**
@@ -927,16 +909,9 @@
      * @constructor TA.JQueryAnimation
      */
     TA.JQueryAnimation = function(properties, options, settings) {
-        this.properties = properties || {};
-        this.options = options || {};
+        this.properties = $.extend({}, properties);
+        this.options = $.extend({}, options);
         this.settings = settings ? new TA.CombinedSettings([settings]) : new TA.DummySettings();
-
-        if($.type(this.properties) !== 'object') {
-            throw new TA.Error.ArgumentException('properties', 'Object', typeof this.properties);
-        }
-        if($.type(this.options) !== 'object') {
-            throw new TA.Error.ArgumentException('options', 'Object', typeof this.options);
-        }
 
         /**
          * @method TA.JQueryAnimation#start
@@ -969,16 +944,9 @@
      * @constructor TA.VelocityAnimation
      */
     TA.VelocityAnimation = function(properties, options, settings) {
-        this.properties = properties || {};
-        this.options = options || {};
+        this.properties = $.extend({}, properties);
+        this.options = $.extend({}, options);
         this.settings = settings ? new TA.CombinedSettings([settings]) : new TA.DummySettings();
-
-        if($.type(this.properties) !== 'object') {
-            throw new TA.Error.ArgumentException('properties', 'Object', typeof this.properties);
-        }
-        if($.type(this.options) !== 'object') {
-            throw new TA.Error.ArgumentException('options', 'Object', typeof this.options);
-        }
 
         /**
          * @method TA.VelocityAnimation#start
@@ -1026,16 +994,16 @@
         }
 
         if(name === '') {
-            throw new TA.Error.ArgumentException('name', 'String', 'empty value');
+            throw new TAErrorArgumentException('name', 'String', 'empty value');
         }
         if(!($e instanceof $)) {
-            throw new TA.Error.ArgumentException('$e', 'jQuery', typeof $e);
+            throw new TAErrorArgumentException('$e', 'jQuery', typeof $e);
         }
         if(!$.isFunction(this.anis['in'].start)) {
-            throw new TA.Error.ArgumentException('anis.in', 'TA.Animation', 'anis.in.start not callable in ' + typeof this.anis['in']);
+            throw new TAErrorArgumentException('anis.in', 'TA.Animation', 'anis.in.start not callable in ' + typeof this.anis['in']);
         }
         if(!$.isFunction(this.anis['out'].start)) {
-            throw new TA.Error.ArgumentException('anis.out', 'TA.Animation', 'anis.out.start not callable in ' + typeof this.anis['out']);
+            throw new TAErrorArgumentException('anis.out', 'TA.Animation', 'anis.out.start not callable in ' + typeof this.anis['out']);
         }
 
         /**
@@ -1050,7 +1018,7 @@
                 settings: overrideSettings.settings || settings
             };
             if(s.$e.length===0) {
-                throw new TA.Error.ArgumentException('$e', 'jQuery Node', 'Element is empty');
+                throw new TAErrorArgumentException('$e', 'jQuery Node', 'Element is empty');
             }
             return new TA.Object(s.name, s.$e, s.anis, s.settings);
         };
@@ -1163,7 +1131,7 @@
     TA.createObjectFromId = function(id, anis, settings) {
         var $e = $('#'+id);
         if($e.length===0) {
-            throw new TA.Error.ArgumentException('id', 'existing DOM Node ID', 'DOM Node not found');
+            throw new TAErrorArgumentException('id', 'existing DOM Node ID', 'DOM Node not found');
         }
         return new TA.Object(id, $e, anis, settings);
     };
@@ -1180,16 +1148,13 @@
     TA.DelayedObject = function(name, obj, delays) {
         this.obj = obj;
         this.name = name;
-        this.delays = delays || {};
+        this.delays = $.extend({}, delays);
 
         if(name === '') {
-            throw new TA.Error.ArgumentException('name', 'String', 'empty value');
+            throw new TAErrorArgumentException('name', 'String', 'empty value');
         }
         if(!$.isFunction(this.obj.getName)) {
-            throw new TA.Error.ArgumentException('obj', 'TA.Object', 'obj.getName not callable in ' + typeof this.obj);
-        }
-        if($.type(this.delays) !== 'object') {
-            throw new TA.Error.ArgumentException('delays', 'Object', typeof this.delays);
+            throw new TAErrorArgumentException('obj', 'TA.Object', 'obj.getName not callable in ' + typeof this.obj);
         }
 
         /**
@@ -1262,7 +1227,7 @@
         this.objects = [];
 
         if(name === '') {
-            throw new TA.Error.ArgumentException('name', 'String', 'empty value');
+            throw new TAErrorArgumentException('name', 'String', 'empty value');
         }
 
         /**
@@ -1824,7 +1789,7 @@
 
         this.setReqs = function(reqs) {
             if(!$.isArray(reqs)) {
-                throw new TA.Error.ArgumentException('reqs', 'Array', typeof reqs);
+                throw new TAErrorArgumentException('reqs', 'Array', typeof reqs);
             }
             requires = reqs;
             return this;
@@ -1934,7 +1899,7 @@
 
         this.go = this.play = function() {
             if(honorReqs && !reqsMet()) {
-                throw new TA.Error.StateException('Timeline', 'Requirements are not met');
+                throw new TAErrorStateException('Timeline', 'Requirements are not met');
             }
             var that = this;
             setTimeout(function() {
@@ -1970,7 +1935,7 @@
                         return;
                     }
                 }
-                throw new TA.Error.ArgumentException('label', 'correct label name', 'Unknown Label "'+label+'"');
+                throw new TAErrorArgumentException('label', 'correct label name', 'Unknown Label "'+label+'"');
             },0);
             return this;
         };
@@ -2039,7 +2004,7 @@
                 });
             } else {
                 if(!$.isFunction(action.run)) {
-                    throw new TA.Error.ArgumentException('action', 'TA.TimelineAction', 'action.run not callable in ' + typeof action);
+                    throw new TAErrorArgumentException('action', 'TA.TimelineAction', 'action.run not callable in ' + typeof action);
                 }
                 steps.push(action);
             }
@@ -2058,5 +2023,6 @@
 
     //expose
     TA.TimelineAction = TimelineAction;
+    TA.Error = TAError;
     return TA;
 });
