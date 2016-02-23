@@ -1392,6 +1392,7 @@
                         tl.rewind();
                         tl.execute();
                     } else {
+                        count = 0;
                         tl.next();
                     }
                 }
